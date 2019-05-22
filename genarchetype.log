@@ -1,0 +1,316 @@
+
+=========================================================================
+Generate bip-archetype-service
+=========================================================================
+
+>> pwd = /Users/aburkholder/git/bip-archetype-service-root
+>> This script will delete bip-archetype-service and recreate it from bip-archetype-service-origin
+*** If desired, back up the existing bip-archetype-service project before continuing.
+    Press Enter to continue, or Ctrl+C to abort: 
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+cd /Users/aburkholder/git/bip-archetype-service-root/bip-archetype-service-origin
+>> pwd = /Users/aburkholder/git/bip-archetype-service-root/bip-archetype-service-origin
+>> Deleting existing target/generated-sources/archetype directory
+rm -rf target/generated-sources/archetype
+[OK]
+>> Creating the archetype in target/generated-sources/archetype
+mvn archetype:create-from-project -Darchetype.properties=../genarchetype.properties -DpackageName=gov.va.bip.origin
+[INFO] Scanning for projects...
+Downloading from nexus3: https://nexus.dev.bip.va.gov/repository/maven-public/gov/va/bip/framework/bip-framework-parentpom/1.0.1-SNAPSHOT/maven-metadata.xml
+Downloading from vets.gov: https://nexus.internal.vetservices.gov/repository/maven-public/gov/va/bip/framework/bip-framework-parentpom/1.0.1-SNAPSHOT/maven-metadata.xml
+[WARNING] Could not transfer metadata gov.va.bip.framework:bip-framework-parentpom:1.0.1-SNAPSHOT/maven-metadata.xml from/to nexus3 (https://nexus.dev.bip.va.gov/repository/maven-public): nexus.dev.bip.va.gov: nodename nor servname provided, or not known
+[WARNING] Could not transfer metadata gov.va.bip.framework:bip-framework-parentpom:1.0.1-SNAPSHOT/maven-metadata.xml from/to vets.gov (https://nexus.internal.vetservices.gov/repository/maven-public/): nexus.internal.vetservices.gov: nodename nor servname provided, or not known
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] bip-origin-reactor                                                 [pom]
+[INFO] bip-origin                                                         [jar]
+[INFO] bip-origin-inttest                                                 [jar]
+[INFO] bip-origin-perftest                                                [jar]
+Downloading from central: http://central/com/hpe/security/fortify/maven/plugin/sca-maven-plugin/17.20/sca-maven-plugin-17.20.pom
+Downloading from nexus3: https://nexus.dev.bip.va.gov/repository/maven-public/com/hpe/security/fortify/maven/plugin/sca-maven-plugin/17.20/sca-maven-plugin-17.20.pom
+[WARNING] Failed to retrieve plugin descriptor for com.hpe.security.fortify.maven.plugin:sca-maven-plugin:17.20: Plugin com.hpe.security.fortify.maven.plugin:sca-maven-plugin:17.20 or one of its dependencies could not be resolved: Failed to read artifact descriptor for com.hpe.security.fortify.maven.plugin:sca-maven-plugin:jar:17.20
+Downloading from central: http://central/org/eclipse/m2e/lifecycle-mapping/1.0.0/lifecycle-mapping-1.0.0.pom
+Downloading from nexus3: https://nexus.dev.bip.va.gov/repository/maven-public/org/eclipse/m2e/lifecycle-mapping/1.0.0/lifecycle-mapping-1.0.0.pom
+[WARNING] Failed to retrieve plugin descriptor for org.eclipse.m2e:lifecycle-mapping:1.0.0: Plugin org.eclipse.m2e:lifecycle-mapping:1.0.0 or one of its dependencies could not be resolved: Failed to read artifact descriptor for org.eclipse.m2e:lifecycle-mapping:jar:1.0.0
+Downloading from nexus3: https://nexus.dev.bip.va.gov/repository/maven-public/org/apache/maven/plugins/maven-metadata.xml
+Downloading from nexus3: https://nexus.dev.bip.va.gov/repository/maven-public/org/codehaus/mojo/maven-metadata.xml
+[WARNING] Could not transfer metadata org.apache.maven.plugins/maven-metadata.xml from/to nexus3 (https://nexus.dev.bip.va.gov/repository/maven-public): nexus.dev.bip.va.gov
+[WARNING] Could not transfer metadata org.codehaus.mojo/maven-metadata.xml from/to nexus3 (https://nexus.dev.bip.va.gov/repository/maven-public): nexus.dev.bip.va.gov
+Downloading from nexus3: https://nexus.dev.bip.va.gov/repository/maven-public/org/apache/maven/plugins/maven-archetype-plugin/maven-metadata.xml
+[WARNING] Could not transfer metadata org.apache.maven.plugins:maven-archetype-plugin/maven-metadata.xml from/to nexus3 (https://nexus.dev.bip.va.gov/repository/maven-public): nexus.dev.bip.va.gov
+[INFO] 
+[INFO] ----------------< gov.va.bip.origin:bip-origin-reactor >----------------
+[INFO] Building bip-origin-reactor 0.0.1-SNAPSHOT                         [1/4]
+[INFO] --------------------------------[ pom ]---------------------------------
+[WARNING] Failed to retrieve plugin descriptor for com.hpe.security.fortify.maven.plugin:sca-maven-plugin:17.20: Plugin com.hpe.security.fortify.maven.plugin:sca-maven-plugin:17.20 or one of its dependencies could not be resolved: Failed to read artifact descriptor for com.hpe.security.fortify.maven.plugin:sca-maven-plugin:jar:17.20
+[WARNING] Failed to retrieve plugin descriptor for org.eclipse.m2e:lifecycle-mapping:1.0.0: Plugin org.eclipse.m2e:lifecycle-mapping:1.0.0 or one of its dependencies could not be resolved: Failed to read artifact descriptor for org.eclipse.m2e:lifecycle-mapping:jar:1.0.0
+[WARNING] Failure to transfer org.apache.maven.plugins/maven-metadata.xml from https://nexus.dev.bip.va.gov/repository/maven-public was cached in the local repository, resolution will not be reattempted until the update interval of nexus3 has elapsed or updates are forced. Original error: Could not transfer metadata org.apache.maven.plugins/maven-metadata.xml from/to nexus3 (https://nexus.dev.bip.va.gov/repository/maven-public): nexus.dev.bip.va.gov
+[WARNING] Failure to transfer org.codehaus.mojo/maven-metadata.xml from https://nexus.dev.bip.va.gov/repository/maven-public was cached in the local repository, resolution will not be reattempted until the update interval of nexus3 has elapsed or updates are forced. Original error: Could not transfer metadata org.codehaus.mojo/maven-metadata.xml from/to nexus3 (https://nexus.dev.bip.va.gov/repository/maven-public): nexus.dev.bip.va.gov
+[WARNING] Failure to transfer org.apache.maven.plugins:maven-archetype-plugin/maven-metadata.xml from https://nexus.dev.bip.va.gov/repository/maven-public was cached in the local repository, resolution will not be reattempted until the update interval of nexus3 has elapsed or updates are forced. Original error: Could not transfer metadata org.apache.maven.plugins:maven-archetype-plugin/maven-metadata.xml from/to nexus3 (https://nexus.dev.bip.va.gov/repository/maven-public): nexus.dev.bip.va.gov
+[INFO] 
+[INFO] >>> maven-archetype-plugin:3.1.0:create-from-project (default-cli) > generate-sources @ bip-origin-reactor >>>
+[INFO] 
+[INFO] >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+[INFO] Forking bip-origin-reactor 0.0.1-SNAPSHOT
+[INFO] >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+[INFO] 
+[INFO] --- maven-enforcer-plugin:3.0.0-M2:enforce (enforce-no-snapshots) @ bip-origin-reactor ---
+[INFO] 
+[INFO] --- git-commit-id-plugin:2.2.6:revision (default) @ bip-origin-reactor ---
+[INFO] 
+[INFO] --- build-helper-maven-plugin:3.0.0:parse-version (parse-version) @ bip-origin-reactor ---
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.7.9:prepare-agent (prepare-agent) @ bip-origin-reactor ---
+[INFO] argLine set to -javaagent:/Users/aburkholder/.m2/repository/org/jacoco/org.jacoco.agent/0.7.9/org.jacoco.agent-0.7.9-runtime.jar=destfile=/Users/aburkholder/git/bip-archetype-service-root/bip-archetype-service-origin/target/jacoco/jacoco.exec,append=true,excludes=**/static/features/**/*:**com.steadystate*
+[INFO] 
+[INFO] --- build-helper-maven-plugin:3.0.0:add-test-source (add-integration-test-sources) @ bip-origin-reactor ---
+[INFO] Test Source directory: /Users/aburkholder/git/bip-archetype-service-root/bip-archetype-service-origin/src/inttest/java added.
+[INFO] 
+[INFO] >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+[INFO] Forking bip-origin 0.0.1-SNAPSHOT
+[INFO] >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Downloading from nexus3: https://nexus.dev.bip.va.gov/repository/maven-public/gov/va/bip/framework/bip-framework-libraries/1.0.1-SNAPSHOT/maven-metadata.xml
+Downloading from vets.gov: https://nexus.internal.vetservices.gov/repository/maven-public/gov/va/bip/framework/bip-framework-libraries/1.0.1-SNAPSHOT/maven-metadata.xml
+[WARNING] Could not transfer metadata gov.va.bip.framework:bip-framework-libraries:1.0.1-SNAPSHOT/maven-metadata.xml from/to nexus3 (https://nexus.dev.bip.va.gov/repository/maven-public): nexus.dev.bip.va.gov
+[WARNING] Could not transfer metadata gov.va.bip.framework:bip-framework-libraries:1.0.1-SNAPSHOT/maven-metadata.xml from/to vets.gov (https://nexus.internal.vetservices.gov/repository/maven-public/): nexus.internal.vetservices.gov
+[WARNING] Failure to transfer gov.va.bip.framework:bip-framework-libraries:1.0.1-SNAPSHOT/maven-metadata.xml from https://nexus.dev.bip.va.gov/repository/maven-public was cached in the local repository, resolution will not be reattempted until the update interval of nexus3 has elapsed or updates are forced. Original error: Could not transfer metadata gov.va.bip.framework:bip-framework-libraries:1.0.1-SNAPSHOT/maven-metadata.xml from/to nexus3 (https://nexus.dev.bip.va.gov/repository/maven-public): nexus.dev.bip.va.gov
+[WARNING] Failure to transfer gov.va.bip.framework:bip-framework-libraries:1.0.1-SNAPSHOT/maven-metadata.xml from https://nexus.internal.vetservices.gov/repository/maven-public/ was cached in the local repository, resolution will not be reattempted until the update interval of vets.gov has elapsed or updates are forced. Original error: Could not transfer metadata gov.va.bip.framework:bip-framework-libraries:1.0.1-SNAPSHOT/maven-metadata.xml from/to vets.gov (https://nexus.internal.vetservices.gov/repository/maven-public/): nexus.internal.vetservices.gov
+[WARNING] Failure to transfer gov.va.bip.framework:bip-framework-parentpom:1.0.1-SNAPSHOT/maven-metadata.xml from https://nexus.dev.bip.va.gov/repository/maven-public was cached in the local repository, resolution will not be reattempted until the update interval of nexus3 has elapsed or updates are forced. Original error: Could not transfer metadata gov.va.bip.framework:bip-framework-parentpom:1.0.1-SNAPSHOT/maven-metadata.xml from/to nexus3 (https://nexus.dev.bip.va.gov/repository/maven-public): nexus.dev.bip.va.gov: nodename nor servname provided, or not known
+[WARNING] Failure to transfer gov.va.bip.framework:bip-framework-parentpom:1.0.1-SNAPSHOT/maven-metadata.xml from https://nexus.internal.vetservices.gov/repository/maven-public/ was cached in the local repository, resolution will not be reattempted until the update interval of vets.gov has elapsed or updates are forced. Original error: Could not transfer metadata gov.va.bip.framework:bip-framework-parentpom:1.0.1-SNAPSHOT/maven-metadata.xml from/to vets.gov (https://nexus.internal.vetservices.gov/repository/maven-public/): nexus.internal.vetservices.gov: nodename nor servname provided, or not known
+Downloading from nexus3: https://nexus.dev.bip.va.gov/repository/maven-public/gov/va/bip/framework/bip-framework-shared/1.0.1-SNAPSHOT/maven-metadata.xml
+Downloading from vets.gov: https://nexus.internal.vetservices.gov/repository/maven-public/gov/va/bip/framework/bip-framework-shared/1.0.1-SNAPSHOT/maven-metadata.xml
+[WARNING] Could not transfer metadata gov.va.bip.framework:bip-framework-shared:1.0.1-SNAPSHOT/maven-metadata.xml from/to nexus3 (https://nexus.dev.bip.va.gov/repository/maven-public): nexus.dev.bip.va.gov
+[WARNING] Could not transfer metadata gov.va.bip.framework:bip-framework-shared:1.0.1-SNAPSHOT/maven-metadata.xml from/to vets.gov (https://nexus.internal.vetservices.gov/repository/maven-public/): nexus.internal.vetservices.gov
+[WARNING] Failure to transfer gov.va.bip.framework:bip-framework-shared:1.0.1-SNAPSHOT/maven-metadata.xml from https://nexus.dev.bip.va.gov/repository/maven-public was cached in the local repository, resolution will not be reattempted until the update interval of nexus3 has elapsed or updates are forced. Original error: Could not transfer metadata gov.va.bip.framework:bip-framework-shared:1.0.1-SNAPSHOT/maven-metadata.xml from/to nexus3 (https://nexus.dev.bip.va.gov/repository/maven-public): nexus.dev.bip.va.gov
+[WARNING] Failure to transfer gov.va.bip.framework:bip-framework-shared:1.0.1-SNAPSHOT/maven-metadata.xml from https://nexus.internal.vetservices.gov/repository/maven-public/ was cached in the local repository, resolution will not be reattempted until the update interval of vets.gov has elapsed or updates are forced. Original error: Could not transfer metadata gov.va.bip.framework:bip-framework-shared:1.0.1-SNAPSHOT/maven-metadata.xml from/to vets.gov (https://nexus.internal.vetservices.gov/repository/maven-public/): nexus.internal.vetservices.gov
+Downloading from nexus3: https://nexus.dev.bip.va.gov/repository/maven-public/gov/va/bip/framework/bip-framework-autoconfigure/1.0.1-SNAPSHOT/maven-metadata.xml
+Downloading from vets.gov: https://nexus.internal.vetservices.gov/repository/maven-public/gov/va/bip/framework/bip-framework-autoconfigure/1.0.1-SNAPSHOT/maven-metadata.xml
+[WARNING] Could not transfer metadata gov.va.bip.framework:bip-framework-autoconfigure:1.0.1-SNAPSHOT/maven-metadata.xml from/to nexus3 (https://nexus.dev.bip.va.gov/repository/maven-public): nexus.dev.bip.va.gov
+[WARNING] Could not transfer metadata gov.va.bip.framework:bip-framework-autoconfigure:1.0.1-SNAPSHOT/maven-metadata.xml from/to vets.gov (https://nexus.internal.vetservices.gov/repository/maven-public/): nexus.internal.vetservices.gov
+[WARNING] Failure to transfer gov.va.bip.framework:bip-framework-autoconfigure:1.0.1-SNAPSHOT/maven-metadata.xml from https://nexus.dev.bip.va.gov/repository/maven-public was cached in the local repository, resolution will not be reattempted until the update interval of nexus3 has elapsed or updates are forced. Original error: Could not transfer metadata gov.va.bip.framework:bip-framework-autoconfigure:1.0.1-SNAPSHOT/maven-metadata.xml from/to nexus3 (https://nexus.dev.bip.va.gov/repository/maven-public): nexus.dev.bip.va.gov
+[WARNING] Failure to transfer gov.va.bip.framework:bip-framework-autoconfigure:1.0.1-SNAPSHOT/maven-metadata.xml from https://nexus.internal.vetservices.gov/repository/maven-public/ was cached in the local repository, resolution will not be reattempted until the update interval of vets.gov has elapsed or updates are forced. Original error: Could not transfer metadata gov.va.bip.framework:bip-framework-autoconfigure:1.0.1-SNAPSHOT/maven-metadata.xml from/to vets.gov (https://nexus.internal.vetservices.gov/repository/maven-public/): nexus.internal.vetservices.gov
+[INFO] 
+[INFO] --- maven-enforcer-plugin:3.0.0-M2:enforce (enforce-no-snapshots) @ bip-origin ---
+[INFO] 
+[INFO] --- git-commit-id-plugin:2.2.6:revision (default) @ bip-origin ---
+[INFO] 
+[INFO] --- build-helper-maven-plugin:3.0.0:parse-version (parse-version) @ bip-origin ---
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.7.9:prepare-agent (prepare-agent) @ bip-origin ---
+[INFO] argLine set to -javaagent:/Users/aburkholder/.m2/repository/org/jacoco/org.jacoco.agent/0.7.9/org.jacoco.agent-0.7.9-runtime.jar=destfile=/Users/aburkholder/git/bip-archetype-service-root/bip-archetype-service-origin/bip-origin/target/jacoco/jacoco.exec,append=true,excludes=**/static/features/**/*:**com.steadystate*
+[INFO] 
+[INFO] --- templating-maven-plugin:1.0.0:filter-sources (filtering-java-templates) @ bip-origin ---
+[INFO] Coping files with filtering to temporary directory.
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 1 resource
+[INFO] No files needs to be copied to output directory. Up to date: /Users/aburkholder/git/bip-archetype-service-root/bip-archetype-service-origin/bip-origin/target/generated-sources/java-template
+[INFO] Source directory: /Users/aburkholder/git/bip-archetype-service-root/bip-archetype-service-origin/bip-origin/target/generated-sources/java-template added.
+[INFO] 
+[INFO] --- build-helper-maven-plugin:3.0.0:add-test-source (add-integration-test-sources) @ bip-origin ---
+[INFO] Test Source directory: /Users/aburkholder/git/bip-archetype-service-root/bip-archetype-service-origin/bip-origin/src/inttest/java added.
+[INFO] 
+[INFO] --- build-helper-maven-plugin:3.0.0:add-source (add-source) @ bip-origin ---
+[INFO] Source directory: /Users/aburkholder/git/bip-archetype-service-root/bip-archetype-service-origin/bip-origin/target/generated-sources/java-template added.
+[INFO] 
+[INFO] >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+[INFO] Forking bip-origin-inttest 0.0.1-SNAPSHOT
+[INFO] >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Downloading from nexus3: https://nexus.dev.bip.va.gov/repository/maven-public/gov/va/bip/framework/bip-framework-test-lib/1.0.1-SNAPSHOT/maven-metadata.xml
+Downloading from vets.gov: https://nexus.internal.vetservices.gov/repository/maven-public/gov/va/bip/framework/bip-framework-test-lib/1.0.1-SNAPSHOT/maven-metadata.xml
+[WARNING] Could not transfer metadata gov.va.bip.framework:bip-framework-test-lib:1.0.1-SNAPSHOT/maven-metadata.xml from/to nexus3 (https://nexus.dev.bip.va.gov/repository/maven-public): nexus.dev.bip.va.gov
+[WARNING] Could not transfer metadata gov.va.bip.framework:bip-framework-test-lib:1.0.1-SNAPSHOT/maven-metadata.xml from/to vets.gov (https://nexus.internal.vetservices.gov/repository/maven-public/): nexus.internal.vetservices.gov
+[WARNING] Failure to transfer gov.va.bip.framework:bip-framework-test-lib:1.0.1-SNAPSHOT/maven-metadata.xml from https://nexus.dev.bip.va.gov/repository/maven-public was cached in the local repository, resolution will not be reattempted until the update interval of nexus3 has elapsed or updates are forced. Original error: Could not transfer metadata gov.va.bip.framework:bip-framework-test-lib:1.0.1-SNAPSHOT/maven-metadata.xml from/to nexus3 (https://nexus.dev.bip.va.gov/repository/maven-public): nexus.dev.bip.va.gov
+[WARNING] Failure to transfer gov.va.bip.framework:bip-framework-test-lib:1.0.1-SNAPSHOT/maven-metadata.xml from https://nexus.internal.vetservices.gov/repository/maven-public/ was cached in the local repository, resolution will not be reattempted until the update interval of vets.gov has elapsed or updates are forced. Original error: Could not transfer metadata gov.va.bip.framework:bip-framework-test-lib:1.0.1-SNAPSHOT/maven-metadata.xml from/to vets.gov (https://nexus.internal.vetservices.gov/repository/maven-public/): nexus.internal.vetservices.gov
+[INFO] 
+[INFO] --- maven-enforcer-plugin:3.0.0-M2:enforce (enforce-no-snapshots) @ bip-origin-inttest ---
+[INFO] 
+[INFO] --- git-commit-id-plugin:2.2.6:revision (default) @ bip-origin-inttest ---
+[INFO] 
+[INFO] --- build-helper-maven-plugin:3.0.0:parse-version (parse-version) @ bip-origin-inttest ---
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.7.9:prepare-agent (prepare-agent) @ bip-origin-inttest ---
+[INFO] argLine set to -javaagent:/Users/aburkholder/.m2/repository/org/jacoco/org.jacoco.agent/0.7.9/org.jacoco.agent-0.7.9-runtime.jar=destfile=/Users/aburkholder/git/bip-archetype-service-root/bip-archetype-service-origin/bip-origin-inttest/target/jacoco/jacoco.exec,append=true,excludes=**/static/features/**/*:**com.steadystate*
+[INFO] 
+[INFO] --- build-helper-maven-plugin:3.0.0:add-test-source (add-integration-test-sources) @ bip-origin-inttest ---
+[INFO] Test Source directory: /Users/aburkholder/git/bip-archetype-service-root/bip-archetype-service-origin/bip-origin-inttest/src/inttest/java added.
+[INFO] 
+[INFO] >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+[INFO] Forking bip-origin-perftest 0.0.1-SNAPSHOT
+[INFO] >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+[INFO] 
+[INFO] --- maven-enforcer-plugin:3.0.0-M2:enforce (enforce-no-snapshots) @ bip-origin-perftest ---
+[INFO] 
+[INFO] --- git-commit-id-plugin:2.2.6:revision (default) @ bip-origin-perftest ---
+[INFO] 
+[INFO] --- build-helper-maven-plugin:3.0.0:parse-version (parse-version) @ bip-origin-perftest ---
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.7.9:prepare-agent (prepare-agent) @ bip-origin-perftest ---
+[INFO] argLine set to -javaagent:/Users/aburkholder/.m2/repository/org/jacoco/org.jacoco.agent/0.7.9/org.jacoco.agent-0.7.9-runtime.jar=destfile=/Users/aburkholder/git/bip-archetype-service-root/bip-archetype-service-origin/bip-origin-perftest/target/jacoco/jacoco.exec,append=true,excludes=**/static/features/**/*:**com.steadystate*
+[INFO] 
+[INFO] --- build-helper-maven-plugin:3.0.0:add-test-source (add-integration-test-sources) @ bip-origin-perftest ---
+[INFO] Test Source directory: /Users/aburkholder/git/bip-archetype-service-root/bip-archetype-service-origin/bip-origin-perftest/src/inttest/java added.
+[INFO] 
+[INFO] <<< maven-archetype-plugin:3.1.0:create-from-project (default-cli) < generate-sources @ bip-origin-reactor <<<
+[INFO] 
+[INFO] 
+[INFO] --- maven-archetype-plugin:3.1.0:create-from-project (default-cli) @ bip-origin-reactor ---
+[INFO] Setting default version: 0.0.1-SNAPSHOT
+[WARN] Maven will be executed in interactive mode, but no input stream has been configured for this MavenInvoker instance.
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -----------< gov.va.bip.origin:bip-origin-reactor-archetype >-----------
+[INFO] Building bip-origin-reactor-archetype 0.0.1-SNAPSHOT
+[INFO] --------------------------[ maven-archetype ]---------------------------
+[INFO] 
+[INFO] --- maven-resources-plugin:3.0.2:resources (default-resources) @ bip-origin-reactor-archetype ---
+[WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] Copying 118 resources
+[INFO] 
+[INFO] --- maven-resources-plugin:3.0.2:testResources (default-testResources) @ bip-origin-reactor-archetype ---
+[WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] Copying 2 resources
+[INFO] 
+[INFO] --- maven-archetype-plugin:3.1.0:jar (default-jar) @ bip-origin-reactor-archetype ---
+[INFO] Building archetype jar: /Users/aburkholder/git/bip-archetype-service-root/bip-archetype-service-origin/target/generated-sources/archetype/target/bip-origin-reactor-archetype-0.0.1-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 1.143 s
+[INFO] Finished at: 2019-05-22T14:29:10-04:00
+[INFO] ------------------------------------------------------------------------
+[INFO] Archetype project created in /Users/aburkholder/git/bip-archetype-service-root/bip-archetype-service-origin/target/generated-sources/archetype
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary:
+[INFO] 
+[INFO] bip-origin-reactor 0.0.1-SNAPSHOT .................. SUCCESS [  4.749 s]
+[INFO] bip-origin ......................................... SKIPPED
+[INFO] bip-origin-inttest ................................. SKIPPED
+[INFO] bip-origin-perftest 0.0.1-SNAPSHOT ................. SKIPPED
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 12.142 s
+[INFO] Finished at: 2019-05-22T14:29:10-04:00
+[INFO] ------------------------------------------------------------------------
+[OK]
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+cd /Users/aburkholder/git/bip-archetype-service-root/bip-archetype-service-origin
+>> pwd = /Users/aburkholder/git/bip-archetype-service-root/bip-archetype-service-origin
+>> Cleaning up the created archetype in place: target/generated-sources/archetype
+sed -i "" -e 's/'"gov.va.bip.origin"'/'"gov.va.bip.archetype.service"'/g' target/generated-sources/archetype/pom.xml
+sed -i "" -e 's/'"bip-origin-reactor-archetype"'/'"bip-archetype-service"'/g' target/generated-sources/archetype/pom.xml
+sed -i "" -e 's/'"BIP Origin Service"'/'"BIP Service Archetype"'/g' target/generated-sources/archetype/pom.xml
+sed -i "" -e 's/'"<url>https:\/\/projects.spring.io\/spring-boot\/#\/spring-boot-starter-parent\/bip-framework-parentpom\/bip-origin-reactor<\/url>"'/'" "'/g' target/generated-sources/archetype/pom.xml
+sed -i "" -e 's/'"<scm>"'/'" "'/g' target/generated-sources/archetype/pom.xml
+sed -i "" -e 's/'"<\/scm>"'/'" "'/g' target/generated-sources/archetype/pom.xml
+sed -i "" -e 's/'"<url>https:\/\/github.com\/spring-projects\/spring-boot\/spring-boot-starter-parent\/bip-framework-parentpom\/bip-origin-reactor<\/url>"'/'" "'/g' target/generated-sources/archetype/pom.xml
+>> Remove the archive directory from the archetype
+rm -rf bip-archetype-service/archive/
+[OK]
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+cd /Users/aburkholder/git/bip-archetype-service-root/bip-archetype-service-origin/target/generated-sources/archetype
+>> pwd = /Users/aburkholder/git/bip-archetype-service-root/bip-archetype-service-origin/target/generated-sources/archetype
+>> Renaming directories in place: target/generated-sources/archetype
+>> Found directories to rename: src/main/resources/archetype-resources/bip-origin src/main/resources/archetype-resources/bip-origin-perftest src/main/resources/archetype-resources/bip-origin-inttest
+
+mv src/main/resources/archetype-resources/bip-origin ${src/main/resources/archetype-resources/bip-origin//origin/newname}
+[OK]
+mv src/main/resources/archetype-resources/bip-origin-perftest ${src/main/resources/archetype-resources/bip-origin-perftest//origin/newname}
+[OK]
+mv src/main/resources/archetype-resources/bip-origin-inttest ${src/main/resources/archetype-resources/bip-origin-inttest//origin/newname}
+[OK]
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+>> Deleting old bip-archetype-service directory
+rm -rf /Users/aburkholder/git/bip-archetype-service-root/bip-archetype-service
+[OK]
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+cd /Users/aburkholder/git/bip-archetype-service-root/bip-archetype-service-origin
+>> pwd = /Users/aburkholder/git/bip-archetype-service-root/bip-archetype-service-origin
+>> Make directory ../bip-archetype-service
+mkdir ../bip-archetype-service
+[OK]
+>> Copy archetype files to ../bip-archetype-service
+cp -R -f target/generated-sources/archetype/* ../bip-archetype-service
+[OK]
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+cd /Users/aburkholder/git/bip-archetype-service-root
+>> pwd = /Users/aburkholder/git/bip-archetype-service-root
+>> Copy documentation files into archetype
+>> Copy basic README.md for new projects
+cp -f bip-archetype-service-origin/archive/bip-archetype-service-project-README.md bip-archetype-service/src/main/resources/archetype-resources/README.md
+[OK]
+>> Copy README.md for bip-archetype-service project
+cp -f bip-archetype-service-origin/archive/bip-archetype-service-README.md bip-archetype-service/README.md
+[OK]
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+cd bip-archetype-service
+>> pwd=/Users/aburkholder/git/bip-archetype-service-root/bip-archetype-service
+>> Install the archetype
+mvn install
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ---------< gov.va.bip.archetype.service:bip-archetype-service >---------
+[INFO] Building bip-archetype-service 0.0.1-SNAPSHOT
+[INFO] --------------------------[ maven-archetype ]---------------------------
+[INFO] 
+[INFO] --- maven-resources-plugin:3.0.2:resources (default-resources) @ bip-archetype-service ---
+[WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] Copying 118 resources
+[INFO] 
+[INFO] --- maven-resources-plugin:3.0.2:testResources (default-testResources) @ bip-archetype-service ---
+[WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] Copying 2 resources
+[INFO] 
+[INFO] --- maven-archetype-plugin:3.1.0:jar (default-jar) @ bip-archetype-service ---
+[INFO] Building archetype jar: /Users/aburkholder/git/bip-archetype-service-root/bip-archetype-service/target/bip-archetype-service-0.0.1-SNAPSHOT
+[INFO] 
+[INFO] --- maven-archetype-plugin:3.1.0:integration-test (default-integration-test) @ bip-archetype-service ---
+[INFO] Processing Archetype IT project: basic
+[INFO] ----------------------------------------------------------------------------
+[INFO] Using following parameters for creating project from Archetype: bip-archetype-service:0.0.1-SNAPSHOT
+[INFO] ----------------------------------------------------------------------------
+[INFO] Parameter: groupId, Value: archetype.it
+[INFO] Parameter: artifactId, Value: basic
+[INFO] Parameter: version, Value: 0.1-SNAPSHOT
+[INFO] Parameter: package, Value: it.pkg
+[INFO] Parameter: packageInPathFormat, Value: it/pkg
+[INFO] Parameter: version, Value: 0.1-SNAPSHOT
+[INFO] Parameter: package, Value: it.pkg
+[INFO] Parameter: groupId, Value: archetype.it
+[INFO] Parameter: artifactNameUpperCase, Value: ORIGIN
+[INFO] Parameter: artifactName, Value: Origin
+[INFO] Parameter: artifactId, Value: basic
+[INFO] Parameter: artifactNameLowerCase, Value: origin
+[WARNING] CP Don't override file /Users/aburkholder/git/bip-archetype-service-root/bip-archetype-service/target/test-classes/projects/basic/project/basic/local-dev/vault-config/README.md
+[WARNING] CP Don't override file /Users/aburkholder/git/bip-archetype-service-root/bip-archetype-service/target/test-classes/projects/basic/project/basic/local-dev/consul/README.md
+[INFO] Parent element not overwritten in /Users/aburkholder/git/bip-archetype-service-root/bip-archetype-service/target/test-classes/projects/basic/project/basic/bip-origin/pom.xml
+[INFO] Parent element not overwritten in /Users/aburkholder/git/bip-archetype-service-root/bip-archetype-service/target/test-classes/projects/basic/project/basic/bip-origin-inttest/pom.xml
+[INFO] Parent element not overwritten in /Users/aburkholder/git/bip-archetype-service-root/bip-archetype-service/target/test-classes/projects/basic/project/basic/bip-origin-perftest/pom.xml
+[INFO] Project created from Archetype in dir: /Users/aburkholder/git/bip-archetype-service-root/bip-archetype-service/target/test-classes/projects/basic/project/basic
+[INFO] 
+[INFO] --- maven-install-plugin:3.0.0-M1:install (default-install) @ bip-archetype-service ---
+[INFO] Installing /Users/aburkholder/git/bip-archetype-service-root/bip-archetype-service/target/bip-archetype-service-0.0.1-SNAPSHOT.jar to /Users/aburkholder/.m2/repository/gov/va/bip/archetype/service/bip-archetype-service/0.0.1-SNAPSHOT/bip-archetype-service-0.0.1-SNAPSHOT.jar
+[INFO] Installing /Users/aburkholder/git/bip-archetype-service-root/bip-archetype-service/pom.xml to /Users/aburkholder/.m2/repository/gov/va/bip/archetype/service/bip-archetype-service/0.0.1-SNAPSHOT/bip-archetype-service-0.0.1-SNAPSHOT.pom
+[INFO] 
+[INFO] --- maven-archetype-plugin:3.1.0:update-local-catalog (default-update-local-catalog) @ bip-archetype-service ---
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 1.573 s
+[INFO] Finished at: 2019-05-22T14:29:13-04:00
+[INFO] ------------------------------------------------------------------------
+[OK]
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+>> SUCCESS - archetype project created: bip-archetype-service
+   To generate a new service project:
+   - a gensvc.* has been copied into the ../ (should be your git root)
+   - ensure values in gensvc.properties are correct
+   - ensure gensvc.sh is executable:
+     $ chmod +x gensvc.sh
+   - execute gensvc.sh
+     $ ./gensvc.sh
+
