@@ -182,19 +182,17 @@ function create_archetype() {
 ## no parameters                                                ##
 ## scope: private (internal calls only)                         ##
 function clean_archetype_files() {
-	tempArchDir="$archetypeTargetDir"
-
 	echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" 2>&1 | tee -a $archetypeLog
 	echo "cd $cwd/$archetypeOriginName" 2>&1 | tee -a $archetypeLog
 	# tee does not play well with some bash commands, so just redirect output to the log
 	cd $cwd/$archetypeOriginName 2>&1 >> $archetypeLog
 	echo ">> pwd = `pwd`" 2>&1 | tee -a $archetypeLog
 
-	echo ">> Cleaning up the created archetype in place: $tempArchDir" 2>&1 | tee -a $archetypeLog
+	echo ">> Cleaning up the created archetype in place: $archetypeTargetDir" 2>&1 | tee -a $archetypeLog
 
 	## clean up the archetype POM ##
 
-	modFile="$tempArchDir/pom.xml"
+	modFile="$archetypeTargetDir/pom.xml"
 	# wrong archetype package/groupId
 	oldVal="gov.va.bip.origin"
 	newVal="gov.va.bip.archetype.service"
@@ -236,6 +234,40 @@ function clean_archetype_files() {
 		echo "rm -f $modFile-e" 2>&1 | tee -a $archetypeLog
 		# tee does not play well with some bash commands, so just redirect output to the log
 		rm -f "$modFile-e" >> $archetypeLog
+	fi
+
+	## Add .gitignore to the generated archetype ##
+	echo ">> Copy .gitignore file into the archetype" 2>&1 | tee -a $archetypeLog
+	echo "cp -f $cwd/.gitignore $archetypeTargetDir/.gitignore" 2>&1 | tee -a $archetypeLog
+	# tee does not play well with some bash commands, so just redirect output to the log
+	cp -f $cwd/.gitignore $archetypeTargetDir/.gitignore 2>&1 >> $archetypeLog
+	archetypeStatus="$?"
+	if [ "$archetypeStatus" -eq "0" ]; then
+		echo "[OK]" 2>&1 | tee -a $archetypeLog
+	else
+		exit_now $archetypeStatus "*** FAILURE: could not copy $archetypeOriginName/.gitignore to destination"
+	fi
+
+	echo ">> Copy basic README.md for new projects" 2>&1 | tee -a $archetypeLog
+	echo "cp -f $cwd/$archetypeOriginName/archive/$archetypeServiceName-README.md $archetypeTargetDir/README.md" 2>&1 | tee -a $archetypeLog
+	# tee does not play well with some bash commands, so just redirect output to the log
+	cp -f $cwd/$archetypeOriginName/archive/$archetypeServiceName-README.md $archetypeTargetDir/README.md 2>&1 >> $archetypeLog
+	archetypeStatus="$?"
+	if [ "$archetypeStatus" -eq "0" ]; then
+		echo "[OK]" 2>&1 | tee -a $archetypeLog
+	else
+		exit_now $archetypeStatus "*** FAILURE: could not copy $archetypeServiceName-README.md to $archetypeTargetDir/README.md"
+	fi
+
+	echo ">> Copy README.md for $archetypeServiceName project" 2>&1 | tee -a $archetypeLog
+	echo "cp -f $cwd/$archetypeOriginName/archive/$archetypeServiceName-project-README.md $cwd/$archetypeServiceName/README.md" 2>&1 | tee -a $archetypeLog
+	# tee does not play well with some bash commands, so just redirect output to the log
+	cp -f $cwd/$archetypeOriginName/archive/$archetypeServiceName-project-README.md $cwd/$archetypeServiceName/README.md 2>&1 >> $archetypeLog
+	archetypeStatus="$?"
+	if [ "$archetypeStatus" -eq "0" ]; then
+		echo "[OK]" 2>&1 | tee -a $archetypeLog
+	else
+		exit_now $archetypeStatus "*** FAILURE: could not copy $cwd/$archetypeOriginName/archive/$archetypeServiceName-project-README.md to $cwd/$archetypeServiceName/README.md"
 	fi
 
 	## Remove unnecessary files from the generated archetype ##
@@ -341,35 +373,33 @@ function copy_archetype() {
 ## scope: private (internal calls only)                              ##
 function pre_install_copies() {
 	echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" 2>&1 | tee -a $archetypeLog
-	echo "" 2>&1 | tee -a $archetypeLog
-	echo "cd $cwd" 2>&1 | tee -a $archetypeLog
-	# tee does not play well with some bash commands, so just redirect output to the log
-	cd $cwd 2>&1 >> $archetypeLog
-	echo ">> pwd = `pwd`" 2>&1 | tee -a $archetypeLog
-
-	echo ">> Copy documentation files into archetype" 2>&1 | tee -a $archetypeLog
-
-	echo ">> Copy basic README.md for new projects" 2>&1 | tee -a $archetypeLog
-	echo "cp -f $archetypeOriginName/archive/$archetypeServiceName-project-README.md $archetypeServiceName/src/main/resources/archetype-resources/README.md" 2>&1 | tee -a $archetypeLog
-	# tee does not play well with some bash commands, so just redirect output to the log
-	cp -f $archetypeOriginName/archive/$archetypeServiceName-project-README.md $archetypeServiceName/src/main/resources/archetype-resources/README.md 2>&1 >> $archetypeLog
-	archetypeStatus="$?"
-	if [ "$archetypeStatus" -eq "0" ]; then
-		echo "[OK]" 2>&1 | tee -a $archetypeLog
-	else
-		exit_now $archetypeStatus "*** FAILURE: could not copy $archetypeOriginName/archive/* to destination"
-	fi
-
-	echo ">> Copy README.md for $archetypeServiceName project" 2>&1 | tee -a $archetypeLog
-	echo "cp -f $archetypeOriginName/archive/bip-archetype-service-README.md $archetypeServiceName/README.md" 2>&1 | tee -a $archetypeLog
-	# tee does not play well with some bash commands, so just redirect output to the log
-	cp -f $archetypeOriginName/archive/bip-archetype-service-README.md $archetypeServiceName/README.md 2>&1 >> $archetypeLog
-	archetypeStatus="$?"
-	if [ "$archetypeStatus" -eq "0" ]; then
-		echo "[OK]" 2>&1 | tee -a $archetypeLog
-	else
-		exit_now $archetypeStatus "*** FAILURE: could not copy $archetypeOriginName/archive/* to destination"
-	fi
+	# echo "" 2>&1 | tee -a $archetypeLog
+	# echo "cd $cwd" 2>&1 | tee -a $archetypeLog
+	# # tee does not play well with some bash commands, so just redirect output to the log
+	# cd $cwd 2>&1 >> $archetypeLog
+	# echo ">> pwd = `pwd`" 2>&1 | tee -a $archetypeLog
+	#
+	# echo ">> Copy basic README.md for new projects" 2>&1 | tee -a $archetypeLog
+	# echo "cp -f $archetypeOriginName/archive/$archetypeServiceName-project-README.md $archetypeServiceName/src/main/resources/archetype-resources/README.md" 2>&1 | tee -a $archetypeLog
+	# # tee does not play well with some bash commands, so just redirect output to the log
+	# cp -f $archetypeOriginName/archive/$archetypeServiceName-project-README.md $archetypeServiceName/src/main/resources/archetype-resources/README.md 2>&1 >> $archetypeLog
+	# archetypeStatus="$?"
+	# if [ "$archetypeStatus" -eq "0" ]; then
+	# 	echo "[OK]" 2>&1 | tee -a $archetypeLog
+	# else
+	# 	exit_now $archetypeStatus "*** FAILURE: could not copy $archetypeOriginName/archive/* to destination"
+	# fi
+	#
+	# echo ">> Copy README.md for $archetypeServiceName project" 2>&1 | tee -a $archetypeLog
+	# echo "cp -f $archetypeOriginName/archive/bip-archetype-service-README.md $archetypeServiceName/README.md" 2>&1 | tee -a $archetypeLog
+	# # tee does not play well with some bash commands, so just redirect output to the log
+	# cp -f $archetypeOriginName/archive/bip-archetype-service-README.md $archetypeServiceName/README.md 2>&1 >> $archetypeLog
+	# archetypeStatus="$?"
+	# if [ "$archetypeStatus" -eq "0" ]; then
+	# 	echo "[OK]" 2>&1 | tee -a $archetypeLog
+	# else
+	# 	exit_now $archetypeStatus "*** FAILURE: could not copy $archetypeOriginName/archive/* to destination"
+	# fi
 }
 
 ## function to install the archetype in the local m2 repo ##

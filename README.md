@@ -6,65 +6,44 @@ NOTE: When you clone this repo, you will get a `bip-service-archetype-root` fold
 
 ## Getting the BIP Archetype Service project
 
-Because this project hosts two separate maven projects, setting up a workspace is different than usual.
+Because this project hosts two separate maven projects, setting up a workspace _may_ be different than usual, depending on what IDE you are using.
 
 1. Clone the project:
 
   - `$ cd ~/git`
   - `$ git clone https://github.com/department-of-veterans-affairs/bip-archetype-service`
 
-2. To get the root project into your IDE, you will likely want to import the `bip-archetype-service-root`, not just the origin project. In any eclipse-base IDE:
+2. To get the root project into your IDE, you will likely need to create separate workspaces, one for `bip-archetype-service-root` for access to the root scripts and files, and another for the `bip-archetype-service-origin` and `bip-archetype-service` projects so maven can be executed properly on them.
 
-  - Select _File > Import... > General > Projects from Folder or Archive_
+  - For the root project:
 
-  - Click _Next_ and let eclipse analyze the folder structure. Select all found folders, and click _Finish_.
+    - Start (or open) a `bip-archetype-service-root` workspace
+    - Select _File > Import... > General > Existing Projects into Workspace_
+    - In the Import Folder dialog, use _Browse_ to select your `~/git/bip-archetype-service-root` folder.
 
-3. The root project should now be added to your workspace, with the files in the root directory, and both the `bip-archetype-service-origin` and `bip-archetype-service` projects.
+      - The _Projects_ list should display one project (make sure _Options > Search for nested projects_ is **un-clicked**)
+
+    - Click _Finish_ to import the directory
+
+    - NOTE that the maven integrations will not work for the origin and archetype in this workspace, so eclipse will report errors. Ignore them, as java/maven work should be done in a different workspace.
+
+  - For the java/maven projects:
+
+    - Start (or open) a `bip-archetype-service` workspace
+    - Select _File > Import... > Maven > Existing Maven Projects_
+    - Click _Next_ and use _Browse_ to select `~/git/bip-archetype-service-origin`
+    - Select the presented projects from the _Projects_ list, and click _Finish_
+    - REPEAT the above _File > Import_ steps for the `~/git/bip-archetype-service` project
+
+3. Each workspace will now contain the relevant projects for the two types of activities you will need to undertake: maintain the root scripts and files; modify/run/test the maven projects.
 
 ## The Origin Project
 
 The `bip-archetype-service-origin` project contains the origin (or "source") project from which the archetype can be created. This project is based on the [bip-reference -person](https://github.com/department-of-veterans-affairs/bip-reference-person) project, with some sample features removed, and necessary naming genericized.
 
-### Making Changes to the Origin Project
+This project need only be modified when there are new features or capabilities to be included in a new generation of the `bip-archetype-service`. The steps required to generate the archetype and copy its files to the correct location are encoded in the `genarchetype.sh` script.
 
-This project need only be modified when there are new features or capabilities to be included in a new generations of the `bip-archetype-service`. The steps required to generate the archetype and copy its files to the correct location are encoded in the `genarchetype.sh` script.
-
-After reviewing the content below, please read the detailed information provided in [bip-archetype-service-origin README.md](./bip-archetype-service-origin/README.md).
-
-Overview for changing the origin service and updating the archetype:
-
-1. Clone the archetype project from GitHub: <https://github.com/department-of-veterans-affairs/bip-archetype-service>
-2. Add the `bip-archetype-service-origin` project as an existing Maven Project to the workspace of your IDE.
-3. Perform a `mvn clean install` on the project, ensuring that
-
-  - the project builds without error from the command line and in your IDE
-
-    - any build and IDE-related issues are resolved
-
-  - the spring-boot server can successfully be started
-
-  - the [localhost swagger page](http://localhost:8080/swagger-ui.html) responds as expected
-
-4. Make the desired changes, keeping in mind that this is a _generic_ project
-
-  - The naming convention for the project itself is _origin_ (or _Origin_, depending on context); full-text search for occurrences of this name
-  - Anything related to data or pattern examples are named _sample_ (or _Sample_, depending on the context); full-text search for occurrences of this name
-
-5. Test all changes by building the archetype - see instructions at [bip-archetype-service-origin/README.md](./bip-archetype-service-origin/README.md)
-
-6. Build a test project from the archetype - see instructionsn at [bip-archetype-service/README.md](./bip-archetype-service/README.md)..
-
-7. Run the test project and open its [localhost swagger page](http://localhost:8080/swagger-ui.html) to make sure everything functions as expected.
-
-8. Delete the test project.
-
-9. Manually push the changes from the command line:
-
-  - `$ cd ~/git/bip-archetype-service-root`
-
-  - `$ git add .`
-
-  - `$ git commit -m "YOUR COMMIT COMMENT"`
+See the [bip-archetype-service-origin README.md](./bip-archetype-service-origin/README.md) for details on modifying the Origin project.
 
 ## The Service Archetype Project
 

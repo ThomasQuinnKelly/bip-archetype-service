@@ -26,10 +26,12 @@ Omitted capabilities:
 
 # Updating Origin and the Archetype
 
-Before starting, two important notes regarding this process:
+See the [root README](../README.md) for help getting the projects set up in your IDE.
+
+Before starting modifications, two important notes regarding this process:
 
 - The steps for updating the archetype have been encoded in the `genarchetype.sh` script. Depending on the changes made to the Origin project, it may be necessary to update the script.
-- The `genarchetype.sh` script copies the README.md files from `bip-archetype-service-origin/archive` into the generated archetype project. If you need to make changes to these READMEs, do it in the archive folder, not the archetype project.
+- The `genarchetype.sh` script copies the README.md files from `bip-archetype-service-origin/archive` into the generated archetype project. If you need to make changes to these READMEs, **do it in the archive folder**, not the archetype project.
 
 The origin project should only need to be updated when something new or different needs to be reflected in the BIP Service Archetype, for example, when
 
@@ -37,11 +39,15 @@ The origin project should only need to be updated when something new or differen
 - configuration patterns have changed
 - enhancements or new capabilities have been added to BIP services that should be part of the standard service project offering
 
-To modify the archetype:
+## Making Changes to the Origin Project
 
-1. Clone the [bip-archetype-service](https://github.com/department-of-veterans-affairs/bip-archetype-service) repo
-2. Ensure that the `bip-archetype-service-origin` project builds, that the project can be run as a spring-boot app, and that the [localhost swagger page](http://localhost:8080/swagger-ui.html) opens and responds as excpected.
-3. Make the desired changes, testing to ensure the project is stable
-4. Run `genarchetype.sh` to create the new `bip-archetype-service` project, and review its `pom.xml` and check the files under `src/main/resources/archetype-resources/`. Depending on the nature of the changes made in the steps above, it may be necessary to tweak the script.
-5. Once the archetype project looks good, follow the instructions in [its README.md]() file to generate a test project to run and test. Tweak Origin until the archetype produces a usable test project.
-6. When ready, make sure the `bip-archetype-service-root` and its two projects are tidy, and push it to the repo.
+1. Ensure that the `bip-archetype-service-origin` project builds, that the project can be run as a spring-boot app, and that the [localhost swagger page](http://localhost:8080/swagger-ui.html) opens and responds as excpected.
+2. Make the desired changes, testing to ensure the project is stable
+3. From the command line,
+
+  - `$ cd ~/git/bip-archetype-service-root/bip-archetype-service-origin`
+  - `genarchetype.sh` (runs the script to delete the `bip-archetype-service` directory and regenerate the archetype)
+
+4. Review `pom.xml` for the regenerated `bip-archetype-service` project, and check the files under `src/main/resources/archetype-resources/`. Depending on the nature of the changes made in the steps above, it may be necessary to tweak the `genarchetype.sh` script.
+5. Once the archetype project looks good, follow the instructions in [the archetypes README.md](../biparchetype-service/README.md) file to generate a test project to run and test. Tweak the Origin project until the archetype produces a usable test project.
+6. When ready, make sure the `bip-archetype-service-root` and its two projects are tidy, and push the root project to the repo.

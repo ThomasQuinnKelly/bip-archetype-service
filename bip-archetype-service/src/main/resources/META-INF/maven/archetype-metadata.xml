@@ -80,7 +80,6 @@
         <include>README.md</include>
         <include>.gitignore</include>
         <include>.env</include>
-        <include>genarchetypeTEST.log</include>
         <include>Jenkinsfile</include>
         <include>docker-compose.yml</include>
         <include>stop-all.sh</include>

@@ -15,7 +15,6 @@ import org.junit.Test;
 
 import gov.va.bip.framework.messages.MessageKeys;
 import gov.va.bip.framework.messages.MessageSeverity;
-import gov.va.bip.${artifactNameLowerCase}.exception.${artifactName}ServiceException;
 
 /**
  *
@@ -34,9 +33,11 @@ public class ${artifactName}ServiceExceptionTest {
 
 	/**
 	 * Test of getSeverity method, of class ${artifactName}ServiceException.
+	 *
+	 * @throws Exception
 	 */
 	@Test
-	public void testGetSeverity() {
+	public void testGetSeverity() throws Exception {
 		System.out.println("getSeverity");
 		MessageSeverity expResult = MessageSeverity.ERROR;
 		MessageSeverity result = instance.getSeverity();

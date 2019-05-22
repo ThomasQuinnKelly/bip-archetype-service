@@ -12,7 +12,6 @@ import org.junit.Test;
 
 import gov.va.bip.framework.messages.MessageKeys;
 import gov.va.bip.framework.messages.MessageSeverity;
-import gov.va.bip.origin.exception.OriginServiceException;
 
 /**
  *
@@ -31,9 +30,11 @@ public class OriginServiceExceptionTest {
 
 	/**
 	 * Test of getSeverity method, of class OriginServiceException.
+	 *
+	 * @throws Exception
 	 */
 	@Test
-	public void testGetSeverity() {
+	public void testGetSeverity() throws Exception {
 		System.out.println("getSeverity");
 		MessageSeverity expResult = MessageSeverity.ERROR;
 		MessageSeverity result = instance.getSeverity();

@@ -1,38 +1,53 @@
-# What is this repository for?
+# BIP Service Archetype Origin Project
 
-This is a suite of BIP projects for
+This project is the origin (or "source") project from which a legitimate archetype can be created for the BIP Platform. To be clear, this is not the archetype. This is a project from which one can create the archetype.
 
-<span color="red">add project purpose here</span>
+The `bip-archetype-service-origin` project is based on the `bip-reference-person` project, modified to provide a usable archetype.
 
-.
+## Why an Origin Project?
 
-# Project Breakdown
+The intent is to provide a base project from which the `mvn archetype:create-from-project` mojo can be legitimately executed. It should create an archetype that will provide _basic_ code and configuration infrastructure to get a new project started quickly.
 
-1. <span color="red">add github URLs to any partner projects, and brief description here</span>
+## What is in (and not in) this project?
 
-2. [bip-origin](https://github.com/department-of-veterans-affairs/bip-origin/tree/master/bip-origin): Service implementation project. This project demonstrates the recommended design patterns, configuration pointers, and coding examples. It shows how to produce a documented endpoint, how to register the app with Consul, how to use secrets from Vault, how to implement a Hystrix circuit breaker, how to get and use loggers, etc. The design consists of three layers:
+Some capabilities that are provided in `bip-reference-person` for instructional purposes are omitted from the archetype. Also, beyond the necessary, this project does not attempt to anticipate the needs of projects that will be built on the BIP Platform. It provides the base code and config for core functionality, and provides starting points for unit tests, integration tests, and performance tests.
 
-  - The Provider (or "web") layer contains the REST endpoints and model, JSR 303 annotations in the resource class and the model, and the use of an adapter class to transform models and call the service interface.
-  - The Domain (or "service") layer contains business validation, business logic, client helpers to call Partner services and process the returned data, and exception handling.
-  - The Partner (or "client") layer performs partner client model transformation, calls to partner client interfaces, and response handling.
+Included capabilities:
 
-3. [bip-origin-inttest](https://github.com/department-of-veterans-affairs/bip-origin/tree/master/bip-origin-inttest): Contains the integration tests using the framework Test Library (Spring Rest Template, Cucumber libraries, and other capabilities). It includes test cases that run against the service endpoints.
+- Files for Jenkins, Helm, docker config of vault, consul, etc.
+- Core code for basic application configuration, spring Application class, REST API provider, service impl, model transformation, validation, logging (including auditing), and exception handling.
 
-4. [bip-origin-perftest](https://github.com/department-of-veterans-affairs/bip-origin/tree/master/bip-origin-perftest): Contains performance JMX test scripts for Apache JMeter that run against the service endpoints.
+Omitted capabilities:
 
-For examples and documentation about how projects are structured, configured, and developed on the BIP Platform:
+- Partner Clients. For reasons of code reuse, consistent implementations, etc it is suggested that partner client code should reside in separate repositories to allow for consumption by other BIP projects. At a time when sufficient need becomes evident, partner client archetypes may be created.
 
-- [BIP Framework](https://github.com/department-of-veterans-affairs/bip-framework)
-- [BIP Reference - Person service](https://github.com/department-of-veterans-affairs/bip-reference-person)
+  - The Feign Client code (REST client) and config have been removed.
+  - The `bip-reference-partner-person` SOAP service project has been removed. It is worth noting that the service Helper class remains in the project as a template for SOAP client calls.
 
-# How to build and test?
+# Updating Origin and the Archetype
 
-The fastest way to get set up is to visit the [Quick Start Guide](https://github.com/department-of-veterans-affairs/bip-reference-person/blob/master/docs/quick-start-guide.md).
+See the [root README](../README.md) for help getting the projects set up in your IDE.
 
-# Contribution guidelines
+Before starting modifications, two important notes regarding this process:
 
-If you or your team wants to contribute to this repository, then fork the repository and follow the steps to create a PR for our upstream repo to review and commit the changes: [Creating a pull request from a fork](https://help.github.com/articles/creating-a-pull-request-from-a-fork/)
+- The steps for updating the archetype have been encoded in the `genarchetype.sh` script. Depending on the changes made to the Origin project, it may be necessary to update the script.
+- The `genarchetype.sh` script copies the README.md files from `bip-archetype-service-origin/archive` into the generated archetype project. If you need to make changes to these READMEs, **do it in the archive folder**, not the archetype project.
 
-# Local Development
+The origin project should only need to be updated when something new or different needs to be reflected in the BIP Service Archetype, for example, when
 
-Instructions on running the application on a local workstation can be found in the [local-dev README](local-dev)
+- service development coding patterns have changed
+- configuration patterns have changed
+- enhancements or new capabilities have been added to BIP services that should be part of the standard service project offering
+
+## Making Changes to the Origin Project
+
+1. Ensure that the `bip-archetype-service-origin` project builds, that the project can be run as a spring-boot app, and that the [localhost swagger page](http://localhost:8080/swagger-ui.html) opens and responds as excpected.
+2. Make the desired changes, testing to ensure the project is stable
+3. From the command line,
+
+  - `$ cd ~/git/bip-archetype-service-root/bip-archetype-service-origin`
+  - `genarchetype.sh` (runs the script to delete the `bip-archetype-service` directory and regenerate the archetype)
+
+4. Review `pom.xml` for the regenerated `bip-archetype-service` project, and check the files under `src/main/resources/archetype-resources/`. Depending on the nature of the changes made in the steps above, it may be necessary to tweak the `genarchetype.sh` script.
+5. Once the archetype project looks good, follow the instructions in [the archetypes README.md](../biparchetype-service/README.md) file to generate a test project to run and test. Tweak the Origin project until the archetype produces a usable test project.
+6. When ready, make sure the `bip-archetype-service-root` and its two projects are tidy, and push the root project to the repo.
