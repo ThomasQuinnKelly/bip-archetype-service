@@ -4,6 +4,23 @@ This project contains two maven projects for creating and maintaining a Maven se
 
 NOTE: When you clone this repo, you will get a `bip-service-archetype-root` folder that contains this README, and eventually will receive a script and properties file. This folder does not contain a POM, and will likely not be directly accessible from your IDE. During generation of an archetype, you will need to use your command line to access the `gensvc` script.
 
+## Getting the BIP Archetype Service project
+
+Because this project hosts two separate maven projects, setting up a workspace is different than usual.
+
+1. Clone the project:
+
+  - `$ cd ~/git`
+  - `$ git clone https://github.com/department-of-veterans-affairs/bip-archetype-service`
+
+2. To get the root project into your IDE, you will likely want to import the `bip-archetype-service-root`, not just the origin project. In any eclipse-base IDE:
+
+  - Select _File > Import... > General > Projects from Folder or Archive_
+
+  - Click _Next_ and let eclipse analyze the folder structure. Select all found folders, and click _Finish_.
+
+3. The root project should now be added to your workspace, with the files in the root directory, and both the `bip-archetype-service-origin` and `bip-archetype-service` projects.
+
 ## The Origin Project
 
 The `bip-archetype-service-origin` project contains the origin (or "source") project from which the archetype can be created. This project is based on the [bip-reference -person](https://github.com/department-of-veterans-affairs/bip-reference-person) project, with some sample features removed, and necessary naming genericized.

@@ -1,5 +1,5 @@
 ### Archetype build artifactds ###
-genarchetype.log
+gen*.log
 
 ### Maven ###
 target/
