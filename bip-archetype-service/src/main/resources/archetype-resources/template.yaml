@@ -1,7 +1,10 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
 apiVersion: template.openshift.io/v1
 kind: Template
 metadata:
-  name: bip-origin-template
+  name: bip-${artifactNameLowerCase}-template
 parameters:
   - name: APP_NAME
     displayName: Application Name
@@ -45,15 +48,15 @@ objects:
     kind: DeploymentConfig
     metadata:
       labels:
-        app: ${APP_NAME}
-        branch: ${BRANCH}
-      name: ${APP_NAME}-${BRANCH}
+        app: ${symbol_dollar}{APP_NAME}
+        branch: ${symbol_dollar}{BRANCH}
+      name: ${symbol_dollar}{APP_NAME}-${symbol_dollar}{BRANCH}
     spec:
-      replicas: ${{REPLICA_COUNT}}
+      replicas: ${symbol_dollar}{{REPLICA_COUNT}}
       selector:
-        app: ${APP_NAME}
-        deploymentconfig: ${APP_NAME}-${BRANCH}
-        branch: ${BRANCH}
+        app: ${symbol_dollar}{APP_NAME}
+        deploymentconfig: ${symbol_dollar}{APP_NAME}-${symbol_dollar}{BRANCH}
+        branch: ${symbol_dollar}{BRANCH}
       triggers:
         - type: "ConfigChange"
         - type: "ImageChange"
@@ -61,10 +64,10 @@ objects:
             automatic: true
             from:
               kind: "ImageStreamTag"
-              name: ${IMAGE}:${IMAGE_TAG}
-              namespace: ${PROJECT}
+              name: ${symbol_dollar}{IMAGE}:${symbol_dollar}{IMAGE_TAG}
+              namespace: ${symbol_dollar}{PROJECT}
             containerNames:
-              - ${APP_NAME}
+              - ${symbol_dollar}{APP_NAME}
       strategy:
         resources: {}
         rollingParams:
@@ -78,14 +81,14 @@ objects:
         metadata:
           annotations: null
           labels:
-            app: ${APP_NAME}
-            deploymentconfig: ${APP_NAME}-${BRANCH}
-            branch: ${BRANCH}
+            app: ${symbol_dollar}{APP_NAME}
+            deploymentconfig: ${symbol_dollar}{APP_NAME}-${symbol_dollar}{BRANCH}
+            branch: ${symbol_dollar}{BRANCH}
         spec:
           containers:
-            - image: ${REPOSITORY}/${PROJECT}/${IMAGE}:${IMAGE_TAG}
+            - image: ${symbol_dollar}{REPOSITORY}/${symbol_dollar}{PROJECT}/${symbol_dollar}{IMAGE}:${symbol_dollar}{IMAGE_TAG}
               imagePullPolicy: IfNotPresent
-              name: ${APP_NAME}
+              name: ${symbol_dollar}{APP_NAME}
               ports:
                 - containerPort: 8080
                   protocol: TCP
@@ -98,12 +101,12 @@ objects:
                 - name: spring.cloud.consul.discovery.enabled
                   valueFrom:
                     configMapKeyRef:
-                      name: ${IMAGE}-${BRANCH}-config
+                      name: ${symbol_dollar}{IMAGE}-${symbol_dollar}{BRANCH}-config
                       key: spring.cloud.consul.discovery.enabled
                 - name: spring.cloud.consul.discovery.register
                   valueFrom:
                     configMapKeyRef:
-                      name: ${IMAGE}-${BRANCH}-config
+                      name: ${symbol_dollar}{IMAGE}-${symbol_dollar}{BRANCH}-config
                       key: spring.cloud.consul.discovery.register
                 - name: spring.cloud.consul.host
                   valueFrom:
@@ -133,17 +136,17 @@ objects:
                 - name: spring.cloud.vault.enabled
                   valueFrom:
                     configMapKeyRef:
-                      name: ${IMAGE}-${BRANCH}-config
+                      name: ${symbol_dollar}{IMAGE}-${symbol_dollar}{BRANCH}-config
                       key: spring.cloud.vault.enabled
                 - name: spring.cloud.vault.authentication
                   valueFrom:
                     configMapKeyRef:
-                      name: ${IMAGE}-${BRANCH}-config
+                      name: ${symbol_dollar}{IMAGE}-${symbol_dollar}{BRANCH}-config
                       key: spring.cloud.vault.authentication
                 - name: spring.cloud.vault.kubernetes.service-account-token-file
                   valueFrom:
                     configMapKeyRef:
-                      name: ${IMAGE}-${BRANCH}-config
+                      name: ${symbol_dollar}{IMAGE}-${symbol_dollar}{BRANCH}-config
                       key: spring.cloud.vault.kubernetes.service-account-token-file
                 - name: spring.cloud.vault.host
                   valueFrom:
@@ -170,12 +173,12 @@ objects:
                 - name: spring.cloud.vault.kv.application-name
                   valueFrom:
                     configMapKeyRef:
-                      name: ${IMAGE}-${BRANCH}-config
+                      name: ${symbol_dollar}{IMAGE}-${symbol_dollar}{BRANCH}-config
                       key: spring.cloud.vault.kv.application-name
                 - name: spring.cloud.consul.config.enabled
                   valueFrom:
                     configMapKeyRef:
-                      name: ${IMAGE}-${BRANCH}-config
+                      name: ${symbol_dollar}{IMAGE}-${symbol_dollar}{BRANCH}-config
                       key: spring.cloud.consul.config.enabled
                 - name: spring.cloud.consul.config.acl-token
                   valueFrom:
@@ -185,12 +188,12 @@ objects:
                 - name: spring.cloud.consul.config.failFast
                   valueFrom:
                     configMapKeyRef:
-                      name: ${IMAGE}-${BRANCH}-config
+                      name: ${symbol_dollar}{IMAGE}-${symbol_dollar}{BRANCH}-config
                       key: spring.cloud.consul.config.failFast
                 - name: spring.profiles.active
                   valueFrom:
                     configMapKeyRef:
-                      name: ${IMAGE}-${BRANCH}-config
+                      name: ${symbol_dollar}{IMAGE}-${symbol_dollar}{BRANCH}-config
                       key: spring.profiles.active
               volumeMounts:
                 - name: va-cacerts
@@ -212,37 +215,37 @@ objects:
     kind: Service
     metadata:
       labels:
-        app: ${APP_NAME}
-        branch: ${BRANCH}
-      name: ${APP_NAME}-${BRANCH}
+        app: ${symbol_dollar}{APP_NAME}
+        branch: ${symbol_dollar}{BRANCH}
+      name: ${symbol_dollar}{APP_NAME}-${symbol_dollar}{BRANCH}
     spec:
       ports:
-        - name: ${APP_NAME}
-          port: ${{PORT}}
+        - name: ${symbol_dollar}{APP_NAME}
+          port: ${symbol_dollar}{{PORT}}
           protocol: TCP
           targetPort: 8080
       selector:
-        app: ${APP_NAME}
-        deploymentconfig: ${APP_NAME}-${BRANCH}
+        app: ${symbol_dollar}{APP_NAME}
+        deploymentconfig: ${symbol_dollar}{APP_NAME}-${symbol_dollar}{BRANCH}
       sessionAffinity: None
       type: ClusterIP
 
   - apiVersion: v1
     kind: Route
     metadata:
-      name: ${APP_NAME}-${BRANCH}
+      name: ${symbol_dollar}{APP_NAME}-${symbol_dollar}{BRANCH}
     spec:
       to:
         kind: Service
-        name: ${APP_NAME}-${BRANCH}
+        name: ${symbol_dollar}{APP_NAME}-${symbol_dollar}{BRANCH}
         
   - apiVersion: v1
     kind: ConfigMap
     metadata:
-      name: ${IMAGE}-${BRANCH}-config
+      name: ${symbol_dollar}{IMAGE}-${symbol_dollar}{BRANCH}-config
       labels:
-        app: ${APP_NAME}
-        branch: ${BRANCH}
+        app: ${symbol_dollar}{APP_NAME}
+        branch: ${symbol_dollar}{BRANCH}
     data:
       spring.cloud.consul.config.enabled: "true"
       spring.cloud.consul.config.failFast: "true"
@@ -252,6 +255,6 @@ objects:
       spring.cloud.vault.consul.enabled: "true"
       spring.cloud.vault.authentication: "KUBERNETES"
       spring.cloud.vault.kubernetes.service-account-token-file: "/var/run/secrets/kubernetes.io/serviceaccount/token"
-      spring.cloud.vault.kv.application-name: "blue/bip-origin"
+      spring.cloud.vault.kv.application-name: "blue/bip-${artifactNameLowerCase}"
       spring.profiles.active: "dev"
  

@@ -1,13 +1,16 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
 {{- if .Values.ingress.enabled -}}
-{{- $fullName := include "bip-origin.fullname" . -}}
-{{- $ingressPath := .Values.ingress.path -}}
+{{- ${symbol_dollar}fullName := include "bip-${artifactNameLowerCase}.fullname" . -}}
+{{- ${symbol_dollar}ingressPath := .Values.ingress.path -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ $fullName }}
+  name: {{ ${symbol_dollar}fullName }}
   labels:
-    app: {{ template "bip-origin.name" . }}
-    chart: {{ template "bip-origin.chart" . }}
+    app: {{ template "bip-${artifactNameLowerCase}.name" . }}
+    chart: {{ template "bip-${artifactNameLowerCase}.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 {{- with .Values.ingress.annotations }}
@@ -30,9 +33,9 @@ spec:
     - host: {{ . }}
       http:
         paths:
-          - path: {{ $ingressPath }}
+          - path: {{ ${symbol_dollar}ingressPath }}
             backend:
-              serviceName: {{ $fullName }}
+              serviceName: {{ ${symbol_dollar}fullName }}
               servicePort: http
   {{- end }}
 {{- end }}

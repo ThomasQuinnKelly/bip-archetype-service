@@ -1,3 +1,6 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
 {
   "__requires": [
     {
@@ -41,7 +44,7 @@
       {
         "datasource": "Prometheus",
         "enable": true,
-        "expr": "resets(process_uptime_seconds{service=\"$application\", instance=\"$instance\"}[1m]) > 0",
+        "expr": "resets(process_uptime_seconds{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"}[1m]) > 0",
         "iconColor": "rgba(255, 96, 96, 1)",
         "name": "Restart Detection",
         "showIn": 0,
@@ -125,7 +128,7 @@
           "tableColumn": "",
           "targets": [
             {
-              "expr": "process_uptime_seconds{service=\"$application\", instance=\"$instance\"}",
+              "expr": "process_uptime_seconds{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"}",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "",
@@ -208,7 +211,7 @@
           "tableColumn": "",
           "targets": [
             {
-              "expr": "process_start_time_seconds{service=\"$application\", instance=\"$instance\"}*1000",
+              "expr": "process_start_time_seconds{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"}*1000",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "",
@@ -290,7 +293,7 @@
           "tableColumn": "",
           "targets": [
             {
-              "expr": "sum(jvm_memory_used_bytes{service=\"$application\", instance=\"$instance\", area=\"heap\"})*100/sum(jvm_memory_max_bytes{service=\"$application\",instance=\"$instance\", area=\"heap\"})",
+              "expr": "sum(jvm_memory_used_bytes{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}", area=${symbol_escape}"heap${symbol_escape}"})*100/sum(jvm_memory_max_bytes{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}",instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}", area=${symbol_escape}"heap${symbol_escape}"})",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "",
@@ -375,7 +378,7 @@
           "tableColumn": "",
           "targets": [
             {
-              "expr": "sum(jvm_memory_used_bytes{service=\"$application\", instance=\"$instance\", area=\"nonheap\"})*100/sum(jvm_memory_max_bytes{service=\"$application\",instance=\"$instance\", area=\"nonheap\"})",
+              "expr": "sum(jvm_memory_used_bytes{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}", area=${symbol_escape}"nonheap${symbol_escape}"})*100/sum(jvm_memory_max_bytes{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}",instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}", area=${symbol_escape}"nonheap${symbol_escape}"})",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "",
@@ -445,7 +448,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(http_server_requests_seconds_count{service=\"$application\", instance=\"$instance\"}[1m]))",
+              "expr": "sum(rate(http_server_requests_seconds_count{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"}[1m]))",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "HTTP",
@@ -491,8 +494,8 @@
         },
         {
           "aliasColors": {
-            "HTTP": "#890f02",
-            "HTTP - 5xx": "#bf1b00"
+            "HTTP": "${symbol_pound}890f02",
+            "HTTP - 5xx": "${symbol_pound}bf1b00"
           },
           "bars": false,
           "dashLength": 10,
@@ -524,7 +527,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(http_server_requests_seconds_count{service=\"$application\", instance=\"$instance\", status=~\"5..\"}[1m]))",
+              "expr": "sum(rate(http_server_requests_seconds_count{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}", status=~${symbol_escape}"5..${symbol_escape}"}[1m]))",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "HTTP - 5xx",
@@ -600,7 +603,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(http_server_requests_seconds_sum{service=\"$application\", instance=\"$instance\", status!~\"5..\"}[1m]))/sum(rate(http_server_requests_seconds_count{service=\"$application\", instance=\"$instance\", status!~\"5..\"}[1m]))",
+              "expr": "sum(rate(http_server_requests_seconds_sum{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}", status!~${symbol_escape}"5..${symbol_escape}"}[1m]))/sum(rate(http_server_requests_seconds_count{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}", status!~${symbol_escape}"5..${symbol_escape}"}[1m]))",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 1,
@@ -608,7 +611,7 @@
               "refId": "A"
             },
             {
-              "expr": "max(http_server_requests_seconds_max{service=\"$application\", instance=\"$instance\", status!~\"5..\"})",
+              "expr": "max(http_server_requests_seconds_max{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}", status!~${symbol_escape}"5..${symbol_escape}"})",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 1,
@@ -686,7 +689,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "tomcat_threads_busy{service=\"$application\", instance=\"$instance\"} or tomcat_threads_busy_threads{service=\"$application\", instance=\"$instance\"}",
+              "expr": "tomcat_threads_busy{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"} or tomcat_threads_busy_threads{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"}",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 2,
@@ -694,21 +697,21 @@
               "refId": "A"
             },
             {
-              "expr": "tomcat_threads_current{service=\"$application\", instance=\"$instance\"} or tomcat_threads_current_threads{service=\"$application\", instance=\"$instance\"}",
+              "expr": "tomcat_threads_current{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"} or tomcat_threads_current_threads{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"}",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "TOMCAT - CUR",
               "refId": "B"
             },
             {
-              "expr": "tomcat_threads_config_max{service=\"$application\", instance=\"$instance\"} or tomcat_threads_config_max_threads{service=\"$application\", instance=\"$instance\"}",
+              "expr": "tomcat_threads_config_max{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"} or tomcat_threads_config_max_threads{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"}",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "TOMCAT - MAX",
               "refId": "C"
             },
             {
-              "expr": "jetty_threads_busy{service=\"$application\", instance=\"$instance\"}",
+              "expr": "jetty_threads_busy{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"}",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 2,
@@ -716,14 +719,14 @@
               "refId": "D"
             },
             {
-              "expr": "jetty_threads_current{service=\"$application\", instance=\"$instance\"}",
+              "expr": "jetty_threads_current{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"}",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "JETTY - CUR",
               "refId": "E"
             },
             {
-              "expr": "jetty_threads_config_max{service=\"$application\", instance=\"$instance\"}",
+              "expr": "jetty_threads_config_max{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"}",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "JETTY - MAX",
@@ -820,7 +823,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(jvm_memory_used_bytes{service=\"$application\", instance=\"$instance\", area=\"heap\"})",
+              "expr": "sum(jvm_memory_used_bytes{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}", area=${symbol_escape}"heap${symbol_escape}"})",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "used",
@@ -829,7 +832,7 @@
               "step": 2400
             },
             {
-              "expr": "sum(jvm_memory_committed_bytes{service=\"$application\", instance=\"$instance\", area=\"heap\"})",
+              "expr": "sum(jvm_memory_committed_bytes{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}", area=${symbol_escape}"heap${symbol_escape}"})",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "committed",
@@ -837,7 +840,7 @@
               "step": 2400
             },
             {
-              "expr": "sum(jvm_memory_max_bytes{service=\"$application\", instance=\"$instance\", area=\"heap\"})",
+              "expr": "sum(jvm_memory_max_bytes{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}", area=${symbol_escape}"heap${symbol_escape}"})",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "max",
@@ -930,7 +933,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(jvm_memory_used_bytes{service=\"$application\", instance=\"$instance\", area=\"nonheap\"})",
+              "expr": "sum(jvm_memory_used_bytes{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}", area=${symbol_escape}"nonheap${symbol_escape}"})",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 2,
@@ -940,7 +943,7 @@
               "step": 2400
             },
             {
-              "expr": "sum(jvm_memory_committed_bytes{service=\"$application\", instance=\"$instance\", area=\"nonheap\"})",
+              "expr": "sum(jvm_memory_committed_bytes{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}", area=${symbol_escape}"nonheap${symbol_escape}"})",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "committed",
@@ -948,7 +951,7 @@
               "step": 2400
             },
             {
-              "expr": "sum(jvm_memory_max_bytes{service=\"$application\", instance=\"$instance\", area=\"nonheap\"})",
+              "expr": "sum(jvm_memory_max_bytes{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}", area=${symbol_escape}"nonheap${symbol_escape}"})",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "max",
@@ -1042,7 +1045,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(jvm_memory_used_bytes{service=\"$application\", instance=\"$instance\"})",
+              "expr": "sum(jvm_memory_used_bytes{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"})",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "used",
@@ -1051,7 +1054,7 @@
               "step": 2400
             },
             {
-              "expr": "sum(jvm_memory_committed_bytes{service=\"$application\", instance=\"$instance\"})",
+              "expr": "sum(jvm_memory_committed_bytes{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"})",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "committed",
@@ -1059,7 +1062,7 @@
               "step": 2400
             },
             {
-              "expr": "sum(jvm_memory_max_bytes{service=\"$application\", instance=\"$instance\"})",
+              "expr": "sum(jvm_memory_max_bytes{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"})",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "max",
@@ -1067,7 +1070,7 @@
               "step": 2400
             },
             {
-              "expr": "process_memory_vss_bytes{service=\"$application\", instance=\"$instance\"}",
+              "expr": "process_memory_vss_bytes{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"}",
               "format": "time_series",
               "hide": true,
               "intervalFactor": 2,
@@ -1077,7 +1080,7 @@
               "step": 2400
             },
             {
-              "expr": "process_memory_rss_bytes{service=\"$application\", instance=\"$instance\"}",
+              "expr": "process_memory_rss_bytes{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"}",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "rss",
@@ -1085,7 +1088,7 @@
               "step": 2400
             },
             {
-              "expr": "process_memory_pss_bytes{service=\"$application\", instance=\"$instance\"}",
+              "expr": "process_memory_pss_bytes{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"}",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "pss",
@@ -1093,7 +1096,7 @@
               "step": 2400
             },
             {
-              "expr": "process_memory_swap_bytes{service=\"$application\", instance=\"$instance\"}",
+              "expr": "process_memory_swap_bytes{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"}",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "swap",
@@ -1101,7 +1104,7 @@
               "step": 2400
             },
             {
-              "expr": "process_memory_swappss_bytes{service=\"$application\", instance=\"$instance\"}",
+              "expr": "process_memory_swappss_bytes{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"}",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "swappss",
@@ -1109,7 +1112,7 @@
               "step": 2400
             },
             {
-              "expr": "process_memory_pss_bytes{service=\"$application\", instance=\"$instance\"} + process_memory_swap_bytes{service=\"$application\", instance=\"$instance\"}",
+              "expr": "process_memory_pss_bytes{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"} + process_memory_swap_bytes{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"}",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "phys (pss+swap)",
@@ -1202,7 +1205,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "(process_memory_pss_bytes{service=\"$application\", instance=\"$instance\"} + process_memory_swap_bytes{service=\"$application\", instance=\"$instance\"}  - on(application,instance) sum(jvm_memory_committed_bytes{service=\"$application\", instance=\"$instance\"})  by(application,instance)) >= 0",
+              "expr": "(process_memory_pss_bytes{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"} + process_memory_swap_bytes{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"}  - on(application,instance) sum(jvm_memory_committed_bytes{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"})  by(application,instance)) >= 0",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 2,
@@ -1309,7 +1312,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "system_cpu_usage{service=\"$application\", instance=\"$instance\"}",
+              "expr": "system_cpu_usage{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"}",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 1,
@@ -1319,7 +1322,7 @@
               "step": 2400
             },
             {
-              "expr": "process_cpu_usage{service=\"$application\", instance=\"$instance\"}",
+              "expr": "process_cpu_usage{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"}",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 1,
@@ -1327,7 +1330,7 @@
               "refId": "B"
             },
             {
-              "expr": "avg_over_time(process_cpu_usage{service=\"$application\", instance=\"$instance\"}[1h])",
+              "expr": "avg_over_time(process_cpu_usage{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"}[1h])",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 1,
@@ -1421,7 +1424,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "system_load_average_1m{service=\"$application\", instance=\"$instance\"}",
+              "expr": "system_load_average_1m{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"}",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "system-1m",
@@ -1436,7 +1439,7 @@
               "refId": "B"
             },
             {
-              "expr": "system_cpu_count{service=\"$application\", instance=\"$instance\"}",
+              "expr": "system_cpu_count{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"}",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "cpu",
@@ -1529,7 +1532,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "jvm_threads_live{service=\"$application\", instance=\"$instance\"} or jvm_threads_live_threads{service=\"$application\", instance=\"$instance\"}",
+              "expr": "jvm_threads_live{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"} or jvm_threads_live_threads{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"}",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "live",
@@ -1538,7 +1541,7 @@
               "step": 2400
             },
             {
-              "expr": "jvm_threads_daemon{service=\"$application\", instance=\"$instance\"} or jvm_threads_daemon_threads{service=\"$application\", instance=\"$instance\"}",
+              "expr": "jvm_threads_daemon{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"} or jvm_threads_daemon_threads{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"}",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "daemon",
@@ -1547,7 +1550,7 @@
               "step": 2400
             },
             {
-              "expr": "jvm_threads_peak{service=\"$application\", instance=\"$instance\"} or jvm_threads_peak_threads{service=\"$application\", instance=\"$instance\"}",
+              "expr": "jvm_threads_peak{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"} or jvm_threads_peak_threads{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"}",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "peak",
@@ -1555,7 +1558,7 @@
               "step": 2400
             },
             {
-              "expr": "process_threads{service=\"$application\", instance=\"$instance\"}",
+              "expr": "process_threads{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"}",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 2,
@@ -1610,12 +1613,12 @@
         },
         {
           "aliasColors": {
-            "blocked": "#bf1b00",
-            "new": "#fce2de",
-            "runnable": "#7eb26d",
-            "terminated": "#511749",
-            "timed-waiting": "#c15c17",
-            "waiting": "#eab839"
+            "blocked": "${symbol_pound}bf1b00",
+            "new": "${symbol_pound}fce2de",
+            "runnable": "${symbol_pound}7eb26d",
+            "terminated": "${symbol_pound}511749",
+            "timed-waiting": "${symbol_pound}c15c17",
+            "waiting": "${symbol_pound}eab839"
           },
           "bars": false,
           "dashLength": 10,
@@ -1649,7 +1652,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "jvm_threads_states_threads{service=\"$application\", instance=\"$instance\"}",
+              "expr": "jvm_threads_states_threads{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"}",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{state}}",
@@ -1694,11 +1697,11 @@
         },
         {
           "aliasColors": {
-            "debug": "#1F78C1",
-            "error": "#BF1B00",
-            "info": "#508642",
-            "trace": "#6ED0E0",
-            "warn": "#EAB839"
+            "debug": "${symbol_pound}1F78C1",
+            "error": "${symbol_pound}BF1B00",
+            "info": "${symbol_pound}508642",
+            "trace": "${symbol_pound}6ED0E0",
+            "warn": "${symbol_pound}EAB839"
           },
           "bars": false,
           "dashLength": 10,
@@ -1754,7 +1757,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "increase(logback_events_total{service=\"$application\", instance=\"$instance\"}[1m])",
+              "expr": "increase(logback_events_total{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"}[1m])",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 2,
@@ -1851,7 +1854,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "process_open_fds{service=\"$application\", instance=\"$instance\"}",
+              "expr": "process_open_fds{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"}",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 2,
@@ -1861,7 +1864,7 @@
               "step": 2400
             },
             {
-              "expr": "process_max_fds{service=\"$application\", instance=\"$instance\"}",
+              "expr": "process_max_fds{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"}",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 2,
@@ -1871,14 +1874,14 @@
               "step": 2400
             },
             {
-              "expr": "process_files_open{service=\"$application\", instance=\"$instance\"} or process_files_open_files{service=\"$application\", instance=\"$instance\"}",
+              "expr": "process_files_open{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"} or process_files_open_files{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"}",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "open",
               "refId": "C"
             },
             {
-              "expr": "process_files_max{service=\"$application\", instance=\"$instance\"} or process_files_max_files{service=\"$application\", instance=\"$instance\"}",
+              "expr": "process_files_max{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"} or process_files_max_files{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"}",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "max",
@@ -1987,7 +1990,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "jvm_memory_used_bytes{service=\"$application\", instance=\"$instance\", id=\"$jvm_memory_pool_heap\"}",
+              "expr": "jvm_memory_used_bytes{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}", id=${symbol_escape}"${symbol_dollar}jvm_memory_pool_heap${symbol_escape}"}",
               "format": "time_series",
               "hide": false,
               "interval": "",
@@ -1998,7 +2001,7 @@
               "step": 1800
             },
             {
-              "expr": "jvm_memory_committed_bytes{service=\"$application\", instance=\"$instance\", id=\"$jvm_memory_pool_heap\"}",
+              "expr": "jvm_memory_committed_bytes{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}", id=${symbol_escape}"${symbol_dollar}jvm_memory_pool_heap${symbol_escape}"}",
               "format": "time_series",
               "hide": false,
               "interval": "",
@@ -2009,7 +2012,7 @@
               "step": 1800
             },
             {
-              "expr": "jvm_memory_max_bytes{service=\"$application\", instance=\"$instance\", id=\"$jvm_memory_pool_heap\"}",
+              "expr": "jvm_memory_max_bytes{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}", id=${symbol_escape}"${symbol_dollar}jvm_memory_pool_heap${symbol_escape}"}",
               "format": "time_series",
               "hide": false,
               "interval": "",
@@ -2023,7 +2026,7 @@
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "$jvm_memory_pool_heap",
+          "title": "${symbol_dollar}jvm_memory_pool_heap",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -2121,7 +2124,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "jvm_memory_used_bytes{service=\"$application\", instance=\"$instance\", id=\"$jvm_memory_pool_nonheap\"}",
+              "expr": "jvm_memory_used_bytes{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}", id=${symbol_escape}"${symbol_dollar}jvm_memory_pool_nonheap${symbol_escape}"}",
               "format": "time_series",
               "hide": false,
               "interval": "",
@@ -2132,7 +2135,7 @@
               "step": 1800
             },
             {
-              "expr": "jvm_memory_committed_bytes{service=\"$application\", instance=\"$instance\", id=\"$jvm_memory_pool_nonheap\"}",
+              "expr": "jvm_memory_committed_bytes{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}", id=${symbol_escape}"${symbol_dollar}jvm_memory_pool_nonheap${symbol_escape}"}",
               "format": "time_series",
               "hide": false,
               "interval": "",
@@ -2143,7 +2146,7 @@
               "step": 1800
             },
             {
-              "expr": "jvm_memory_max_bytes{service=\"$application\", instance=\"$instance\", id=\"$jvm_memory_pool_nonheap\"}",
+              "expr": "jvm_memory_max_bytes{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}", id=${symbol_escape}"${symbol_dollar}jvm_memory_pool_nonheap${symbol_escape}"}",
               "format": "time_series",
               "hide": false,
               "interval": "",
@@ -2157,7 +2160,7 @@
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "$jvm_memory_pool_nonheap",
+          "title": "${symbol_dollar}jvm_memory_pool_nonheap",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -2241,7 +2244,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "rate(jvm_gc_pause_seconds_count{service=\"$application\", instance=\"$instance\"}[1m])",
+              "expr": "rate(jvm_gc_pause_seconds_count{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"}[1m])",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 2,
@@ -2317,7 +2320,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "rate(jvm_gc_pause_seconds_sum{service=\"$application\", instance=\"$instance\"}[1m])/rate(jvm_gc_pause_seconds_count{service=\"$application\", instance=\"$instance\"}[1m])",
+              "expr": "rate(jvm_gc_pause_seconds_sum{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"}[1m])/rate(jvm_gc_pause_seconds_count{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"}[1m])",
               "format": "time_series",
               "hide": false,
               "instant": false,
@@ -2326,7 +2329,7 @@
               "refId": "A"
             },
             {
-              "expr": "jvm_gc_pause_seconds_max{service=\"$application\", instance=\"$instance\"}",
+              "expr": "jvm_gc_pause_seconds_max{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"}",
               "format": "time_series",
               "hide": false,
               "instant": false,
@@ -2403,7 +2406,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "rate(jvm_gc_memory_allocated_bytes_total{service=\"$application\", instance=\"$instance\"}[1m])",
+              "expr": "rate(jvm_gc_memory_allocated_bytes_total{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"}[1m])",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 1,
@@ -2411,7 +2414,7 @@
               "refId": "A"
             },
             {
-              "expr": "rate(jvm_gc_memory_promoted_bytes_total{service=\"$application\", instance=\"$instance\"}[1m])",
+              "expr": "rate(jvm_gc_memory_promoted_bytes_total{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"}[1m])",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 1,
@@ -2509,7 +2512,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "jvm_classes_loaded{service=\"$application\", instance=\"$instance\"} or jvm_classes_loaded_classes{service=\"$application\", instance=\"$instance\"}",
+              "expr": "jvm_classes_loaded{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"} or jvm_classes_loaded_classes{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"}",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "loaded",
@@ -2603,7 +2606,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "delta(jvm_classes_loaded{service=\"$application\",instance=\"$instance\"}[5m]) or delta(jvm_classes_loaded_classes{service=\"$application\",instance=\"$instance\"}[5m])",
+              "expr": "delta(jvm_classes_loaded{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}",instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"}[5m]) or delta(jvm_classes_loaded_classes{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}",instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}"}[5m])",
               "format": "time_series",
               "hide": false,
               "interval": "",
@@ -2712,7 +2715,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "jvm_buffer_memory_used_bytes{service=\"$application\", instance=\"$instance\", id=\"direct\"}",
+              "expr": "jvm_buffer_memory_used_bytes{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}", id=${symbol_escape}"direct${symbol_escape}"}",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "used",
@@ -2721,7 +2724,7 @@
               "step": 2400
             },
             {
-              "expr": "jvm_buffer_total_capacity_bytes{service=\"$application\", instance=\"$instance\", id=\"direct\"}",
+              "expr": "jvm_buffer_total_capacity_bytes{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}", id=${symbol_escape}"direct${symbol_escape}"}",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "capacity",
@@ -2815,7 +2818,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "jvm_buffer_count{service=\"$application\", instance=\"$instance\", id=\"direct\"} or jvm_buffer_count_buffers{service=\"$application\", instance=\"$instance\", id=\"direct\"}",
+              "expr": "jvm_buffer_count{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}", id=${symbol_escape}"direct${symbol_escape}"} or jvm_buffer_count_buffers{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}", id=${symbol_escape}"direct${symbol_escape}"}",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "count",
@@ -2910,7 +2913,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "jvm_buffer_memory_used_bytes{service=\"$application\", instance=\"$instance\", id=\"mapped\"}",
+              "expr": "jvm_buffer_memory_used_bytes{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}", id=${symbol_escape}"mapped${symbol_escape}"}",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "used",
@@ -2919,7 +2922,7 @@
               "step": 2400
             },
             {
-              "expr": "jvm_buffer_total_capacity_bytes{service=\"$application\", instance=\"$instance\", id=\"mapped\"}",
+              "expr": "jvm_buffer_total_capacity_bytes{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}", id=${symbol_escape}"mapped${symbol_escape}"}",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "capacity",
@@ -3013,7 +3016,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "jvm_buffer_count{service=\"$application\", instance=\"$instance\", id=\"mapped\"} or jvm_buffer_count_buffers{service=\"$application\", instance=\"$instance\", id=\"mapped\"}",
+              "expr": "jvm_buffer_count{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}", id=${symbol_escape}"mapped${symbol_escape}"} or jvm_buffer_count_buffers{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}", id=${symbol_escape}"mapped${symbol_escape}"}",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "count",
@@ -3112,7 +3115,7 @@
         "multiFormat": "glob",
         "name": "instance",
         "options": [],
-        "query": "label_values(jvm_memory_used_bytes{service=\"$application\"}, instance)",
+        "query": "label_values(jvm_memory_used_bytes{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}"}, instance)",
         "refresh": 2,
         "regex": "",
         "sort": 0,
@@ -3134,7 +3137,7 @@
         "multiFormat": "glob",
         "name": "jvm_memory_pool_heap",
         "options": [],
-        "query": "label_values(jvm_memory_used_bytes{service=\"$application\", instance=\"$instance\", area=\"heap\"},id)",
+        "query": "label_values(jvm_memory_used_bytes{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}", area=${symbol_escape}"heap${symbol_escape}"},id)",
         "refresh": 1,
         "regex": "",
         "sort": 1,
@@ -3156,7 +3159,7 @@
         "multiFormat": "glob",
         "name": "jvm_memory_pool_nonheap",
         "options": [],
-        "query": "label_values(jvm_memory_used_bytes{service=\"$application\", instance=\"$instance\", area=\"nonheap\"},id)",
+        "query": "label_values(jvm_memory_used_bytes{service=${symbol_escape}"${symbol_dollar}application${symbol_escape}", instance=${symbol_escape}"${symbol_dollar}instance${symbol_escape}", area=${symbol_escape}"nonheap${symbol_escape}"},id)",
         "refresh": 1,
         "regex": "",
         "sort": 2,

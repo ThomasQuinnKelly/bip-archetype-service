@@ -1,3 +1,6 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
 Feature: PID based SampleInfo derived from the partner service.
 
   @sampleinfo @happypath
@@ -11,14 +14,14 @@ Feature: PID based SampleInfo derived from the partner service.
     @DEV
     Examples: 
       | Veteran           | tokenrequestfile               | ServiceURL          | RequestFile               | participantID |
-      | dev-janedoe       | dev/janedoetoken.request       | /api/v1/origin/pid | dev/janedoe.request       |       6666345 |
-      | dev-russellwatson | dev/russellwatsontoken.request | /api/v1/origin/pid | dev/russellwatson.request |      13364995 |
+      | dev-janedoe       | dev/janedoetoken.request       | /api/v1/${artifactNameLowerCase}/pid | dev/janedoe.request       |       6666345 |
+      | dev-russellwatson | dev/russellwatsontoken.request | /api/v1/${artifactNameLowerCase}/pid | dev/russellwatson.request |      13364995 |
 
     @VA
     Examples: 
       | Veteran          | tokenrequestfile              | ServiceURL          | RequestFile              | participantID |
-      | va-janedoe       | va/janedoetoken.request       | /api/v1/origin/pid | va/janedoe.request       |       6666345 |
-      | va-russellwatson | va/russellwatsontoken.request | /api/v1/origin/pid | va/russellwatson.request |      13364995 |
+      | va-janedoe       | va/janedoetoken.request       | /api/v1/${artifactNameLowerCase}/pid | va/janedoe.request       |       6666345 |
+      | va-russellwatson | va/russellwatsontoken.request | /api/v1/${artifactNameLowerCase}/pid | va/russellwatson.request |      13364995 |
 
   @sampleinfo
   Scenario Outline: PID based SampleInfo derived from the partner service for incorrect PID.
@@ -31,14 +34,14 @@ Feature: PID based SampleInfo derived from the partner service.
     @DEV
     Examples: 
       | Veteran           | tokenrequestfile               | ServiceURL          | RequestFile         | Text                                           |
-      | dev-janedoe       | dev/janedoetoken.request       | /api/v1/origin/pid | dev/invalid.request | Participant ID must be greater than zero. |
-      | dev-russellwatson | dev/russellwatsontoken.request | /api/v1/origin/pid | dev/null.request    | SampleInfoRequest.participantID cannot be null. |
+      | dev-janedoe       | dev/janedoetoken.request       | /api/v1/${artifactNameLowerCase}/pid | dev/invalid.request | Participant ID must be greater than zero. |
+      | dev-russellwatson | dev/russellwatsontoken.request | /api/v1/${artifactNameLowerCase}/pid | dev/null.request    | SampleInfoRequest.participantID cannot be null. |
 
     @VA
     Examples: 
       | Veteran          | tokenrequestfile              | ServiceURL          | RequestFile        | Text                                           |
-      | va-janedoe       | va/janedoetoken.request       | /api/v1/origin/pid | va/invalid.request | Participant ID must be greater than zero. |
-      | va-russellwatson | va/russellwatsontoken.request | /api/v1/origin/pid | va/null.request    | SampleInfoRequest.participantID cannot be null. |
+      | va-janedoe       | va/janedoetoken.request       | /api/v1/${artifactNameLowerCase}/pid | va/invalid.request | Participant ID must be greater than zero. |
+      | va-russellwatson | va/russellwatsontoken.request | /api/v1/${artifactNameLowerCase}/pid | va/null.request    | SampleInfoRequest.participantID cannot be null. |
 
   @sampleinfo
   Scenario Outline: PID based SampleInfo derived from the partner service for no record found.
@@ -51,9 +54,9 @@ Feature: PID based SampleInfo derived from the partner service.
     @DEV
     Examples: 
       | Veteran     | tokenrequestfile         | ServiceURL          | RequestFile               | Severity | Text                                                                                                                                                                                                                 |
-      | dev-janedoe | dev/janedoetoken.request | /api/v1/origin/pid | dev/norecordfound.request | WARN    | Could not read mock XML file test/mocks/sampleInfo.getSampleInfoByPtcpntId.6666355.xml using key sampleInfo.getSampleInfoByPtcpntId.6666355. Please make sure this response file exists in the main/resources directory. |
+      | dev-janedoe | dev/janedoetoken.request | /api/v1/${artifactNameLowerCase}/pid | dev/norecordfound.request | WARN    | Could not read mock XML file test/mocks/sampleInfo.getSampleInfoByPtcpntId.6666355.xml using key sampleInfo.getSampleInfoByPtcpntId.6666355. Please make sure this response file exists in the main/resources directory. |
 
     @VA
     Examples: 
       | Veteran    | tokenrequestfile        | ServiceURL          | RequestFile              | Severity | Text                                                                                                                                                                                                                 |
-      | va-janedoe | va/janedoetoken.request | /api/v1/origin/pid | va/norecordfound.request | WARN    | Could not read mock XML file test/mocks/sampleInfo.getSampleInfoByPtcpntId.6666355.xml using key sampleInfo.getSampleInfoByPtcpntId.6666355. Please make sure this response file exists in the main/resources directory. |
+      | va-janedoe | va/janedoetoken.request | /api/v1/${artifactNameLowerCase}/pid | va/norecordfound.request | WARN    | Could not read mock XML file test/mocks/sampleInfo.getSampleInfoByPtcpntId.6666355.xml using key sampleInfo.getSampleInfoByPtcpntId.6666355. Please make sure this response file exists in the main/resources directory. |

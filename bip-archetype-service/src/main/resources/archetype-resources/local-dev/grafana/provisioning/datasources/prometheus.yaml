@@ -1,8 +1,11 @@
-# # config file version
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+${symbol_pound} ${symbol_pound} config file version
 apiVersion: 1
 
- # list of datasources to insert/update depending
- # on what's available in the datbase
+ ${symbol_pound} list of datasources to insert/update depending
+ ${symbol_pound} on what's available in the datbase
 datasources:
  - name: Prometheus
    type: prometheus

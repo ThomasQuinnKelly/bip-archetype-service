@@ -1,3 +1,6 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
 scrape_configs:
   - job_name: 'app_metrics'
 
@@ -12,7 +15,7 @@ scrape_configs:
       action: drop
     - source_labels: ['__meta_consul_service']
       target_label: 'service'
-      replacement: '${1}'
+      replacement: '${symbol_dollar}{1}'
       action: replace
 
     scrape_interval: 10s

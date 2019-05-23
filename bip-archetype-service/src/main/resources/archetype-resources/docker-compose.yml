@@ -1,12 +1,15 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
 version: "3.3"
 
 services:
   
-  # Fill this out once the dev team has their app code into the repo
-  bip-origin:
-    image: bipdev/bip-origin
+  ${symbol_pound} Fill this out once the dev team has their app code into the repo
+  bip-${artifactNameLowerCase}:
+    image: bipdev/bip-${artifactNameLowerCase}
     build:
-      context: ./bip-origin
+      context: ./bip-${artifactNameLowerCase}
     environment:
       - spring.profiles.active=local-int
       - spring.cloud.consul.host=consul
@@ -45,7 +48,7 @@ services:
     ports:
       - "8200:8200"
     environment:
-      - VAULT_DEV_ROOT_TOKEN_ID=${VAULT_TOKEN:-vaultroot}
+      - VAULT_DEV_ROOT_TOKEN_ID=${symbol_dollar}{VAULT_TOKEN:-vaultroot}
     networks:
       - bip
 
@@ -55,7 +58,7 @@ services:
       context: ./local-dev/vault-config
     environment:
       - VAULT_ADDR=http://vault:8200
-      - VAULT_DEV_ROOT_TOKEN_ID=${VAULT_TOKEN:-vaultroot}
+      - VAULT_DEV_ROOT_TOKEN_ID=${symbol_dollar}{VAULT_TOKEN:-vaultroot}
       - CONSUL_HTTP_ADDR=http://consul:8500
       - CONSUL_HTTP_TOKEN=7652ba4c-0f6e-8e75-5724-5e083d72cfe4
     networks:

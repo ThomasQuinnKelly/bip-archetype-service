@@ -1,7 +1,10 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
 <?xml version="1.0" encoding="UTF-8"?>
 <jmeterTestPlan version="1.2" properties="5.0" jmeter="5.0 r1840935">
   <hashTree>
-    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Origin Service Performance Test Plan" enabled="true">
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="${artifactName} Service Performance Test Plan" enabled="true">
       <stringProp name="TestPlan.comments">This test plan includes all refrence service end points .</stringProp>
       <boolProp name="TestPlan.functional_mode">false</boolProp>
       <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
@@ -15,9 +18,9 @@
         <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
           <collectionProp name="Arguments.arguments"/>
         </elementProp>
-        <stringProp name="HTTPSampler.domain">${server}</stringProp>
-        <stringProp name="HTTPSampler.port">${port}</stringProp>
-        <stringProp name="HTTPSampler.protocol">${protocol}</stringProp>
+        <stringProp name="HTTPSampler.domain">${symbol_dollar}{server}</stringProp>
+        <stringProp name="HTTPSampler.port">${symbol_dollar}{port}</stringProp>
+        <stringProp name="HTTPSampler.protocol">${symbol_dollar}{protocol}</stringProp>
         <stringProp name="HTTPSampler.contentEncoding"></stringProp>
         <stringProp name="HTTPSampler.path"></stringProp>
         <stringProp name="HTTPSampler.concurrentPool">6</stringProp>
@@ -29,17 +32,17 @@
         <collectionProp name="Arguments.arguments">
           <elementProp name="protocol" elementType="Argument">
             <stringProp name="Argument.name">protocol</stringProp>
-            <stringProp name="Argument.value">${__P(protocol,http)}</stringProp>
+            <stringProp name="Argument.value">${symbol_dollar}{__P(protocol,http)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="server" elementType="Argument">
             <stringProp name="Argument.name">server</stringProp>
-            <stringProp name="Argument.value">${__P(domain,localhost)}</stringProp>
+            <stringProp name="Argument.value">${symbol_dollar}{__P(domain,localhost)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="port" elementType="Argument">
             <stringProp name="Argument.name">port</stringProp>
-            <stringProp name="Argument.value">${__P(port,8080)}</stringProp>
+            <stringProp name="Argument.value">${symbol_dollar}{__P(port,8080)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>
@@ -49,10 +52,10 @@
         <stringProp name="ThreadGroup.on_sample_error">stoptest</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
-          <stringProp name="LoopController.loops">${__P(BearerTokenCreate.threadGroup.loopCount,1)}</stringProp>
+          <stringProp name="LoopController.loops">${symbol_dollar}{__P(BearerTokenCreate.threadGroup.loopCount,1)}</stringProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">${__P(BearerTokenCreate.threadGroup.threads,5)}</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">${__P(BearerTokenCreate.threadGroup.rampUp,1)}</stringProp>
+        <stringProp name="ThreadGroup.num_threads">${symbol_dollar}{__P(BearerTokenCreate.threadGroup.threads,5)}</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">${symbol_dollar}{__P(BearerTokenCreate.threadGroup.rampUp,1)}</stringProp>
         <boolProp name="ThreadGroup.scheduler">false</boolProp>
         <stringProp name="ThreadGroup.duration"></stringProp>
         <stringProp name="ThreadGroup.delay"></stringProp>
@@ -64,7 +67,7 @@
             <collectionProp name="Arguments.arguments">
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">${__FileToString(${__property(${basedir})}/users/${__eval(${JSON_FILE})}.txt,,)}</stringProp>
+                <stringProp name="Argument.value">${symbol_dollar}{__FileToString(${symbol_dollar}{__property(${symbol_dollar}{basedir})}/users/${symbol_dollar}{__eval(${symbol_dollar}{JSON_FILE})}.txt,,)}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
             </collectionProp>
@@ -97,7 +100,7 @@
             <stringProp name="RegexExtractor.useHeaders">false</stringProp>
             <stringProp name="RegexExtractor.refname">BearerTokenCreate</stringProp>
             <stringProp name="RegexExtractor.regex">(.*)</stringProp>
-            <stringProp name="RegexExtractor.template">$1$</stringProp>
+            <stringProp name="RegexExtractor.template">${symbol_dollar}1${symbol_dollar}</stringProp>
             <stringProp name="RegexExtractor.default"></stringProp>
             <stringProp name="RegexExtractor.match_number">1</stringProp>
           </RegexExtractor>
@@ -150,7 +153,7 @@
 token = vars.get(&quot;BearerTokenCreate&quot;);
 
 // Open File(s)
-f = new FileWriter(&quot;${__property(${basedir})}/users/tokens.csv&quot;, true); 
+f = new FileWriter(&quot;${symbol_dollar}{__property(${symbol_dollar}{basedir})}/users/tokens.csv&quot;, true); 
 out = new BufferedWriter(f);
 out.write(token);
 out.write(System.getProperty(&quot;line.separator&quot;));
@@ -163,7 +166,7 @@ f.close();</stringProp>
             <stringProp name="TestPlan.comments">CSV File</stringProp>
             <stringProp name="delimiter"></stringProp>
             <stringProp name="fileEncoding"></stringProp>
-            <stringProp name="filename">${__property(${basedir})}/users/users.csv</stringProp>
+            <stringProp name="filename">${symbol_dollar}{__property(${symbol_dollar}{basedir})}/users/users.csv</stringProp>
             <boolProp name="ignoreFirstLine">false</boolProp>
             <boolProp name="quotedData">false</boolProp>
             <boolProp name="recycle">true</boolProp>
@@ -184,7 +187,7 @@ f.close();</stringProp>
           </elementProp>
           <elementProp name="basedir" elementType="Argument">
             <stringProp name="Argument.name">basedir</stringProp>
-            <stringProp name="Argument.value">${__BeanShell(import org.apache.jmeter.services.FileServer; FileServer.getFileServer().getBaseDir();)} </stringProp>
+            <stringProp name="Argument.value">${symbol_dollar}{__BeanShell(import org.apache.jmeter.services.FileServer; FileServer.getFileServer().getBaseDir();)} </stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>
@@ -194,13 +197,13 @@ f.close();</stringProp>
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
-          <stringProp name="LoopController.loops">${__P(Health.threadGroup.loopCount,10)}</stringProp>
+          <stringProp name="LoopController.loops">${symbol_dollar}{__P(Health.threadGroup.loopCount,10)}</stringProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">${__P(Health.threadGroup.threads,5)}</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">${__P(Health.threadGroup.rampUp,2)}</stringProp>
+        <stringProp name="ThreadGroup.num_threads">${symbol_dollar}{__P(Health.threadGroup.threads,5)}</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">${symbol_dollar}{__P(Health.threadGroup.rampUp,2)}</stringProp>
         <boolProp name="ThreadGroup.scheduler">true</boolProp>
-        <stringProp name="ThreadGroup.duration">${__P(Health.threadGroup.duration,200)}</stringProp>
-        <stringProp name="ThreadGroup.delay">${__P(Health.threadGroup.startUpDelay,5)}</stringProp>
+        <stringProp name="ThreadGroup.duration">${symbol_dollar}{__P(Health.threadGroup.duration,200)}</stringProp>
+        <stringProp name="ThreadGroup.delay">${symbol_dollar}{__P(Health.threadGroup.startUpDelay,5)}</stringProp>
         <stringProp name="TestPlan.comments">Health Status end point</stringProp>
       </ThreadGroup>
       <hashTree>
@@ -212,7 +215,7 @@ f.close();</stringProp>
           <stringProp name="HTTPSampler.port"></stringProp>
           <stringProp name="HTTPSampler.protocol"></stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">/api/v1/origin/health</stringProp>
+          <stringProp name="HTTPSampler.path">/api/v1/${artifactNameLowerCase}/health</stringProp>
           <stringProp name="HTTPSampler.method">GET</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -239,7 +242,7 @@ f.close();</stringProp>
             <collectionProp name="HeaderManager.headers">
               <elementProp name="" elementType="Header">
                 <stringProp name="Header.name">Authorization</stringProp>
-                <stringProp name="Header.value">${Prefix} ${__property(${BEARER_TOKEN})}  </stringProp>
+                <stringProp name="Header.value">${symbol_dollar}{Prefix} ${symbol_dollar}{__property(${symbol_dollar}{BEARER_TOKEN})}  </stringProp>
               </elementProp>
             </collectionProp>
           </HeaderManager>
@@ -297,7 +300,7 @@ f.close();</stringProp>
           <stringProp name="TestPlan.comments">CSV File</stringProp>
           <stringProp name="delimiter">,</stringProp>
           <stringProp name="fileEncoding"></stringProp>
-          <stringProp name="filename">${__property(${basedir})}/users/tokens.csv</stringProp>
+          <stringProp name="filename">${symbol_dollar}{__property(${symbol_dollar}{basedir})}/users/tokens.csv</stringProp>
           <boolProp name="ignoreFirstLine">false</boolProp>
           <boolProp name="quotedData">false</boolProp>
           <boolProp name="recycle">true</boolProp>
@@ -320,13 +323,13 @@ f.close();</stringProp>
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
-          <stringProp name="LoopController.loops">${__P(SampleInfo.threadGroup.loopCount,10)}</stringProp>
+          <stringProp name="LoopController.loops">${symbol_dollar}{__P(SampleInfo.threadGroup.loopCount,10)}</stringProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">${__P(SampleInfo.threadGroup.threads,5)}</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">${__P(SampleInfo.threadGroup.rampUp,2)}</stringProp>
+        <stringProp name="ThreadGroup.num_threads">${symbol_dollar}{__P(SampleInfo.threadGroup.threads,5)}</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">${symbol_dollar}{__P(SampleInfo.threadGroup.rampUp,2)}</stringProp>
         <boolProp name="ThreadGroup.scheduler">true</boolProp>
-        <stringProp name="ThreadGroup.duration">${__P(SampleInfo.threadGroup.duration,200)}</stringProp>
-        <stringProp name="ThreadGroup.delay">${__P(SampleInfo.threadGroup.startUpDelay,5)}</stringProp>
+        <stringProp name="ThreadGroup.duration">${symbol_dollar}{__P(SampleInfo.threadGroup.duration,200)}</stringProp>
+        <stringProp name="ThreadGroup.delay">${symbol_dollar}{__P(SampleInfo.threadGroup.startUpDelay,5)}</stringProp>
         <stringProp name="TestPlan.comments">PID based Sample Info derived from the partner service</stringProp>
       </ThreadGroup>
       <hashTree>
@@ -336,8 +339,8 @@ f.close();</stringProp>
             <collectionProp name="Arguments.arguments">
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">{&#xd;
-  &quot;participantID&quot;: 6666345&#xd;
+                <stringProp name="Argument.value">{&${symbol_pound}xd;
+  &quot;participantID&quot;: 6666345&${symbol_pound}xd;
 }</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
@@ -347,7 +350,7 @@ f.close();</stringProp>
           <stringProp name="HTTPSampler.port"></stringProp>
           <stringProp name="HTTPSampler.protocol"></stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">/api/v1/origin/pid</stringProp>
+          <stringProp name="HTTPSampler.path">/api/v1/${artifactNameLowerCase}/pid</stringProp>
           <stringProp name="HTTPSampler.method">POST</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -373,7 +376,7 @@ f.close();</stringProp>
             <collectionProp name="HeaderManager.headers">
               <elementProp name="" elementType="Header">
                 <stringProp name="Header.name">Authorization</stringProp>
-                <stringProp name="Header.value">${Prefix} ${__property(${BEARER_TOKEN})}  </stringProp>
+                <stringProp name="Header.value">${symbol_dollar}{Prefix} ${symbol_dollar}{__property(${symbol_dollar}{BEARER_TOKEN})}  </stringProp>
               </elementProp>
             </collectionProp>
           </HeaderManager>
@@ -431,7 +434,7 @@ f.close();</stringProp>
           <stringProp name="TestPlan.comments">CSV File</stringProp>
           <stringProp name="delimiter">,</stringProp>
           <stringProp name="fileEncoding"></stringProp>
-          <stringProp name="filename">${__property(${basedir})}/users/tokens.csv</stringProp>
+          <stringProp name="filename">${symbol_dollar}{__property(${symbol_dollar}{basedir})}/users/tokens.csv</stringProp>
           <boolProp name="ignoreFirstLine">false</boolProp>
           <boolProp name="quotedData">false</boolProp>
           <boolProp name="recycle">true</boolProp>
@@ -454,13 +457,13 @@ f.close();</stringProp>
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
-          <stringProp name="LoopController.loops">${__P(SampleInfoNoRecordFound.threadGroup.loopCount,10)}</stringProp>
+          <stringProp name="LoopController.loops">${symbol_dollar}{__P(SampleInfoNoRecordFound.threadGroup.loopCount,10)}</stringProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">${__P(SampleInfoNoRecordFound.threadGroup.threads,5)}</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">${__P(SampleInfoNoRecordFound.threadGroup.rampUp,2)}</stringProp>
+        <stringProp name="ThreadGroup.num_threads">${symbol_dollar}{__P(SampleInfoNoRecordFound.threadGroup.threads,5)}</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">${symbol_dollar}{__P(SampleInfoNoRecordFound.threadGroup.rampUp,2)}</stringProp>
         <boolProp name="ThreadGroup.scheduler">true</boolProp>
-        <stringProp name="ThreadGroup.duration">${__P(SampleInfoNoRecordFound.threadGroup.duration,200)}</stringProp>
-        <stringProp name="ThreadGroup.delay">${__P(SampleInfoNoRecordFound.threadGroup.startUpDelay,5)}</stringProp>
+        <stringProp name="ThreadGroup.duration">${symbol_dollar}{__P(SampleInfoNoRecordFound.threadGroup.duration,200)}</stringProp>
+        <stringProp name="ThreadGroup.delay">${symbol_dollar}{__P(SampleInfoNoRecordFound.threadGroup.startUpDelay,5)}</stringProp>
         <stringProp name="TestPlan.comments"> PID based Sample Info with No Record Found PID</stringProp>
       </ThreadGroup>
       <hashTree>
@@ -470,8 +473,8 @@ f.close();</stringProp>
             <collectionProp name="Arguments.arguments">
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">{&#xd;
-  &quot;participantID&quot;: 6666355&#xd;
+                <stringProp name="Argument.value">{&${symbol_pound}xd;
+  &quot;participantID&quot;: 6666355&${symbol_pound}xd;
 }</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
@@ -481,7 +484,7 @@ f.close();</stringProp>
           <stringProp name="HTTPSampler.port"></stringProp>
           <stringProp name="HTTPSampler.protocol"></stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">/api/v1/origin/pid</stringProp>
+          <stringProp name="HTTPSampler.path">/api/v1/${artifactNameLowerCase}/pid</stringProp>
           <stringProp name="HTTPSampler.method">POST</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -507,7 +510,7 @@ f.close();</stringProp>
             <collectionProp name="HeaderManager.headers">
               <elementProp name="" elementType="Header">
                 <stringProp name="Header.name">Authorization</stringProp>
-                <stringProp name="Header.value">${Prefix} ${__property(${BEARER_TOKEN})}  </stringProp>
+                <stringProp name="Header.value">${symbol_dollar}{Prefix} ${symbol_dollar}{__property(${symbol_dollar}{BEARER_TOKEN})}  </stringProp>
               </elementProp>
             </collectionProp>
           </HeaderManager>
@@ -565,7 +568,7 @@ f.close();</stringProp>
           <stringProp name="TestPlan.comments">CSV File</stringProp>
           <stringProp name="delimiter">,</stringProp>
           <stringProp name="fileEncoding"></stringProp>
-          <stringProp name="filename">${__property(${basedir})}/users/tokens.csv</stringProp>
+          <stringProp name="filename">${symbol_dollar}{__property(${symbol_dollar}{basedir})}/users/tokens.csv</stringProp>
           <boolProp name="ignoreFirstLine">false</boolProp>
           <boolProp name="quotedData">false</boolProp>
           <boolProp name="recycle">true</boolProp>
@@ -588,13 +591,13 @@ f.close();</stringProp>
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
-          <stringProp name="LoopController.loops">${__P(SampleInfoInvalidPid.threadGroup.loopCount,10)}</stringProp>
+          <stringProp name="LoopController.loops">${symbol_dollar}{__P(SampleInfoInvalidPid.threadGroup.loopCount,10)}</stringProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">${__P(SampleInfoInvalidPid.threadGroup.threads,5)}</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">${__P(SampleInfoInvalidPid.threadGroup.rampUp,2)}</stringProp>
+        <stringProp name="ThreadGroup.num_threads">${symbol_dollar}{__P(SampleInfoInvalidPid.threadGroup.threads,5)}</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">${symbol_dollar}{__P(SampleInfoInvalidPid.threadGroup.rampUp,2)}</stringProp>
         <boolProp name="ThreadGroup.scheduler">true</boolProp>
-        <stringProp name="ThreadGroup.duration">${__P(SampleInfoInvalidPid.threadGroup.duration,200)}</stringProp>
-        <stringProp name="ThreadGroup.delay">${__P(SampleInfoInvalidPid.threadGroup.startUpDelay,5)}</stringProp>
+        <stringProp name="ThreadGroup.duration">${symbol_dollar}{__P(SampleInfoInvalidPid.threadGroup.duration,200)}</stringProp>
+        <stringProp name="ThreadGroup.delay">${symbol_dollar}{__P(SampleInfoInvalidPid.threadGroup.startUpDelay,5)}</stringProp>
         <stringProp name="TestPlan.comments"> PID based Sample Info with Invalid PID</stringProp>
       </ThreadGroup>
       <hashTree>
@@ -604,8 +607,8 @@ f.close();</stringProp>
             <collectionProp name="Arguments.arguments">
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">{&#xd;
-  &quot;participantID&quot;: 0&#xd;
+                <stringProp name="Argument.value">{&${symbol_pound}xd;
+  &quot;participantID&quot;: 0&${symbol_pound}xd;
 }</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
@@ -615,7 +618,7 @@ f.close();</stringProp>
           <stringProp name="HTTPSampler.port"></stringProp>
           <stringProp name="HTTPSampler.protocol"></stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">/api/v1/origin/pid</stringProp>
+          <stringProp name="HTTPSampler.path">/api/v1/${artifactNameLowerCase}/pid</stringProp>
           <stringProp name="HTTPSampler.method">POST</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -641,7 +644,7 @@ f.close();</stringProp>
             <collectionProp name="HeaderManager.headers">
               <elementProp name="" elementType="Header">
                 <stringProp name="Header.name">Authorization</stringProp>
-                <stringProp name="Header.value">${Prefix} ${__property(${BEARER_TOKEN})}  </stringProp>
+                <stringProp name="Header.value">${symbol_dollar}{Prefix} ${symbol_dollar}{__property(${symbol_dollar}{BEARER_TOKEN})}  </stringProp>
               </elementProp>
             </collectionProp>
           </HeaderManager>
@@ -699,7 +702,7 @@ f.close();</stringProp>
           <stringProp name="TestPlan.comments">CSV File</stringProp>
           <stringProp name="delimiter">,</stringProp>
           <stringProp name="fileEncoding"></stringProp>
-          <stringProp name="filename">${__property(${basedir})}/users/tokens.csv</stringProp>
+          <stringProp name="filename">${symbol_dollar}{__property(${symbol_dollar}{basedir})}/users/tokens.csv</stringProp>
           <boolProp name="ignoreFirstLine">false</boolProp>
           <boolProp name="quotedData">false</boolProp>
           <boolProp name="recycle">true</boolProp>
@@ -722,13 +725,13 @@ f.close();</stringProp>
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
-          <stringProp name="LoopController.loops">${__P(SampleInfoNullPid.threadGroup.loopCount,10)}</stringProp>
+          <stringProp name="LoopController.loops">${symbol_dollar}{__P(SampleInfoNullPid.threadGroup.loopCount,10)}</stringProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">${__P(SampleInfoNullPid.threadGroup.threads,5)}</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">${__P(SampleInfoNullPid.threadGroup.rampUp,2)}</stringProp>
+        <stringProp name="ThreadGroup.num_threads">${symbol_dollar}{__P(SampleInfoNullPid.threadGroup.threads,5)}</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">${symbol_dollar}{__P(SampleInfoNullPid.threadGroup.rampUp,2)}</stringProp>
         <boolProp name="ThreadGroup.scheduler">true</boolProp>
-        <stringProp name="ThreadGroup.duration">${__P(SampleInfoNullPid.threadGroup.duration,200)}</stringProp>
-        <stringProp name="ThreadGroup.delay">${__P(SampleInfoNullPid.threadGroup.startUpDelay,5)}</stringProp>
+        <stringProp name="ThreadGroup.duration">${symbol_dollar}{__P(SampleInfoNullPid.threadGroup.duration,200)}</stringProp>
+        <stringProp name="ThreadGroup.delay">${symbol_dollar}{__P(SampleInfoNullPid.threadGroup.startUpDelay,5)}</stringProp>
         <stringProp name="TestPlan.comments">PID based Sample Info with null PID</stringProp>
       </ThreadGroup>
       <hashTree>
@@ -738,8 +741,8 @@ f.close();</stringProp>
             <collectionProp name="Arguments.arguments">
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">{&#xd;
-  &quot;participantID&quot;: &quot;&quot;&#xd;
+                <stringProp name="Argument.value">{&${symbol_pound}xd;
+  &quot;participantID&quot;: &quot;&quot;&${symbol_pound}xd;
 }</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
@@ -749,7 +752,7 @@ f.close();</stringProp>
           <stringProp name="HTTPSampler.port"></stringProp>
           <stringProp name="HTTPSampler.protocol"></stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">/api/v1/origin/pid</stringProp>
+          <stringProp name="HTTPSampler.path">/api/v1/${artifactNameLowerCase}/pid</stringProp>
           <stringProp name="HTTPSampler.method">POST</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -775,7 +778,7 @@ f.close();</stringProp>
             <collectionProp name="HeaderManager.headers">
               <elementProp name="" elementType="Header">
                 <stringProp name="Header.name">Authorization</stringProp>
-                <stringProp name="Header.value">${Prefix} ${__property(${BEARER_TOKEN})}  </stringProp>
+                <stringProp name="Header.value">${symbol_dollar}{Prefix} ${symbol_dollar}{__property(${symbol_dollar}{BEARER_TOKEN})}  </stringProp>
               </elementProp>
             </collectionProp>
           </HeaderManager>
@@ -833,7 +836,7 @@ f.close();</stringProp>
           <stringProp name="TestPlan.comments">CSV File</stringProp>
           <stringProp name="delimiter">,</stringProp>
           <stringProp name="fileEncoding"></stringProp>
-          <stringProp name="filename">${__property(${basedir})}/users/tokens.csv</stringProp>
+          <stringProp name="filename">${symbol_dollar}{__property(${symbol_dollar}{basedir})}/users/tokens.csv</stringProp>
           <boolProp name="ignoreFirstLine">false</boolProp>
           <boolProp name="quotedData">false</boolProp>
           <boolProp name="recycle">true</boolProp>
@@ -867,7 +870,7 @@ f.close();</stringProp>
       </PostThreadGroup>
       <hashTree>
         <BeanShellSampler guiclass="BeanShellSamplerGui" testclass="BeanShellSampler" testname="Script To Delete Token File" enabled="true">
-          <stringProp name="BeanShellSampler.query">new File(&quot;${__property(${basedir})}/users/tokens.csv&quot;).delete();</stringProp>
+          <stringProp name="BeanShellSampler.query">new File(&quot;${symbol_dollar}{__property(${symbol_dollar}{basedir})}/users/tokens.csv&quot;).delete();</stringProp>
           <stringProp name="BeanShellSampler.filename"></stringProp>
           <stringProp name="BeanShellSampler.parameters"></stringProp>
           <boolProp name="BeanShellSampler.resetInterpreter">false</boolProp>

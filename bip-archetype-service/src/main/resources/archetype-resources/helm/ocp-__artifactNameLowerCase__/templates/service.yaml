@@ -1,10 +1,13 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "bip-origin.fullname" . }}
+  name: {{ template "bip-${artifactNameLowerCase}.fullname" . }}
   labels:
-    app: {{ template "bip-origin.name" . }}
-    chart: {{ template "bip-origin.chart" . }}
+    app: {{ template "bip-${artifactNameLowerCase}.name" . }}
+    chart: {{ template "bip-${artifactNameLowerCase}.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
@@ -15,5 +18,5 @@ spec:
       protocol: TCP
       name: http
   selector:
-    app: {{ template "bip-origin.name" . }}
+    app: {{ template "bip-${artifactNameLowerCase}.name" . }}
     release: {{ .Release.Name }}

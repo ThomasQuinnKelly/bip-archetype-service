@@ -1,3 +1,6 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
 {
   "__requires": [
     {
@@ -103,7 +106,7 @@
           },
           "targets": [
             {
-              "expr": "sum({__name__=~\"hystrix_circuit_breaker_open\",group=~\"$commandGroup\",key=~\"$commandName\"})== bool 0",
+              "expr": "sum({__name__=~${symbol_escape}"hystrix_circuit_breaker_open${symbol_escape}",group=~${symbol_escape}"${symbol_dollar}commandGroup${symbol_escape}",key=~${symbol_escape}"${symbol_dollar}commandName${symbol_escape}"})== bool 0",
               "hide": false,
               "interval": "",
               "intervalFactor": 1,
@@ -195,7 +198,7 @@
           },
           "targets": [
             {
-              "expr": "sum({__name__=~\".*_hystrix_command_error_percentage\",group=~\"$commandGroup\",key=~\"$commandName\",service=~\"$service\"})",
+              "expr": "sum({__name__=~${symbol_escape}".*_hystrix_command_error_percentage${symbol_escape}",group=~${symbol_escape}"${symbol_dollar}commandGroup${symbol_escape}",key=~${symbol_escape}"${symbol_dollar}commandName${symbol_escape}",service=~${symbol_escape}"${symbol_dollar}service${symbol_escape}"})",
               "hide": false,
               "interval": "",
               "intervalFactor": 1,
@@ -261,7 +264,7 @@
           ],
           "targets": [
             {
-              "expr": "{__name__=~\".*_hystrix_command_latency_total_mean\",group=~\"$commandGroup\",key=~\"$commandName\",service=~\"$service\"}",
+              "expr": "{__name__=~${symbol_escape}".*_hystrix_command_latency_total_mean${symbol_escape}",group=~${symbol_escape}"${symbol_dollar}commandGroup${symbol_escape}",key=~${symbol_escape}"${symbol_dollar}commandName${symbol_escape}",service=~${symbol_escape}"${symbol_dollar}service${symbol_escape}"}",
               "interval": "",
               "intervalFactor": 2,
               "legendFormat": "{{key}} ({{group}})",
@@ -314,7 +317,7 @@
           ],
           "targets": [
             {
-              "expr": "{__name__=~\".*_hystrix_command_latency_total_percentile_90\",command_group=~\"$commandGroup\",command_name=~\"$commandName\",job=~\"$service\"}",
+              "expr": "{__name__=~${symbol_escape}".*_hystrix_command_latency_total_percentile_90${symbol_escape}",command_group=~${symbol_escape}"${symbol_dollar}commandGroup${symbol_escape}",command_name=~${symbol_escape}"${symbol_dollar}commandName${symbol_escape}",job=~${symbol_escape}"${symbol_dollar}service${symbol_escape}"}",
               "interval": "",
               "intervalFactor": 1,
               "legendFormat": "{{command_name}} ({{command_group}})",
@@ -367,7 +370,7 @@
           ],
           "targets": [
             {
-              "expr": "{__name__=~\".*_hystrix_command_latency_total_percentile_99\",command_group=~\"$commandGroup\",command_name=~\"$commandName\",job=~\"$service\"}",
+              "expr": "{__name__=~${symbol_escape}".*_hystrix_command_latency_total_percentile_99${symbol_escape}",command_group=~${symbol_escape}"${symbol_dollar}commandGroup${symbol_escape}",command_name=~${symbol_escape}"${symbol_dollar}commandName${symbol_escape}",job=~${symbol_escape}"${symbol_dollar}service${symbol_escape}"}",
               "interval": "",
               "intervalFactor": 1,
               "legendFormat": "{{command_name}} ({{command_group}})",
@@ -420,7 +423,7 @@
           ],
           "targets": [
             {
-              "expr": "{__name__=~\".*_hystrix_command_latency_total_percentile_995\",command_group=~\"$commandGroup\",command_name=~\"$commandName\",job=~\"$service\"}",
+              "expr": "{__name__=~${symbol_escape}".*_hystrix_command_latency_total_percentile_995${symbol_escape}",command_group=~${symbol_escape}"${symbol_dollar}commandGroup${symbol_escape}",command_name=~${symbol_escape}"${symbol_dollar}commandName${symbol_escape}",job=~${symbol_escape}"${symbol_dollar}service${symbol_escape}"}",
               "interval": "",
               "intervalFactor": 1,
               "legendFormat": "{{command_name}} ({{command_group}})",
@@ -477,7 +480,7 @@
           "steppedLine": true,
           "targets": [
             {
-              "expr": "{__name__=~\"hystrix_circuit_breaker_open\",group=~\"$commandGroup\",key=~\"$commandName\",service=~\"$service\"}",
+              "expr": "{__name__=~${symbol_escape}"hystrix_circuit_breaker_open${symbol_escape}",group=~${symbol_escape}"${symbol_dollar}commandGroup${symbol_escape}",key=~${symbol_escape}"${symbol_dollar}commandName${symbol_escape}",service=~${symbol_escape}"${symbol_dollar}service${symbol_escape}"}",
               "interval": "",
               "intervalFactor": 1,
               "legendFormat": "{{key}} ({{group}})",
@@ -552,7 +555,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "{__name__=~\"hystrix_execution_total\",event=~\"failure\",group=~\"$commandGroup\",key=~\"$commandName\",service=~\"$service\"}",
+              "expr": "{__name__=~${symbol_escape}"hystrix_execution_total${symbol_escape}",event=~${symbol_escape}"failure${symbol_escape}",group=~${symbol_escape}"${symbol_dollar}commandGroup${symbol_escape}",key=~${symbol_escape}"${symbol_dollar}commandName${symbol_escape}",service=~${symbol_escape}"${symbol_dollar}service${symbol_escape}"}",
               "intervalFactor": 2,
               "legendFormat": "{{key}} ({{group}})",
               "metric": "ml_hystrix_command_count_exceptions_thrown",
@@ -626,7 +629,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "{__name__=~\"hystrix_execution_total\",event=~\"success\",group=~\"$commandGroup\",key=~\"$commandName\",service=~\"$service\"}",
+              "expr": "{__name__=~${symbol_escape}"hystrix_execution_total${symbol_escape}",event=~${symbol_escape}"success${symbol_escape}",group=~${symbol_escape}"${symbol_dollar}commandGroup${symbol_escape}",key=~${symbol_escape}"${symbol_dollar}commandName${symbol_escape}",service=~${symbol_escape}"${symbol_dollar}service${symbol_escape}"}",
               "intervalFactor": 2,
               "legendFormat": "{{key}} ({{group}})",
               "metric": "ml_hystrix_command_count_exceptions_thrown",
@@ -700,7 +703,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "{__name__=~\"hystrix_execution_total\",event=~\"timeout\",group=~\"$commandGroup\",key=~\"$commandName\",service=~\"$service\"}",
+              "expr": "{__name__=~${symbol_escape}"hystrix_execution_total${symbol_escape}",event=~${symbol_escape}"timeout${symbol_escape}",group=~${symbol_escape}"${symbol_dollar}commandGroup${symbol_escape}",key=~${symbol_escape}"${symbol_dollar}commandName${symbol_escape}",service=~${symbol_escape}"${symbol_dollar}service${symbol_escape}"}",
               "intervalFactor": 2,
               "legendFormat": "{{key}} ({{group}})",
               "metric": "ml_hystrix_command_count_exceptions_thrown",
@@ -787,9 +790,9 @@
         "multi": true,
         "name": "commandGroup",
         "options": [],
-        "query": "query_result({service=~\"$service\"})",
+        "query": "query_result({service=~${symbol_escape}"${symbol_dollar}service${symbol_escape}"})",
         "refresh": 1,
-        "regex": "/group=\"(.*)\",instance/",
+        "regex": "/group=${symbol_escape}"(.*)${symbol_escape}",instance/",
         "sort": 0,
         "tagValuesQuery": "",
         "tags": [],
@@ -807,9 +810,9 @@
         "multi": true,
         "name": "commandName",
         "options": [],
-        "query": "query_result({service=~\"$service\",group=~\"$commandGroup\"})",
+        "query": "query_result({service=~${symbol_escape}"${symbol_dollar}service${symbol_escape}",group=~${symbol_escape}"${symbol_dollar}commandGroup${symbol_escape}"})",
         "refresh": 1,
-        "regex": "/key=\"(.*)\",service/",
+        "regex": "/key=${symbol_escape}"(.*)${symbol_escape}",service/",
         "sort": 0,
         "tagValuesQuery": "",
         "tags": [],

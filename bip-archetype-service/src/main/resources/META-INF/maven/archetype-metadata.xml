@@ -15,9 +15,51 @@
   </requiredProperties>
   <fileSets>
     <fileSet filtered="true" encoding="UTF-8">
+      <directory>local-dev/vault-config</directory>
+      <includes>
+        <include>**/*.sh</include>
+        <include>**/*.md</include>
+      </includes>
+    </fileSet>
+    <fileSet filtered="true" encoding="UTF-8">
+      <directory>local-dev/grafana</directory>
+      <includes>
+        <include>**/*.json</include>
+        <include>**/*.yaml</include>
+      </includes>
+    </fileSet>
+    <fileSet filtered="true" encoding="UTF-8">
+      <directory>local-dev/prometheus</directory>
+      <includes>
+        <include>**/*.yml</include>
+      </includes>
+    </fileSet>
+    <fileSet filtered="true" encoding="UTF-8">
+      <directory>archive</directory>
+      <includes>
+        <include>**/*.md</include>
+      </includes>
+    </fileSet>
+    <fileSet filtered="true" encoding="UTF-8">
+      <directory>local-dev</directory>
+      <includes>
+        <include>**/*.md</include>
+      </includes>
+    </fileSet>
+    <fileSet filtered="true" encoding="UTF-8">
+      <directory>local-dev/consul</directory>
+      <includes>
+        <include>**/*.sh</include>
+        <include>**/*.md</include>
+        <include>**/*.json</include>
+      </includes>
+    </fileSet>
+    <fileSet filtered="true" encoding="UTF-8">
       <directory>helm/ocp-origin</directory>
       <includes>
         <include>**/*.txt</include>
+        <include>**/*.tpl</include>
+        <include>**/*.yaml</include>
       </includes>
     </fileSet>
     <fileSet encoding="UTF-8">
@@ -25,65 +67,48 @@
       <includes>
         <include>**/*.hcl</include>
         <include>**/*.</include>
-        <include>**/*.sh</include>
-        <include>**/*.md</include>
       </includes>
     </fileSet>
     <fileSet encoding="UTF-8">
       <directory>local-dev/grafana</directory>
       <includes>
         <include>**/*.</include>
-        <include>**/*.json</include>
-        <include>**/*.yaml</include>
-      </includes>
-    </fileSet>
-    <fileSet encoding="UTF-8">
-      <directory>local-dev/prometheus</directory>
-      <includes>
-        <include>**/*.yml</include>
       </includes>
     </fileSet>
     <fileSet encoding="UTF-8">
       <directory>archive</directory>
       <includes>
         <include>**/*.gitignore</include>
-        <include>**/*.md</include>
-      </includes>
-    </fileSet>
-    <fileSet encoding="UTF-8">
-      <directory>local-dev</directory>
-      <includes>
-        <include>**/*.md</include>
       </includes>
     </fileSet>
     <fileSet encoding="UTF-8">
       <directory>local-dev/consul</directory>
       <includes>
         <include>**/*.</include>
-        <include>**/*.sh</include>
-        <include>**/*.md</include>
-        <include>**/*.json</include>
       </includes>
     </fileSet>
     <fileSet encoding="UTF-8">
       <directory>helm/ocp-origin</directory>
       <includes>
-        <include>**/*.tpl</include>
         <include>**/*.helmignore</include>
-        <include>**/*.yaml</include>
       </includes>
     </fileSet>
-    <fileSet encoding="UTF-8">
+    <fileSet filtered="true" encoding="UTF-8">
       <directory></directory>
       <includes>
         <include>template.yaml</include>
         <include>start-all.sh</include>
         <include>README.md</include>
+        <include>docker-compose.yml</include>
+        <include>stop-all.sh</include>
+      </includes>
+    </fileSet>
+    <fileSet encoding="UTF-8">
+      <directory></directory>
+      <includes>
         <include>.gitignore</include>
         <include>.env</include>
         <include>Jenkinsfile</include>
-        <include>docker-compose.yml</include>
-        <include>stop-all.sh</include>
       </includes>
     </fileSet>
   </fileSets>
@@ -94,11 +119,6 @@
           <directory>src/main/java</directory>
           <includes>
             <include>**/*.java</include>
-          </includes>
-        </fileSet>
-        <fileSet packaged="true" encoding="UTF-8">
-          <directory>src/main/java</directory>
-          <includes>
             <include>**/*.md</include>
           </includes>
         </fileSet>
@@ -112,6 +132,7 @@
           <directory>src/main/resources</directory>
           <includes>
             <include>**/*.xml</include>
+            <include>**/*.yml</include>
             <include>**/*.properties</include>
           </includes>
         </fileSet>
@@ -119,7 +140,6 @@
           <directory>src/main/resources</directory>
           <includes>
             <include>**/*.jks</include>
-            <include>**/*.yml</include>
           </includes>
         </fileSet>
         <fileSet filtered="true" packaged="true" encoding="UTF-8">
@@ -134,11 +154,16 @@
             <include>**/*.jks</include>
           </includes>
         </fileSet>
+        <fileSet filtered="true" encoding="UTF-8">
+          <directory></directory>
+          <includes>
+            <include>README.md</include>
+          </includes>
+        </fileSet>
         <fileSet encoding="UTF-8">
           <directory></directory>
           <includes>
             <include>Dockerfile</include>
-            <include>README.md</include>
             <include>.gitignore</include>
           </includes>
         </fileSet>
@@ -153,23 +178,23 @@
           </includes>
         </fileSet>
         <fileSet filtered="true" encoding="UTF-8">
-          <directory>src/inttest/resources</directory>
-          <includes>
-            <include>**/*.xml</include>
-            <include>**/*.properties</include>
-          </includes>
-        </fileSet>
-        <fileSet encoding="UTF-8">
           <directory></directory>
           <includes>
             <include>**/*.md</include>
+          </includes>
+        </fileSet>
+        <fileSet filtered="true" encoding="UTF-8">
+          <directory>src/inttest/resources</directory>
+          <includes>
+            <include>**/*.feature</include>
+            <include>**/*.xml</include>
+            <include>**/*.properties</include>
           </includes>
         </fileSet>
         <fileSet encoding="UTF-8">
           <directory>src/inttest/resources</directory>
           <includes>
             <include>**/*.request</include>
-            <include>**/*.feature</include>
           </includes>
         </fileSet>
         <fileSet encoding="UTF-8">
@@ -186,16 +211,11 @@
           <directory>src/test/jmeter</directory>
           <includes>
             <include>**/*.txt</include>
-          </includes>
-        </fileSet>
-        <fileSet encoding="UTF-8">
-          <directory>src/test/jmeter</directory>
-          <includes>
             <include>**/*.jmx</include>
             <include>**/*.csv</include>
           </includes>
         </fileSet>
-        <fileSet encoding="UTF-8">
+        <fileSet filtered="true" encoding="UTF-8">
           <directory></directory>
           <includes>
             <include>README.md</include>

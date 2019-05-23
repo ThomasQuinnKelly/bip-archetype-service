@@ -1,22 +1,25 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: {{ template "bip-origin.fullname" . }}
+  name: {{ template "bip-${artifactNameLowerCase}.fullname" . }}
   labels:
-    app: {{ template "bip-origin.name" . }}
-    chart: {{ template "pib-origin.chart" . }}
+    app: {{ template "bip-${artifactNameLowerCase}.name" . }}
+    chart: {{ template "pib-${artifactNameLowerCase}.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "bip-origin.name" . }}
+      app: {{ template "bip-${artifactNameLowerCase}.name" . }}
       release: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "bip-origin.name" . }}
+        app: {{ template "bip-${artifactNameLowerCase}.name" . }}
         release: {{ .Release.Name }}
     spec:
       containers:

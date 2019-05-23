@@ -10,17 +10,30 @@ cwd="`pwd`"
 thisScript="$0"
 args="$@"
 
+# the maven version to give the generated archetype
 archetypeVersion="0.0.1-SNAPSHOT"
+# the maven groupId to give the generated archetype
 archetypeGroupId="gov.va.bip.archetype"
+# the project name / artifactId to give the generated archetype
 archetypeServiceName="bip-archetype-service"
+# the project name / artifactId of the origin project
 archetypeOriginName="bip-archetype-service-origin"
+# the name of the properties file to use for velocity replacements
 archetypeProperties="genarchetype.properties"
+# the package name from the Origin project that is to be replaced in the generated archetype
 archetypePackageName="gov.va.bip.origin"
-archetypeStatus=0
+# any file extensions that should be included in the velocity replacement processes
+archetypeFilteredExtensions="md,java,xml,properties,txt,yaml,yml,sh,json,tpl,jmx,csv,feature,Jenkinsfile,Dockerfile"
+# the target directory that the generated archetype is initially created in
 archetypeTargetDir="target/generated-sources/archetype"
-archetypeLog="$cwd/genarchetype.log"
 
+# the output log file name
+archetypeLog="$cwd/genarchetype.log"
+# used for the return status from programs executed by this script
+returnStatus=0
+# the initial value for the "skip origin build" command line argument
 skipOriginBuild=-1
+
 ## get argument options off of the command line        ##
 ## optional parameter: array of command-line arguments ##
 ## scope: private (internal calls only)                ##
@@ -137,16 +150,16 @@ function build_origin() {
 
 		echo "+>> Building archetype origin project" 2>&1 | tee -a $archetypeLog
 		# maven clean has proven unreliable in some scenarios, so making sure target is wiped
-		echo "rm -rf \$(find . -name 'target' -type d -maxdepth 4 | sed 's:\.\/::g')"
-		rm -rf $(find . -name 'target' -type d -maxdepth 4 | sed 's:\.\/::g')
+		echo "rm -rfv \$(find . -name 'target' -type d -maxdepth 4 | sed 's:\.\/::g')"
+		rm -rfv $(find . -name 'target' -type d -maxdepth 4 | sed 's:\.\/::g')
 		# now we get reliable maven target output
 		echo "mvn clean install" 2>&1 | tee -a $archetypeLog
 		mvn clean install -e -X 2>&1 | tee -a $archetypeLog
-		archetypeStatus="$?"
-		if [ "$archetypeStatus" -eq "0" ]; then
+		returnStatus="$?"
+		if [ "$returnStatus" -eq "0" ]; then
 			echo "[OK]" 2>&1 | tee -a $archetypeLog
 		else
-			exit_now $archetypeStatus "*** FAILURE: 'mvn clean install' failed."
+			exit_now $returnStatus "*** FAILURE: 'mvn clean install' failed."
 		fi
 	fi
 }
@@ -163,25 +176,31 @@ function create_archetype() {
 
 	if [ -d "$archetypeTargetDir" ]; then
 		echo "+>> Deleting existing $archetypeTargetDir directory" 2>&1 | tee -a $archetypeLog
-		echo "rm -rf $archetypeTargetDir" 2>&1 | tee -a $archetypeLog
+		echo "rm -rfv $archetypeTargetDir" 2>&1 | tee -a $archetypeLog
 		# tee does not play well with some bash commands, so just redirect output to the log
-		rm -rf "$archetypeTargetDir" 2>&1 >> $archetypeLog
-		archetypeStatus="$?"
-		if [ "$archetypeStatus" -eq "0" ]; then
+		rm -rfv "$archetypeTargetDir" 2>&1 >> $archetypeLog
+		returnStatus="$?"
+		if [ "$returnStatus" -eq "0" ]; then
 			echo "[OK]" 2>&1 | tee -a $archetypeLog
 		else
-			exit_now $archetypeStatus "*** FAILURE: could not delete $archetypeTargetDir."
+			exit_now $returnStatus "*** FAILURE: could not delete $archetypeTargetDir."
 		fi
 	fi
 
 	echo "+>> Creating the archetype in $archetypeTargetDir" 2>&1 | tee -a $archetypeLog
 	echo "mvn archetype:create-from-project -Darchetype.properties=../$archetypeProperties -DpackageName=$archetypePackageName" 2>&1 | tee -a $archetypeLog
-	mvn archetype:create-from-project -Darchetype.properties=../$archetypeProperties -DpackageName=$archetypePackageName -e -X 2>&1 | tee -a $archetypeLog
-	archetypeStatus="$?"
-	if [ "$archetypeStatus" -eq "0" ]; then
+
+	## NOTE: archetype.filteredExtentions is required to make create-from-project process non-java files.
+	mvn archetype:create-from-project \
+		-Darchetype.properties=../$archetypeProperties \
+		-Darchetype.filteredExtentions=$archetypeFilteredExtensions \
+		-DpackageName=$archetypePackageName \
+		-e -X 2>&1 | tee -a $archetypeLog
+	returnStatus="$?"
+	if [ "$returnStatus" -eq "0" ]; then
 		echo "[OK]" 2>&1 | tee -a $archetypeLog
 	else
-		exit_now $archetypeStatus "*** FAILURE: 'mvn archetype:create-from-project -Darchetype.properties=$archetypeProperties' failed."
+		exit_now $returnStatus "*** FAILURE: 'mvn archetype:create-from-project -Darchetype.properties=$archetypeProperties' failed."
 	fi
 }
 
@@ -238,55 +257,55 @@ function clean_archetype_files() {
 	# now also have to clean up after sed
 	if [ -f "$modFile-e" ]; then
 		echo "+>> Remove sed artifacts" 2>&1 | tee -a $archetypeLog
-		echo "rm -f $modFile-e" 2>&1 | tee -a $archetypeLog
+		echo "rm -fv $modFile-e" 2>&1 | tee -a $archetypeLog
 		# tee does not play well with some bash commands, so just redirect output to the log
-		rm -f "$modFile-e" >> $archetypeLog
+		rm -fv "$modFile-e" >> $archetypeLog
 	fi
 
 	echo "+>> Copy .gitignore file into the archetype" 2>&1 | tee -a $archetypeLog
-	echo "cp -f $cwd/$archetypeOriginName/archive/.gitignore $archetypeTargetDir/.gitignore" 2>&1 | tee -a $archetypeLog
+	echo "cp -fv $cwd/$archetypeOriginName/archive/.gitignore $archetypeTargetDir/.gitignore" 2>&1 | tee -a $archetypeLog
 	# tee does not play well with some bash commands, so just redirect output to the log
-	cp -f $cwd/$archetypeOriginName/archive/.gitignore $archetypeTargetDir/.gitignore 2>&1 >> $archetypeLog
-	archetypeStatus="$?"
-	if [ "$archetypeStatus" -eq "0" ]; then
+	cp -fv $cwd/$archetypeOriginName/archive/.gitignore $archetypeTargetDir/.gitignore 2>&1 >> $archetypeLog
+	returnStatus="$?"
+	if [ "$returnStatus" -eq "0" ]; then
 		echo "[OK]" 2>&1 | tee -a $archetypeLog
 	else
-		exit_now $archetypeStatus "*** FAILURE: could not copy $archetypeOriginName/archive/.gitignore to $archetypeTargetDir/.gitignore"
+		exit_now $returnStatus "*** FAILURE: could not copy $archetypeOriginName/archive/.gitignore to $archetypeTargetDir/.gitignore"
 	fi
 
 	echo "+>> Copy basic README.md for new projects" 2>&1 | tee -a $archetypeLog
-	echo "cp -f $cwd/$archetypeOriginName/archive/$archetypeServiceName-README.md $archetypeTargetDir/README.md" 2>&1 | tee -a $archetypeLog
+	echo "cp -fv $cwd/$archetypeOriginName/archive/$archetypeServiceName-README.md $archetypeTargetDir/README.md" 2>&1 | tee -a $archetypeLog
 	# tee does not play well with some bash commands, so just redirect output to the log
-	cp -f $cwd/$archetypeOriginName/archive/$archetypeServiceName-README.md $archetypeTargetDir/README.md 2>&1 >> $archetypeLog
-	archetypeStatus="$?"
-	if [ "$archetypeStatus" -eq "0" ]; then
+	cp -fv $cwd/$archetypeOriginName/archive/$archetypeServiceName-README.md $archetypeTargetDir/README.md 2>&1 >> $archetypeLog
+	returnStatus="$?"
+	if [ "$returnStatus" -eq "0" ]; then
 		echo "[OK]" 2>&1 | tee -a $archetypeLog
 	else
-		exit_now $archetypeStatus "*** FAILURE: could not copy $archetypeServiceName-README.md to $archetypeTargetDir/README.md"
+		exit_now $returnStatus "*** FAILURE: could not copy $archetypeServiceName-README.md to $archetypeTargetDir/README.md"
 	fi
 
 	echo "+>> Copy README.md for $archetypeServiceName project" 2>&1 | tee -a $archetypeLog
-	echo "cp -f $cwd/$archetypeOriginName/archive/$archetypeServiceName-project-README.md $cwd/$archetypeServiceName/README.md" 2>&1 | tee -a $archetypeLog
+	echo "cp -fv $cwd/$archetypeOriginName/archive/$archetypeServiceName-project-README.md $cwd/$archetypeServiceName/README.md" 2>&1 | tee -a $archetypeLog
 	# tee does not play well with some bash commands, so just redirect output to the log
-	cp -f $cwd/$archetypeOriginName/archive/$archetypeServiceName-project-README.md $cwd/$archetypeServiceName/README.md 2>&1 >> $archetypeLog
-	archetypeStatus="$?"
-	if [ "$archetypeStatus" -eq "0" ]; then
+	cp -fv $cwd/$archetypeOriginName/archive/$archetypeServiceName-project-README.md $cwd/$archetypeServiceName/README.md 2>&1 >> $archetypeLog
+	returnStatus="$?"
+	if [ "$returnStatus" -eq "0" ]; then
 		echo "[OK]" 2>&1 | tee -a $archetypeLog
 	else
-		exit_now $archetypeStatus "*** FAILURE: could not copy $cwd/$archetypeOriginName/archive/$archetypeServiceName-project-README.md to $cwd/$archetypeServiceName/README.md"
+		exit_now $returnStatus "*** FAILURE: could not copy $cwd/$archetypeOriginName/archive/$archetypeServiceName-project-README.md to $cwd/$archetypeServiceName/README.md"
 	fi
 
 	## Remove unnecessary files from the generated archetype ##
 
 	echo "+>> Remove the archive directory from the archetype" 2>&1 | tee -a $archetypeLog
-	echo "rm -rf $archetypeServiceName/archive" 2>&1 | tee -a $archetypeLog
+	echo "rm -rfv $archetypeTargetDir/src/main/resources/archetype-resources/archive" 2>&1 | tee -a $archetypeLog
 	# tee does not play well with some bash commands, so just redirect output to the log
-	rm -rf $archetypeServiceName/archive 2>&1 >> $archetypeLog
-	archetypeStatus="$?"
-	if [ "$archetypeStatus" -eq "0" ]; then
+	rm -rfv $archetypeTargetDir/src/main/resources/archetype-resources/archive 2>&1 >> $archetypeLog
+	returnStatus="$?"
+	if [ "$returnStatus" -eq "0" ]; then
 		echo "[OK]" 2>&1 | tee -a $archetypeLog
 	else
-		exit_now $archetypeStatus "*** FAILURE: could not delete $archetypeServiceName/archive/"
+		exit_now $returnStatus "*** FAILURE: could not delete $archetypeTargetDir/archive/"
 	fi
 }
 
@@ -310,14 +329,14 @@ function rename_archetype_origin_dirs() {
 	echo "" 2>&1 | tee -a $archetypeLog
 	for d in "${dirArray[@]}"
 	do
-		echo "mv $d \${$d//origin/newname}" 2>&1 | tee -a $archetypeLog
+		echo "mv -f -v $d \${$d//origin/newname}" 2>&1 | tee -a $archetypeLog
 		# tee does not play well with some bash commands, so just redirect output to the log
-		mv $d ${d//origin/__artifactNameLowerCase__} 2>&1 >> $archetypeLog
-		archetypeStatus="$?"
-		if [ "$archetypeStatus" -eq "0" ]; then
+		mv -f -v $d ${d//origin/__artifactNameLowerCase__} 2>&1 >> $archetypeLog
+		returnStatus="$?"
+		if [ "$returnStatus" -eq "0" ]; then
 			echo "[OK]" 2>&1 | tee -a $archetypeLog
 		else
-			exit_now $archetypeStatus "*** FAILURE: could not rename directory $d."
+			exit_now $returnStatus "*** FAILURE: could not rename directory $d."
 		fi
 	done
 }
@@ -329,14 +348,14 @@ function delete_old_archetype() {
 	if [ -d $cwd/$archetypeServiceName ]; then
 		echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" 2>&1 | tee -a $archetypeLog
 		echo "+>> Deleting old $archetypeServiceName directory" 2>&1 | tee -a $archetypeLog
-		echo "rm -rf $cwd/$archetypeServiceName" 2>&1 | tee -a $archetypeLog
+		echo "rm -rfv $cwd/$archetypeServiceName" 2>&1 | tee -a $archetypeLog
 		# tee does not play well with some bash commands, so just redirect output to the log
-		rm -rf $cwd/$archetypeServiceName 2>&1 >> $archetypeLog
-		archetypeStatus="$?"
-		if [ "$archetypeStatus" -eq "0" ]; then
+		rm -rfv $cwd/$archetypeServiceName 2>&1 >> $archetypeLog
+		returnStatus="$?"
+		if [ "$returnStatus" -eq "0" ]; then
 			echo "[OK]" 2>&1 | tee -a $archetypeLog
 		else
-			exit_now $archetypeStatus "*** FAILURE: could not delete directory $cwd/$archetypeServiceName."
+			exit_now $returnStatus "*** FAILURE: could not delete directory $cwd/$archetypeServiceName."
 		fi
 	fi
 }
@@ -352,25 +371,25 @@ function copy_archetype() {
 	echo "+>> pwd = `pwd`" 2>&1 >> $archetypeLog
 
 	echo "+>> Make directory ../$archetypeServiceName" 2>&1 | tee -a $archetypeLog
-	echo "mkdir ../$archetypeServiceName" 2>&1 | tee -a $archetypeLog
+	echo "mkdir -v ../$archetypeServiceName" 2>&1 | tee -a $archetypeLog
 	# tee does not play well with some bash commands, so just redirect output to the log
-	mkdir ../$archetypeServiceName 2>&1 >> $archetypeLog
-	archetypeStatus="$?"
-	if [ "$archetypeStatus" -eq "0" ]; then
+	mkdir -v ../$archetypeServiceName 2>&1 >> $archetypeLog
+	returnStatus="$?"
+	if [ "$returnStatus" -eq "0" ]; then
 		echo "[OK]" 2>&1 | tee -a $archetypeLog
 	else
-		exit_now $archetypeStatus "*** FAILURE: could not create ../bip-archetype-service"
+		exit_now $returnStatus "*** FAILURE: could not create ../bip-archetype-service"
 	fi
 
 	echo "+>> Copy archetype files to $archetypeServiceName" 2>&1 | tee -a $archetypeLog
 	echo "cp -R -f $archetypeTargetDir/* ../$archetypeServiceName" 2>&1 | tee -a $archetypeLog
 	# tee does not play well with some bash commands, so just redirect output to the log
 	cp -R -f $archetypeTargetDir/* ../$archetypeServiceName 2>&1 >> $archetypeLog
-	archetypeStatus="$?"
-	if [ "$archetypeStatus" -eq "0" ]; then
+	returnStatus="$?"
+	if [ "$returnStatus" -eq "0" ]; then
 		echo "[OK]" 2>&1 | tee -a $archetypeLog
 	else
-		exit_now $archetypeStatus "*** FAILURE: could not copy $archetypeTargetDir/* to ../$archetypeServiceName"
+		exit_now $returnStatus "*** FAILURE: could not copy $archetypeTargetDir/* to ../$archetypeServiceName"
 	fi
 
 	## for some reason, above copy does NOT copy $archetypeTargetDir/.gitignore, so will do it manually here ##
@@ -378,11 +397,11 @@ function copy_archetype() {
 	echo "cp -f $archetypeTargetDir/.gitignore ../$archetypeServiceName/.gitignore" 2>&1 | tee -a $archetypeLog
 	# tee does not play well with some bash commands, so just redirect output to the log
 	cp -f $archetypeTargetDir/.gitignore ../$archetypeServiceName/.gitignore 2>&1 >> $archetypeLog
-	archetypeStatus="$?"
-	if [ "$archetypeStatus" -eq "0" ]; then
+	returnStatus="$?"
+	if [ "$returnStatus" -eq "0" ]; then
 		echo "[OK]" 2>&1 | tee -a $archetypeLog
 	else
-		exit_now $archetypeStatus "*** FAILURE: could not copy $archetypeOriginName/archive/.gitignore to $archetypeTargetDir/.gitignore"
+		exit_now $returnStatus "*** FAILURE: could not copy $archetypeOriginName/archive/.gitignore to $archetypeTargetDir/.gitignore"
 	fi
 }
 
@@ -400,11 +419,11 @@ function install_archetype() {
 	echo "+>> Install the archetype" 2>&1 | tee -a $archetypeLog
 	echo "mvn install" 2>&1 | tee -a $archetypeLog
 	mvn install -e -X 2>&1 | tee -a $archetypeLog
-	archetypeStatus="$?"
-	if [ "$archetypeStatus" -eq "0" ]; then
+	returnStatus="$?"
+	if [ "$returnStatus" -eq "0" ]; then
 		echo "[OK]" 2>&1 | tee -a $archetypeLog
 	else
-		exit_now $archetypeStatus "*** FAILURE, 'mvn install' failed."
+		exit_now $returnStatus "*** FAILURE, 'mvn install' failed."
 	fi
 }
 

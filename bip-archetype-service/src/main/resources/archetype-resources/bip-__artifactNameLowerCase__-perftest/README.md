@@ -1,26 +1,29 @@
-##What is this project for?
-This document provides details for **Origin Service Performance Testing**.
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+${symbol_pound}${symbol_pound}What is this project for?
+This document provides details for **${artifactName} Service Performance Testing**.
 
-## Performance tests for Origin Service
+${symbol_pound}${symbol_pound} Performance tests for ${artifactName} Service
 Performance tests are executed to guage if the application would be able to handle a reasonable request load.
 
 The project uses Apache JMeter.
 
 It is recommended that JMeter GUI mode be used for developing tests, and command mode (command-line execution) for test execution.
 
-## Project Structure
+${symbol_pound}${symbol_pound} Project Structure
 
 `pom.xml` - The Maven configuration for building and deploying the project.
 
 `src/test/jmeter` - Performance testing configurations (jmx files) go in this directory.
 
-## Execution
+${symbol_pound}${symbol_pound} Execution
 
-Testing executes requests against the rest end points available in Origin Service.
+Testing executes requests against the rest end points available in ${artifactName} Service.
 
 Every request must contain a valid JWT header, so every test calls the `/token` end point to generate a JWT token for the user.
 
-## Performance Test Configuration
+${symbol_pound}${symbol_pound} Performance Test Configuration
 
 The test suite can be configured to:
 - execute each test a different number of times
@@ -30,9 +33,9 @@ Below is an example of typical configuration values. To override any of the prop
 
 |Property|Description|Default Value|Perf Env Test Values|
 |-|-|-|-|
-|domain| Origin service Base Url|localhost| |
-|port|Origin Service Port|8080|443 |
-|protocol|Origin Service Protocol|http|https |
+|domain| ${artifactName} service Base Url|localhost| |
+|port|${artifactName} Service Port|8080|443 |
+|protocol|${artifactName} Service Protocol|http|https |
 |Health.threadGroup.threads|Number of threads for Health Status|5|150|
 |Health.threadGroup.rampUp|Thead ramp up|2|150|
 |Health.threadGroup.loopCount|Number of executions|10|-1|
@@ -62,15 +65,15 @@ Below is an example of typical configuration values. To override any of the prop
 |BearerTokenCreate.threadGroup.rampUp|Thead ramp up|1|50|
 |BearerTokenCreate.threadGroup.loopCount|Number of executions |1|1|
 
-## Running the tests
+${symbol_pound}${symbol_pound} Running the tests
 
-To execute performance tests locally, navigate to the `bip-origin-perftest` directory, and run
+To execute performance tests locally, navigate to the `bip-${artifactNameLowerCase}-perftest` directory, and run
 ```bash
 	mvn clean verify -Pperftest
 ```
 If you need to override any of the properties add the to the command using the appropriate `-Dpropety=value` argument(s).
 
-#### Sample Command
+${symbol_pound}${symbol_pound}${symbol_pound}${symbol_pound} Sample Command
 An example for executing the test in performance test environment:
 
 ```bash
@@ -78,6 +81,6 @@ An example for executing the test in performance test environment:
       -DBearerTokenCreate.threadGroup.rampUp=50 -DBearerTokenCreate.threadGroup.loopCount=1 -DHealth.threadGroup.threads=150 -DHealth.threadGroup.rampUp=150 -DHealth.threadGroup.loopCount=-1 -DHealth.threadGroup.duration=230 -DHealth.threadGroup.startUpDelay=30 -DSampleInfo.threadGroup.threads=150 -DSampleInfo.threadGroup.rampUp=150 -DSampleInfo.threadGroup.loopCount=-1 -DSampleInfo.threadGroup.duration=230 -DSampleInfo.threadGroup.startUpDelay=30 -DSampleInfoNoRecordFound.threadGroup.threads=150 -DSampleInfoNoRecordFound.threadGroup.rampUp=150 -DSampleInfoNoRecordFound.threadGroup.loopCount=-1 -DSampleInfoNoRecordFound.threadGroup.duration=230 -DSampleInfoNoRecordFound.threadGroup.startUpDelay=30 -DSampleInfoInvalidPid.threadGroup.threads=150 -DSampleInfoInvalidPid.threadGroup.rampUp=150 -DSampleInfoInvalidPid.threadGroup.loopCount=-1 -DSampleInfoInvalidPid.threadGroup.duration=230 -DSampleInfoInvalidPid.threadGroup.startUpDelay=30 -DSampleInfoNullPid.threadGroup.threads=150 -DSampleInfoNullPid.threadGroup.rampUp=150 -DSampleInfoNullPid.threadGroup.loopCount=-1 -DSampleInfoNullPid.threadGroup.duration=230 -DSampleInfoNullPid.threadGroup.startUpDelay=30
 ```
 
-## How to set up JMeter and Create Test Plan (JMX)
+${symbol_pound}${symbol_pound} How to set up JMeter and Create Test Plan (JMX)
 For and example from the BIP Reference
  app, see [BIP Reference - Performance Testing Guide](https://github.com/department-of-veterans-affairs/bip-reference/tree/master/bip-reference-perftest)

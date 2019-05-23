@@ -1,3 +1,6 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
 Feature: Service Health check endpoint.
 
   @health
@@ -11,9 +14,9 @@ Feature: Service Health check endpoint.
     @DEV
     Examples: 
       | Veteran     | tokenrequestfile  | ServiceURL             |
-      | dev-janedoe | dev/token.request | /api/v1/origin/health |
+      | dev-janedoe | dev/token.request | /api/v1/${artifactNameLowerCase}/health |
 
     @VA
     Examples: 
       | Veteran    | tokenrequestfile | ServiceURL             |
-      | va-janedoe | va/token.request | /api/v1/origin/health |
+      | va-janedoe | va/token.request | /api/v1/${artifactNameLowerCase}/health |

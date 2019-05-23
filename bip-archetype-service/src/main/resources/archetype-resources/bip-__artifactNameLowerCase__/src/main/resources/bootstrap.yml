@@ -1,3 +1,6 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
 spring: 
   application: 
     name: "@project.name@"
@@ -10,29 +13,29 @@ spring.cloud.consul:
     defaultContext: application
     profileSeparator: ','
     format: KEY_VALUE
-    failFast: false #Set value as 'true' to throw exceptions during consul config lookup
+    failFast: false ${symbol_pound}Set value as 'true' to throw exceptions during consul config lookup
     watch:
-      wait-time: 30 #defaults to 55 seconds
+      wait-time: 30 ${symbol_pound}defaults to 55 seconds
   host: localhost
   port: 8500
-  #tls:
-    #key-store-path: #Configuration for TLS in higher environments
+  ${symbol_pound}tls:
+    ${symbol_pound}key-store-path: ${symbol_pound}Configuration for TLS in higher environments
   discovery: 
-    enabled: false #Set Value as 'true' to enable consul discovery
-    register: false #Set Value as 'true' to Register as a service in consul
+    enabled: false ${symbol_pound}Set Value as 'true' to enable consul discovery
+    register: false ${symbol_pound}Set Value as 'true' to Register as a service in consul
     health-check-interval: 10s
-    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
-    #health-check-url: ${service.context}${server.servlet.context-path}/actuator/health # Enable if actuator end point changes
+    instance-id: ${symbol_dollar}{spring.application.name}:${symbol_dollar}{spring.application.instance_id:${symbol_dollar}{random.value}}
+    ${symbol_pound}health-check-url: ${symbol_dollar}{service.context}${symbol_dollar}{server.servlet.context-path}/actuator/health ${symbol_pound} Enable if actuator end point changes
     health-check-tls-skip-verify: true
     scheme: http
 spring.cloud.vault:
   enabled: false
-  failFast: false #Set value as 'true' to throw exceptions if data cannot be obtained from Vault.
+  failFast: false ${symbol_pound}Set value as 'true' to throw exceptions if data cannot be obtained from Vault.
   host: localhost
   port: 8200
   scheme: http
-  #authentication: TOKEN
-  token: ${VAULT_TOKEN:vaultroot}
+  ${symbol_pound}authentication: TOKEN
+  token: ${symbol_dollar}{VAULT_TOKEN:vaultroot}
   kv:
     enabled: true
     backend: secret
@@ -46,8 +49,8 @@ spring.cloud.vault:
     token-property: spring.cloud.consul.token
   generic:
     enabled: false
-# Bean overriding has been disabled by default to prevent a bean being accidentally overridden. 
-# If you are relying on overriding, you will need to set spring.main.allow-bean-definition-overriding to true.
-# https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.1-Release-Notes
+${symbol_pound} Bean overriding has been disabled by default to prevent a bean being accidentally overridden. 
+${symbol_pound} If you are relying on overriding, you will need to set spring.main.allow-bean-definition-overriding to true.
+${symbol_pound} https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.1-Release-Notes
 spring.main:
      allow-bean-definition-overriding: true

@@ -1,3 +1,6 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
 apiVersion: 1
 
 providers:
@@ -6,6 +9,6 @@ providers:
   folder: ''
   type: file
   disableDeletion: true
-  updateIntervalSeconds: 60 #how often Grafana will scan for changed dashboards
+  updateIntervalSeconds: 60 ${symbol_pound}how often Grafana will scan for changed dashboards
   options:
     path: /var/lib/grafana/dashboards

@@ -1,22 +1,25 @@
-## What is this project for?
-This document provides the details of **Origin Service Functional Testing**.
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+${symbol_pound}${symbol_pound} What is this project for?
+This document provides the details of **${artifactName} Service Functional Testing**.
 
-## Functional tests for Origin Service
-Functional test are created to make sure the end points in origin are working as expected.
+${symbol_pound}${symbol_pound} Functional tests for ${artifactName} Service
+Functional test are created to make sure the end points in ${artifactNameLowerCase} are working as expected.
 
 Project is built on Java and Maven, and uses the Sring RestTemplate jars for core API validations.
 
-## Project Structure
+${symbol_pound}${symbol_pound} Project Structure
 
 `pom.xml` - The Maven configuration for building and deploying the project.
 
-`src/inttest/resources/gov/va/origin/feature` - This is where you will create the cucumber feature files that contain the Feature
-and Scenarios for the Origin service you are testing.
+`src/inttest/resources/gov/va/${artifactNameLowerCase}/feature` - This is where you will create the cucumber feature files that contain the Feature
+and Scenarios for the ${artifactName} service you are testing.
 
-`src/inttest/java/gov/va/bip/origin/service/steps` - The implementation steps related to the feature
+`src/inttest/java/gov/va/bip/${artifactNameLowerCase}/service/steps` - The implementation steps related to the feature
 and scenarios mentioned in the cucumber file for the API needs to be created in this location. 
 
-`src/inttest/java/gov/va/bip/origin/service/runner` - Cucumber runner class that contains all feature file entries that needs to be executed at runtime.
+`src/inttest/java/gov/va/bip/${artifactNameLowerCase}/service/runner` - Cucumber runner class that contains all feature file entries that needs to be executed at runtime.
 The annotations provided in the cucumber runner class will assist in bridging the features to step definitions.
 
 `src/inttest/resources/request/dev` – This folder contains DEV request files if the body of your API call is static and needs to be sent as a XML/JSON file.
@@ -32,27 +35,27 @@ The annotations provided in the cucumber runner class will assist in bridging th
 `src/inttest/resources/logback-test.xml` - Logback Console Appender pattern and loggers defined for this project.
 Various packages and their corresponding log levels are specified here. By Default, the log level is WARN and it can be overridden by runtime environment variable. For e.g., -DLOG_LEVEL_BIP_FRAMEWORK_TEST=INFO
 
-`src/inttest/resources/config/origin-inttest-dev.properties` – DEV configuration properties such as URL are specified here.
+`src/inttest/resources/config/${artifactNameLowerCase}-inttest-dev.properties` – DEV configuration properties such as URL are specified here.
 
-`src/inttest/resources/config/origin-inttest-stage.properties` – STAGE configuration properties such as URL are specified here.
+`src/inttest/resources/config/${artifactNameLowerCase}-inttest-stage.properties` – STAGE configuration properties such as URL are specified here.
 
 **Note: All the configurations are defined external to the code and is per profile/environment. The naming conversion of the file
-origin-inttest-<env>.properties**
+${artifactNameLowerCase}-inttest-<env>.properties**
 
-## Execution
+${symbol_pound}${symbol_pound} Execution
 
-To execute the functional test in local bip-origin service needs to be up and running.
+To execute the functional test in local bip-${artifactNameLowerCase} service needs to be up and running.
 
-# How to Build and Test Origin service
+${symbol_pound} How to Build and Test ${artifactName} service
 [quick-start-guide](/docs/quick-start-guide.md)
 
-**Command Line:** Use this command(s) to execute the Origin service Functional test. 
+**Command Line:** Use this command(s) to execute the ${artifactName} service Functional test. 
 ```bash
     Default Local: mvn verify -Pinttest -Dcucumber.options="--tags @DEV"
 ```
     DEV: mvn verify -Pinttest -Dtest.env=dev -Ddockerfile.skip=true -Dcucumber.options="--tags @DEV"
 
 
-## More Details For Functional Test
+${symbol_pound}${symbol_pound} More Details For Functional Test
 For examples from the BIP Reference service, see [Integration Testing Guide](https://github.com/department-of-veterans-affairs/bip-reference/tree/master/bip-reference-inttest)
 

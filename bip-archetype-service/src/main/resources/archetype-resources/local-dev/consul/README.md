@@ -1,14 +1,17 @@
-# Consul Docker Image
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+${symbol_pound} Consul Docker Image
 Custom Consul image that adds the ability to configure an ACL token via Environment variable.
 
 __THIS IS FOR LOCAL DEVELOPMENT ONLY AS SUPPLYING ACL TOKEN VIA ENVIRONMENT VARIABLES IS NOT SECURE__
 
-## Configuring the container
+${symbol_pound}${symbol_pound} Configuring the container
 The container can be configured with an ACL token by setting the `MASTER_ACL_TOKEN` environment variable.
 
 All other configuration options can be found in the documentation for the [Official Consul Image](https://hub.docker.com/_/consul).
 
-### Example docker-compose file
+${symbol_pound}${symbol_pound}${symbol_pound} Example docker-compose file
 ```yaml
 version: "3.3"
 services:
