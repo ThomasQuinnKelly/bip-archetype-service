@@ -236,16 +236,19 @@ function clean_archetype_files() {
 		rm -f "$modFile-e" >> $archetypeLog
 	fi
 
-	## Add .gitignore to the generated archetype ##
 	echo ">> Copy .gitignore file into the archetype" 2>&1 | tee -a $archetypeLog
 	echo "cp -f $cwd/.gitignore $archetypeTargetDir/.gitignore" 2>&1 | tee -a $archetypeLog
 	# tee does not play well with some bash commands, so just redirect output to the log
 	cp -f $cwd/.gitignore $archetypeTargetDir/.gitignore 2>&1 >> $archetypeLog
+
+	echo "cp -f $cwd/$archetypeOriginName/archive/.gitignore $archetypeTargetDir/.gitignore" 2>&1 | tee -a $archetypeLog
+	# tee does not play well with some bash commands, so just redirect output to the log
+	cp -f $cwd/$archetypeOriginName/archive/.gitignore $archetypeTargetDir/.gitignore 2>&1 >> $archetypeLog
 	archetypeStatus="$?"
 	if [ "$archetypeStatus" -eq "0" ]; then
 		echo "[OK]" 2>&1 | tee -a $archetypeLog
 	else
-		exit_now $archetypeStatus "*** FAILURE: could not copy $archetypeOriginName/.gitignore to destination"
+		exit_now $archetypeStatus "*** FAILURE: could not copy $archetypeOriginName/archive/.gitignore to $archetypeTargetDir/.gitignore"
 	fi
 
 	echo ">> Copy basic README.md for new projects" 2>&1 | tee -a $archetypeLog
