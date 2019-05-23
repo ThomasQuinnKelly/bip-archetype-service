@@ -2,7 +2,23 @@
 
 This project contains two maven projects for creating and maintaining a Maven service archetype for the BIP Platform.
 
-NOTE: When you clone this repo, you will get a `bip-service-archetype-root` folder that contains this README, and eventually will receive a script and properties file. This folder does not contain a POM, and will likely not be directly accessible from your IDE. During generation of an archetype, you will need to use your command line to access the `gensvc` script.
+NOTE: When you clone this repo, you will get a root `bip-service-archetype` folder that contains this README, and eventually will receive a script and properties file. This folder does not contain a POM, and will likely not be directly accessible from your IDE. During generation of an archetype, you will need to use your command line to access the `gensvc` script.
+
+Maven documentation for archetype:create-from-project and archetype:generate is abysmal. Here are some documentation URLs that might help. In this case, internet search is not your friend either, as most of the posts out there are for ancient versions or are just plain wrong and misleading.
+
+<https://maven.apache.org/archetype/maven-archetype-plugin/index.html>
+
+**Create from project**
+
+<https://maven.apache.org/archetype/maven-archetype-plugin/create-from-project-mojo.html>
+
+<https://intellectualcramps.wordpress.com/2011/04/15/maven-archetype-creation-tips/>
+
+<https://maven.apache.org/archetype/maven-archetype-plugin/examples/generate-alternative-catalog.html>
+
+**Generate**
+
+<https://maven.apache.org/archetype/maven-archetype-plugin/generate-mojo.html>
 
 ## Getting the BIP Archetype Service project
 
@@ -13,13 +29,13 @@ Because this project hosts two separate maven projects, setting up a workspace _
   - `$ cd ~/git`
   - `$ git clone https://github.com/department-of-veterans-affairs/bip-archetype-service`
 
-2. To get the root project into your IDE, you will likely need to create separate workspaces, one for `bip-archetype-service-root` for access to the root scripts and files, and another for the `bip-archetype-service-origin` and `bip-archetype-service` projects so maven can be executed properly on them.
+2. To get the root project into your IDE, you will likely need to create separate workspaces, one for the root `bip-archetype-service` project for access to the scripts and this README, and another for the `bip-archetype-service-origin` and `bip-archetype-service` projects so maven can be executed properly on them.
 
   - For the root project:
 
-    - Start (or open) a `bip-archetype-service-root` workspace
+    - Start (or open) a `bip-archetype-service-root` (or similar name expressing that it is for the root archetype project) workspace
     - Select _File > Import... > General > Existing Projects into Workspace_
-    - In the Import Folder dialog, use _Browse_ to select your `~/git/bip-archetype-service-root` folder.
+    - In the Import Folder dialog, use _Browse_ to select your root `~/git/bip-archetype-service` folder.
 
       - The _Projects_ list should display one project (make sure _Options > Search for nested projects_ is **un-clicked**)
 

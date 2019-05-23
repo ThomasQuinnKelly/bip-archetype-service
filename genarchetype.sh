@@ -10,7 +10,6 @@ cwd="`pwd`"
 thisScript="$0"
 args="$@"
 
-rootDir="bip-archetype-service-root"
 archetypeVersion="0.0.1-SNAPSHOT"
 archetypeGroupId="gov.va.bip.archetype"
 archetypeServiceName="bip-archetype-service"
@@ -21,8 +20,7 @@ archetypeStatus=0
 archetypeTargetDir="target/generated-sources/archetype"
 archetypeLog="$cwd/genarchetype.log"
 
-skipOriginBuild=false
-
+skipOriginBuild=-1
 ## get argument options off of the command line        ##
 ## optional parameter: array of command-line arguments ##
 ## scope: private (internal calls only)                ##
@@ -37,7 +35,7 @@ function get_args() {
 				;;
 			s)
 				# echo "-a \> skip Origin Build" >&2
-				skipOriginBuild=true
+				skipOriginBuild=0
 				;;
 			\?)
 				echo "Invalid option: -$OPTARG" >&2
@@ -46,20 +44,26 @@ function get_args() {
 				;;
 		esac
 	done
+	# shift $((OPTIND -1))
 }
 
 ## function to display help             ##
 ## scope: private (internal calls only) ##
 function show_help() {
-	echo "" >&2
-	echo "Build BIP Service Archetype project:  $thisScript [-h|s]" >&2
-	echo "  -s   skip building the Origin project" >&2
-	echo "  -h   this help" >&2
-	echo "" >&2
-	echo "Notes:" >&2
-	echo "* This script operates on local clone of https://github.com/department-of-veterans-affairs/bip-archetype-service" >&2
-	echo "* This script will delete $cwd/$archetypeServiceName" >&2
-	echo "  You may want to back it up!" >&2
+	echo "" 2>&1 | tee -a $archetypeLog
+	echo "Build BIP Service Archetype project:  $thisScript [-h|s]" 2>&1 | tee -a $archetypeLog
+	echo "  -s   skip building the Origin project" 2>&1 | tee -a $archetypeLog
+	echo "  -h   this help" 2>&1 | tee -a $archetypeLog
+	echo "" 2>&1 | tee -a $archetypeLog
+	echo "Notes:" 2>&1 | tee -a $archetypeLog
+	echo "* This script operates on local clone of https://github.com/department-of-veterans-affairs/bip-archetype-service" 2>&1 | tee -a $archetypeLog
+	echo "* This script will delete $cwd/$archetypeServiceName" 2>&1 | tee -a $archetypeLog
+	echo "  You may want to back it up!" 2>&1 | tee -a $archetypeLog
+	echo "* A valid \"gensvc.properties\" file must exist in the same directory" 2>&1 | tee -a $archetypeLog
+	echo "  as this script." 2>&1 | tee -a $archetypeLog
+	echo "* It is recommended that a git credential helper be utilized to" 2>&1 | tee -a $archetypeLog
+	echo "  eliminate authentication requests while executing. For more info see" 2>&1 | tee -a $archetypeLog
+	echo "  https://help.github.com/articles/caching-your-github-password-in-git/" 2>&1 | tee -a $archetypeLog
 	echo "" >&2
 	echo "Examples:" >&2
 	echo "  \$ $thisScript" >&2
@@ -79,11 +83,13 @@ function exit_now() {
 	if [ -z $exit_code ]; then
 		exit_code=0
 	fi
-	if [ ! "$exit_message" == "" ]; then
+	if [ "$exit_message" != "" ]; then
 		# Fatal error signal 128+n
 		echo "$exit_message" 2>&1 | tee -a $archetypeLog
-		echo "See '$archetypeLog' for details." 2>&1 | tee -a $archetypeLog
 	fi
+	echo " See \"$archetypeLog\", search \"+>> \" for script actions." 2>&1 | tee -a $archetypeLog
+	echo " Use \"./genarchetype.sh -h\" for script usage help." 2>&1 | tee -a $generateLog
+	echo "------------------------------------------------------------------------" 2>&1 | tee -a $generateLog
 	exit $exit_code
 }
 
@@ -91,24 +97,25 @@ function exit_now() {
 ## no parameters                        ##
 ## scope: private (internal calls only) ##
 function pre_processing() {
-	echo ">> pwd = `pwd`" 2>&1 | tee -a $archetypeLog
-	if ! [[ "$cwd" == *"$rootDir"* ]]; then
-		exit_now 1 "*** FAILURE, this script must be run from $rootDir.";
+	echo "+>> pwd = `pwd`" 2>&1 | tee -a $archetypeLog
+	if [ ! -d "$archetypeOriginName" ] || [ ! -f "$archetypeOriginName/pom.xml" ] || [ ! -d "$archetypeOriginName/bip-origin" ] || [ ! -d "$archetypeOriginName/bip-origin-inttest" ]; then
+		exit_now 1 "*** FAILURE: valid directory $archetypeOriginName does not exist.";
 	fi
-	if [ ! -d "$archetypeOriginName" ]; then
-		exit_now 1 "*** FAILURE: directory $archetypeOriginName does not exist.";
-	fi
+
 	if [ ! -f "$archetypeProperties" ]; then
 		echo "*** FAILURE: missing file $archetypeProperties." 2>&1 | tee -a $archetypeLog
 		echo "   Values should be:" 2>&1 | tee -a $archetypeLog
-		echo "     archetype.groupId=$archetypeGroupId" 2>&1 | tee -a $archetypeLog
-		echo "     archetype.artifactId=$archetypeServiceName" 2>&1 | tee -a $archetypeLog
-		echo "     archetype.version=$archetypeVersion" 2>&1 | tee -a $archetypeLog
-		echo "     archetype.languages=java" 2>&1 | tee -a $archetypeLog
+		echo "     excludePatterns=**/target,**/.settings/**,**/.project,**/.classpath,**/apt_*,**/.springBeans,**/.factorypath,**.docker-jar*" 2>&1 | tee -a $archetypeLog
+		echo "     package=gov.va.bip.vetservices.__artifactNameLowerCase__" 2>&1 | tee -a $archetypeLog
+		echo "     groupId=$archetypeGroupId" 2>&1 | tee -a $archetypeLog
+		echo "     artifactId=bip-origin-reactor" 2>&1 | tee -a $archetypeLog
+		echo "     artifactName=Origin" 2>&1 | tee -a $archetypeLog
+		echo "     artifactNameLowerCase=origin" 2>&1 | tee -a $archetypeLog
+		echo "     artifactNameUpperCase=ORIGIN" 2>&1 | tee -a $archetypeLog
 		exit_now 1 "";
 	fi
 
-	echo ">> This script will delete $archetypeServiceName and recreate it from $archetypeOriginName" 2>&1 | tee -a $archetypeLog
+	echo "+>> This script will delete $archetypeServiceName and recreate it from $archetypeOriginName" 2>&1 | tee -a $archetypeLog
 	if [ -d "$archetypeServiceName" ]; then
 		echo "*** If desired, back up the existing $archetypeServiceName project before continuing." 2>&1 | tee -a $archetypeLog
 	fi
@@ -121,20 +128,20 @@ function pre_processing() {
 ## no parameters                        ##
 ## scope: private (internal calls only) ##
 function build_origin() {
-	if [[ ! $skipOriginBuild ]]; then
+	if [ "$skipOriginBuild" -ne "0" ]; then
 		echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" 2>&1 | tee -a $archetypeLog
 		echo "cd $cwd/$archetypeOriginName" 2>&1 | tee -a $archetypeLog
 		# tee does not play well with some bash commands, so just redirect output to the log
 		cd $cwd/$archetypeOriginName 2>&1 >> $archetypeLog
-		echo ">> pwd = `pwd`" 2>&1 | tee -a $archetypeLog
+		echo "+>> pwd = `pwd`" 2>&1 | tee -a $archetypeLog
 
-		echo ">> Building archetype origin project" 2>&1 | tee -a $archetypeLog
+		echo "+>> Building archetype origin project" 2>&1 | tee -a $archetypeLog
 		# maven clean has proven unreliable in some scenarios, so making sure target is wiped
 		echo "rm -rf \$(find . -name 'target' -type d -maxdepth 4 | sed 's:\.\/::g')"
 		rm -rf $(find . -name 'target' -type d -maxdepth 4 | sed 's:\.\/::g')
 		# now we get reliable maven target output
 		echo "mvn clean install" 2>&1 | tee -a $archetypeLog
-		mvn clean install 2>&1 | tee -a $archetypeLog
+		mvn clean install -e -X 2>&1 | tee -a $archetypeLog
 		archetypeStatus="$?"
 		if [ "$archetypeStatus" -eq "0" ]; then
 			echo "[OK]" 2>&1 | tee -a $archetypeLog
@@ -152,10 +159,10 @@ function create_archetype() {
 	echo "cd $cwd/$archetypeOriginName" 2>&1 | tee -a $archetypeLog
 	# tee does not play well with some bash commands, so just redirect output to the log
 	cd $cwd/$archetypeOriginName 2>&1 >> $archetypeLog
-	echo ">> pwd = `pwd`" 2>&1 | tee -a $archetypeLog
+	echo "+>> pwd = `pwd`" 2>&1 | tee -a $archetypeLog
 
 	if [ -d "$archetypeTargetDir" ]; then
-		echo ">> Deleting existing $archetypeTargetDir directory" 2>&1 | tee -a $archetypeLog
+		echo "+>> Deleting existing $archetypeTargetDir directory" 2>&1 | tee -a $archetypeLog
 		echo "rm -rf $archetypeTargetDir" 2>&1 | tee -a $archetypeLog
 		# tee does not play well with some bash commands, so just redirect output to the log
 		rm -rf "$archetypeTargetDir" 2>&1 >> $archetypeLog
@@ -167,9 +174,9 @@ function create_archetype() {
 		fi
 	fi
 
-	echo ">> Creating the archetype in $archetypeTargetDir" 2>&1 | tee -a $archetypeLog
+	echo "+>> Creating the archetype in $archetypeTargetDir" 2>&1 | tee -a $archetypeLog
 	echo "mvn archetype:create-from-project -Darchetype.properties=../$archetypeProperties -DpackageName=$archetypePackageName" 2>&1 | tee -a $archetypeLog
-	mvn archetype:create-from-project -Darchetype.properties=../$archetypeProperties -DpackageName=$archetypePackageName 2>&1 | tee -a $archetypeLog
+	mvn archetype:create-from-project -Darchetype.properties=../$archetypeProperties -DpackageName=$archetypePackageName -e -X 2>&1 | tee -a $archetypeLog
 	archetypeStatus="$?"
 	if [ "$archetypeStatus" -eq "0" ]; then
 		echo "[OK]" 2>&1 | tee -a $archetypeLog
@@ -186,9 +193,9 @@ function clean_archetype_files() {
 	echo "cd $cwd/$archetypeOriginName" 2>&1 | tee -a $archetypeLog
 	# tee does not play well with some bash commands, so just redirect output to the log
 	cd $cwd/$archetypeOriginName 2>&1 >> $archetypeLog
-	echo ">> pwd = `pwd`" 2>&1 | tee -a $archetypeLog
+	echo "+>> pwd = `pwd`" 2>&1 | tee -a $archetypeLog
 
-	echo ">> Cleaning up the created archetype in place: $archetypeTargetDir" 2>&1 | tee -a $archetypeLog
+	echo "+>> Cleaning up the created archetype in place: $archetypeTargetDir" 2>&1 | tee -a $archetypeLog
 
 	## clean up the archetype POM ##
 
@@ -230,13 +237,13 @@ function clean_archetype_files() {
 	sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' $modFile 2>&1 | tee -a $archetypeLog
 	# now also have to clean up after sed
 	if [ -f "$modFile-e" ]; then
-		echo ">> Remove sed artifacts" 2>&1 | tee -a $archetypeLog
+		echo "+>> Remove sed artifacts" 2>&1 | tee -a $archetypeLog
 		echo "rm -f $modFile-e" 2>&1 | tee -a $archetypeLog
 		# tee does not play well with some bash commands, so just redirect output to the log
 		rm -f "$modFile-e" >> $archetypeLog
 	fi
 
-	echo ">> Copy .gitignore file into the archetype" 2>&1 | tee -a $archetypeLog
+	echo "+>> Copy .gitignore file into the archetype" 2>&1 | tee -a $archetypeLog
 	echo "cp -f $cwd/$archetypeOriginName/archive/.gitignore $archetypeTargetDir/.gitignore" 2>&1 | tee -a $archetypeLog
 	# tee does not play well with some bash commands, so just redirect output to the log
 	cp -f $cwd/$archetypeOriginName/archive/.gitignore $archetypeTargetDir/.gitignore 2>&1 >> $archetypeLog
@@ -247,7 +254,7 @@ function clean_archetype_files() {
 		exit_now $archetypeStatus "*** FAILURE: could not copy $archetypeOriginName/archive/.gitignore to $archetypeTargetDir/.gitignore"
 	fi
 
-	echo ">> Copy basic README.md for new projects" 2>&1 | tee -a $archetypeLog
+	echo "+>> Copy basic README.md for new projects" 2>&1 | tee -a $archetypeLog
 	echo "cp -f $cwd/$archetypeOriginName/archive/$archetypeServiceName-README.md $archetypeTargetDir/README.md" 2>&1 | tee -a $archetypeLog
 	# tee does not play well with some bash commands, so just redirect output to the log
 	cp -f $cwd/$archetypeOriginName/archive/$archetypeServiceName-README.md $archetypeTargetDir/README.md 2>&1 >> $archetypeLog
@@ -258,7 +265,7 @@ function clean_archetype_files() {
 		exit_now $archetypeStatus "*** FAILURE: could not copy $archetypeServiceName-README.md to $archetypeTargetDir/README.md"
 	fi
 
-	echo ">> Copy README.md for $archetypeServiceName project" 2>&1 | tee -a $archetypeLog
+	echo "+>> Copy README.md for $archetypeServiceName project" 2>&1 | tee -a $archetypeLog
 	echo "cp -f $cwd/$archetypeOriginName/archive/$archetypeServiceName-project-README.md $cwd/$archetypeServiceName/README.md" 2>&1 | tee -a $archetypeLog
 	# tee does not play well with some bash commands, so just redirect output to the log
 	cp -f $cwd/$archetypeOriginName/archive/$archetypeServiceName-project-README.md $cwd/$archetypeServiceName/README.md 2>&1 >> $archetypeLog
@@ -271,10 +278,10 @@ function clean_archetype_files() {
 
 	## Remove unnecessary files from the generated archetype ##
 
-	echo ">> Remove the archive directory from the archetype" 2>&1 | tee -a $archetypeLog
-	echo "rm -rf $archetypeServiceName/archive/" 2>&1 | tee -a $archetypeLog
+	echo "+>> Remove the archive directory from the archetype" 2>&1 | tee -a $archetypeLog
+	echo "rm -rf $archetypeServiceName/archive" 2>&1 | tee -a $archetypeLog
 	# tee does not play well with some bash commands, so just redirect output to the log
-	rm -rf $archetypeServiceName/archive/ 2>&1 >> $archetypeLog
+	rm -rf $archetypeServiceName/archive 2>&1 >> $archetypeLog
 	archetypeStatus="$?"
 	if [ "$archetypeStatus" -eq "0" ]; then
 		echo "[OK]" 2>&1 | tee -a $archetypeLog
@@ -294,12 +301,12 @@ function rename_archetype_origin_dirs() {
 	echo "cd $cwd/$archetypeOriginName/$archetypeTargetDir" 2>&1 | tee -a $archetypeLog
 	# tee does not play well with some bash commands, so just redirect output to the log
 	cd $cwd/$archetypeOriginName/$archetypeTargetDir 2>&1 >> $archetypeLog
-	echo ">> pwd = `pwd`" 2>&1 | tee -a $archetypeLog
+	echo "+>> pwd = `pwd`" 2>&1 | tee -a $archetypeLog
 
-	echo ">> Renaming directories in place: $archetypeTargetDir" 2>&1 | tee -a $archetypeLog
+	echo "+>> Renaming directories in place: $archetypeTargetDir" 2>&1 | tee -a $archetypeLog
 
 	dirArray=(`find ./src -name '*origin*' -type d -maxdepth 4 | sed 's:\.\/::g'`)
-	echo ">> Found directories to rename: ${dirArray[@]}" 2>&1 | tee -a $archetypeLog
+	echo "+>> Found directories to rename: ${dirArray[@]}" 2>&1 | tee -a $archetypeLog
 	echo "" 2>&1 | tee -a $archetypeLog
 	for d in "${dirArray[@]}"
 	do
@@ -321,7 +328,7 @@ function rename_archetype_origin_dirs() {
 function delete_old_archetype() {
 	if [ -d $cwd/$archetypeServiceName ]; then
 		echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" 2>&1 | tee -a $archetypeLog
-		echo ">> Deleting old $archetypeServiceName directory" 2>&1 | tee -a $archetypeLog
+		echo "+>> Deleting old $archetypeServiceName directory" 2>&1 | tee -a $archetypeLog
 		echo "rm -rf $cwd/$archetypeServiceName" 2>&1 | tee -a $archetypeLog
 		# tee does not play well with some bash commands, so just redirect output to the log
 		rm -rf $cwd/$archetypeServiceName 2>&1 >> $archetypeLog
@@ -342,9 +349,9 @@ function copy_archetype() {
 	echo "cd $cwd/$archetypeOriginName" 2>&1 | tee -a $archetypeLog
 	# tee does not play well with some bash commands, so just redirect output to the log
 	cd $cwd/$archetypeOriginName 2>&1 >> $archetypeLog
-	echo ">> pwd = `pwd`" 2>&1 >> $archetypeLog
+	echo "+>> pwd = `pwd`" 2>&1 >> $archetypeLog
 
-	echo ">> Make directory ../$archetypeServiceName" 2>&1 | tee -a $archetypeLog
+	echo "+>> Make directory ../$archetypeServiceName" 2>&1 | tee -a $archetypeLog
 	echo "mkdir ../$archetypeServiceName" 2>&1 | tee -a $archetypeLog
 	# tee does not play well with some bash commands, so just redirect output to the log
 	mkdir ../$archetypeServiceName 2>&1 >> $archetypeLog
@@ -355,7 +362,7 @@ function copy_archetype() {
 		exit_now $archetypeStatus "*** FAILURE: could not create ../bip-archetype-service"
 	fi
 
-	echo ">> Copy archetype files to ../$archetypeServiceName" 2>&1 | tee -a $archetypeLog
+	echo "+>> Copy archetype files to $archetypeServiceName" 2>&1 | tee -a $archetypeLog
 	echo "cp -R -f $archetypeTargetDir/* ../$archetypeServiceName" 2>&1 | tee -a $archetypeLog
 	# tee does not play well with some bash commands, so just redirect output to the log
 	cp -R -f $archetypeTargetDir/* ../$archetypeServiceName 2>&1 >> $archetypeLog
@@ -364,6 +371,18 @@ function copy_archetype() {
 		echo "[OK]" 2>&1 | tee -a $archetypeLog
 	else
 		exit_now $archetypeStatus "*** FAILURE: could not copy $archetypeTargetDir/* to ../$archetypeServiceName"
+	fi
+
+	## for some reason, above copy does NOT copy $archetypeTargetDir/.gitignore, so will do it manually here ##
+	echo "+>> Copy .gitignore file into the archetype" 2>&1 | tee -a $archetypeLog
+	echo "cp -f $archetypeTargetDir/.gitignore ../$archetypeServiceName/.gitignore" 2>&1 | tee -a $archetypeLog
+	# tee does not play well with some bash commands, so just redirect output to the log
+	cp -f $archetypeTargetDir/.gitignore ../$archetypeServiceName/.gitignore 2>&1 >> $archetypeLog
+	archetypeStatus="$?"
+	if [ "$archetypeStatus" -eq "0" ]; then
+		echo "[OK]" 2>&1 | tee -a $archetypeLog
+	else
+		exit_now $archetypeStatus "*** FAILURE: could not copy $archetypeOriginName/archive/.gitignore to $archetypeTargetDir/.gitignore"
 	fi
 }
 
@@ -376,11 +395,11 @@ function install_archetype() {
 	echo "cd $archetypeServiceName" 2>&1 | tee -a $archetypeLog
 	# tee does not play well with some bash commands, so just redirect output to the log
 	cd $archetypeServiceName 2>&1 >> $archetypeLog
-	echo ">> pwd=`pwd`" 2>&1 | tee -a $archetypeLog
+	echo "+>> pwd=`pwd`" 2>&1 | tee -a $archetypeLog
 
-	echo ">> Install the archetype" 2>&1 | tee -a $archetypeLog
+	echo "+>> Install the archetype" 2>&1 | tee -a $archetypeLog
 	echo "mvn install" 2>&1 | tee -a $archetypeLog
-	mvn install 2>&1 | tee -a $archetypeLog
+	mvn install -e -X 2>&1 | tee -a $archetypeLog
 	archetypeStatus="$?"
 	if [ "$archetypeStatus" -eq "0" ]; then
 		echo "[OK]" 2>&1 | tee -a $archetypeLog
@@ -413,8 +432,8 @@ install_archetype
 
 ## success message (didn't exit_now anwhere along the way) ##
 echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" 2>&1 | tee -a $archetypeLog
-echo ">> SUCCESS - archetype project created: $archetypeServiceName" 2>&1 | tee -a $archetypeLog
-echo "   See '$archetypeLog' for details."
+echo "+>> SUCCESS - archetype project created: $archetypeServiceName" 2>&1 | tee -a $archetypeLog
+
 echo "   To generate a new service project:" 2>&1 | tee -a $archetypeLog
 echo "   - a gensvc.* has been copied into the ../ (should be your git root)" 2>&1 | tee -a $archetypeLog
 echo "   - ensure values in gensvc.properties are correct" 2>&1 | tee -a $archetypeLog
@@ -425,3 +444,4 @@ echo "     \$ ./gensvc.sh" 2>&1 | tee -a $archetypeLog
 echo "" 2>&1 | tee -a $archetypeLog
 
 cd $cwd
+exit_now 0

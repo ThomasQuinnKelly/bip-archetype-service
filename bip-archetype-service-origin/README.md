@@ -46,13 +46,15 @@ The origin project should only need to be updated when something new or differen
 
 1. Ensure that the `bip-archetype-service-origin` project builds, that the project can be run as a spring-boot app, and that the [localhost swagger page](http://localhost:8080/swagger-ui.html) opens and responds as excpected.
 2. Make the desired changes, testing to ensure the project is stable
-3. From the command line,
+3. From the command line for example:
 
-  - `$ cd ~/git/bip-archetype-service-root/bip-archetype-service-origin`
+  - `$ cd ~/git/bip-archetype-service/bip-archetype-service-origin`
   - `genarchetype.sh` (runs the script to delete the `bip-archetype-service` directory and regenerate the archetype)
 
-4. Review `pom.xml` for the regenerated `bip-archetype-service` project, and check the files under `src/main/resources/archetype-resources/`. Depending on the nature of the changes made in the steps above, it may be necessary to tweak the `genarchetype.sh` script.
+**NOTE** that if maven is unable to reach the nexus repo, or if the `bip-archetype-service*.jar` file does not yet exist for the maven version declared in the POM file, you will see WARN logs with related stack trace. This can typically be ignored.
 
-5. Once the archetype project looks good, follow the instructions in [the archetypes README.md](../biparchetype-service/README.md) file to generate a test project to run and test. Tweak the Origin project until the archetype produces a usable test project.
+1. Review `pom.xml` for the regenerated `bip-archetype-service` project, and check the files under `src/main/resources/archetype-resources/`. Depending on the nature of the changes made in the steps above, it may be necessary to tweak the `genarchetype.sh` script.
 
-6. When ready, make sure the `bip-archetype-service-root` and its two projects are tidy, and push the root project to the repo.
+2. Once the archetype project looks good, follow the instructions in [the archetypes README.md](../biparchetype-service/README.md) file to generate a test project to run and test. Tweak the Origin project until the archetype produces a usable test project.
+
+3. When ready, make sure the root `bip-archetype-service` and its two projects are tidy, and push the root project to the repo.

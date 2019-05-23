@@ -46,6 +46,7 @@
     <fileSet encoding="UTF-8">
       <directory>archive</directory>
       <includes>
+        <include>**/*.gitignore</include>
         <include>**/*.md</include>
       </includes>
     </fileSet>
