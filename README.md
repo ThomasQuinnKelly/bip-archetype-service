@@ -4,21 +4,25 @@ This project contains two maven projects for creating and maintaining a Maven se
 
 NOTE: When you clone this repo, you will get a root `bip-service-archetype` folder that contains this README, and eventually will receive a script and properties file. This folder does not contain a POM, and will likely not be directly accessible from your IDE. During generation of an archetype, you will need to use your command line to access the `gensvc` script.
 
-Maven documentation for archetype:create-from-project and archetype:generate is abysmal. Here are some documentation URLs that might help. In this case, internet search is not your friend either, as most of the posts out there are for ancient versions or are just plain wrong and misleading.
+Maven documentation for archetype:create-from-project and archetype:generate is abysmal, and is sometimes misleading _**or just plain wrong**_. Unfortunately internet search is not your friend either, as most of the posts out there are for ancient versions or are also wrong. Nonetheless, here are some links that can get your _guess-try-guess-again_ adventures ...
 
-<https://maven.apache.org/archetype/maven-archetype-plugin/index.html>
+**General**
+
+Maven Archetype Plugin: <https://maven.apache.org/archetype/maven-archetype-plugin/index.html>
+
+GitHub source: <https://github.com/apache/maven-archetype/tree/maven-archetype-3.1.0>
 
 **Create from project**
 
-<https://maven.apache.org/archetype/maven-archetype-plugin/create-from-project-mojo.html>
+Docs for create-from-project: <https://maven.apache.org/archetype/maven-archetype-plugin/create-from-project-mojo.html>
 
-<https://intellectualcramps.wordpress.com/2011/04/15/maven-archetype-creation-tips/>
+Somewhat helpful blog entry: <https://intellectualcramps.wordpress.com/2011/04/15/maven-archetype-creation-tips/>
 
-<https://maven.apache.org/archetype/maven-archetype-plugin/examples/generate-alternative-catalog.html>
+Maven catalog: <https://maven.apache.org/archetype/maven-archetype-plugin/examples/generate-alternative-catalog.html>
 
 **Generate**
 
-<https://maven.apache.org/archetype/maven-archetype-plugin/generate-mojo.html>
+Docs for generate: <https://maven.apache.org/archetype/maven-archetype-plugin/generate-mojo.html>
 
 ## Getting the BIP Archetype Service project
 

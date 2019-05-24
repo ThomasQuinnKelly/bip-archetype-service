@@ -23,7 +23,7 @@ archetypeProperties="genarchetype.properties"
 # the package name from the Origin project that is to be replaced in the generated archetype
 archetypePackageName="gov.va.bip.origin"
 # any file extensions that should be included in the velocity replacement processes
-archetypeFilteredExtensions="md,java,xml,properties,txt,yaml,yml,sh,json,tpl,jmx,csv,feature,Jenkinsfile,Dockerfile"
+archetypeFilteredExtensions="md,java,xml,properties,txt,yaml,yml,sh,json,tpl,jmx,csv,feature,."
 # the target directory that the generated archetype is initially created in
 archetypeTargetDir="target/generated-sources/archetype"
 
@@ -143,15 +143,15 @@ function pre_processing() {
 function build_origin() {
 	if [ "$skipOriginBuild" -ne "0" ]; then
 		echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" 2>&1 | tee -a $archetypeLog
-		echo "cd $cwd/$archetypeOriginName" 2>&1 | tee -a $archetypeLog
+		echo "cd$cwd/$archetypeOriginName" 2>&1 | tee -a $archetypeLog
 		# tee does not play well with some bash commands, so just redirect output to the log
-		cd $cwd/$archetypeOriginName 2>&1 >> $archetypeLog
+		cd "$cwd/$archetypeOriginName" 2>&1 >> $archetypeLog
 		echo "+>> pwd = `pwd`" 2>&1 | tee -a $archetypeLog
 
 		echo "+>> Building archetype origin project" 2>&1 | tee -a $archetypeLog
 		# maven clean has proven unreliable in some scenarios, so making sure target is wiped
-		echo "rm -rfv \$(find . -name 'target' -type d -maxdepth 4 | sed 's:\.\/::g')"
-		rm -rfv $(find . -name 'target' -type d -maxdepth 4 | sed 's:\.\/::g')
+		echo "rm -rfv \$(find . -name 'target' -type d -maxdepth 4 | sed 's:\.\/::g')" 2>&1 | tee -a $archetypeLog
+		rm -rfv $(find . -name 'target' -type d -maxdepth 4 | sed 's:\.\/::g')  2>&1 >> $archetypeLog
 		# now we get reliable maven target output
 		echo "mvn clean install" 2>&1 | tee -a $archetypeLog
 		mvn clean install -e -X 2>&1 | tee -a $archetypeLog
@@ -171,14 +171,14 @@ function create_archetype() {
 	echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" 2>&1 | tee -a $archetypeLog
 	echo "cd $cwd/$archetypeOriginName" 2>&1 | tee -a $archetypeLog
 	# tee does not play well with some bash commands, so just redirect output to the log
-	cd $cwd/$archetypeOriginName 2>&1 >> $archetypeLog
+	cd "$cwd/$archetypeOriginName" 2>&1 >> $archetypeLog
 	echo "+>> pwd = `pwd`" 2>&1 | tee -a $archetypeLog
 
 	if [ -d "$archetypeTargetDir" ]; then
 		echo "+>> Deleting existing $archetypeTargetDir directory" 2>&1 | tee -a $archetypeLog
-		echo "rm -rfv $archetypeTargetDir" 2>&1 | tee -a $archetypeLog
+		echo "rm -rf $archetypeTargetDir" 2>&1 | tee -a $archetypeLog
 		# tee does not play well with some bash commands, so just redirect output to the log
-		rm -rfv "$archetypeTargetDir" 2>&1 >> $archetypeLog
+		rm -rf "$archetypeTargetDir" 2>&1 >> $archetypeLog
 		returnStatus="$?"
 		if [ "$returnStatus" -eq "0" ]; then
 			echo "[OK]" 2>&1 | tee -a $archetypeLog
@@ -192,9 +192,9 @@ function create_archetype() {
 
 	## NOTE: archetype.filteredExtentions is required to make create-from-project process non-java files.
 	mvn archetype:create-from-project \
-		-Darchetype.properties=../$archetypeProperties \
-		-Darchetype.filteredExtentions=$archetypeFilteredExtensions \
-		-DpackageName=$archetypePackageName \
+		-Darchetype.properties="../$archetypeProperties" \
+		-Darchetype.filteredExtentions="$archetypeFilteredExtensions" \
+		-DpackageName="$archetypePackageName" \
 		-e -X 2>&1 | tee -a $archetypeLog
 	returnStatus="$?"
 	if [ "$returnStatus" -eq "0" ]; then
@@ -211,49 +211,63 @@ function clean_archetype_files() {
 	echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" 2>&1 | tee -a $archetypeLog
 	echo "cd $cwd/$archetypeOriginName" 2>&1 | tee -a $archetypeLog
 	# tee does not play well with some bash commands, so just redirect output to the log
-	cd $cwd/$archetypeOriginName 2>&1 >> $archetypeLog
+	cd "$cwd/$archetypeOriginName" 2>&1 >> $archetypeLog
 	echo "+>> pwd = `pwd`" 2>&1 | tee -a $archetypeLog
 
 	echo "+>> Cleaning up the created archetype in place: $archetypeTargetDir" 2>&1 | tee -a $archetypeLog
 
 	## clean up the archetype POM ##
 
+	#########################################################
+	## NOTE sed *always* returns "0" as its exit code      ##
+	##      regardless if it succeeds or not. If changes   ##
+	##      are made to sed commands, you must check the   ##
+	##      genarchetype.log (search "sed -i") to verify   ##
+	##      that no sed error messages follow the command  ##
+	#########################################################
+
 	modFile="$archetypeTargetDir/pom.xml"
+	echo "+>> Fix $modfile in place"
+
 	# wrong archetype package/groupId
 	oldVal="gov.va.bip.origin"
 	newVal="gov.va.bip.archetype.service"
-	echo "sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' $modFile" 2>&1 | tee -a $archetypeLog
-	sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' $modFile 2>&1 | tee -a $archetypeLog
+	echo "sed -i \"\" -e \'s/\'\"$oldVal\"\'/\'\"$newVal\"\'/g\' \"$modFile\"" 2>&1 | tee -a $archetypeLog
+	sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' "$modFile" 2>&1 >> $archetypeLog
 	# wrong archetype name/artifactId
 	oldVal="bip-origin-reactor-archetype"
 	newVal="bip-archetype-service"
-	echo "sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' $modFile" 2>&1 | tee -a $archetypeLog
-	sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' $modFile 2>&1 | tee -a $archetypeLog
+	echo "sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' \"$modFile\"" 2>&1 | tee -a $archetypeLog
+	sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' "$modFile" 2>&1 >> $archetypeLog
 	# wrong archetype description
 	oldVal="BIP Origin Service"
 	newVal="BIP Service Archetype"
-	echo "sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' $modFile" 2>&1 | tee -a $archetypeLog
-	sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' $modFile 2>&1 | tee -a $archetypeLog
-	# scrub the bad URLs # oldVal: slashes and double-quotes (and possibly commas) must be escaped
+	echo "sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' \"$modFile\"" 2>&1 | tee -a $archetypeLog
+	sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' "$modFile" 2>&1 >> $archetypeLog
+
+	# delete the bad URLs # oldVal: slashes and double-quotes (and possibly commas) must be escaped
 	oldVal="<url>https:\/\/projects.spring.io\/spring-boot\/#\/spring-boot-starter-parent\/bip-framework-parentpom\/bip-origin-reactor<\/url>"
-	newVal=" "
-	echo "sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' $modFile" 2>&1 | tee -a $archetypeLog
-	sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' $modFile 2>&1 | tee -a $archetypeLog
-	# scrub the scm tags
+	newVal=""
+	echo "sed -i \"\" -e '/'\"$oldVal\"'/d' \"$modFile\"" 2>&1 | tee -a $archetypeLog
+	sed -i "" -e '/'"$oldVal"'/d' "$modFile" 2>&1 >> $archetypeLog
+	# delete the scm tags
 	oldVal="<scm>"
-	newVal=" "
-	echo "sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' $modFile" 2>&1 | tee -a $archetypeLog
-	sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' $modFile 2>&1 | tee -a $archetypeLog
-	# scrub the scm tags # oldVal: slashes and double-quotes (and possibly commas) must be escaped
+	newVal=""
+	echo "sed -i \"\" -e '/'\"$oldVal\"'/d' \"$modFile\"" 2>&1 | tee -a $archetypeLog
+	sed -i "" -e '/'"$oldVal"'/d' "$modFile" 2>&1 >> $archetypeLog
+	# delete the scm tags # oldVal: slashes and double-quotes (and possibly commas) must be escaped
 	oldVal="<\/scm>"
-	newVal=" "
-	echo "sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' $modFile" 2>&1 | tee -a $archetypeLog
-	sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' $modFile 2>&1 | tee -a $archetypeLog
-	# scrub the scm url # oldVal: slashes and double-quotes (and possibly commas) must be escaped
+	newVal=""
+	echo "sed -i \"\" -e '/'\"$oldVal\"'/d' \"$modFile\"" 2>&1 | tee -a $archetypeLog
+	sed -i "" -e '/'"$oldVal"'/d' "$modFile" 2>&1 >> $archetypeLog
+
+	# REPLACE the scm url # slashes and double-quotes (and possibly commas) must be escaped
+	# This is a bit of a cheat, but mac sed search & replace is nor very transportable
 	oldVal="<url>https:\/\/github.com\/spring-projects\/spring-boot\/spring-boot-starter-parent\/bip-framework-parentpom\/bip-origin-reactor<\/url>"
-	newVal=" "
-	echo "sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' $modFile" 2>&1 | tee -a $archetypeLog
-	sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' $modFile 2>&1 | tee -a $archetypeLog
+	newVal="<repositories><!-- ADD REPOSITORIES HERE --><\/repositories>"
+	echo "sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' \"$modFile\"" 2>&1 | tee -a $archetypeLog
+	sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' "$modFile" 2>&1 >> $archetypeLog
+
 	# now also have to clean up after sed
 	if [ -f "$modFile-e" ]; then
 		echo "+>> Remove sed artifacts" 2>&1 | tee -a $archetypeLog
@@ -262,10 +276,38 @@ function clean_archetype_files() {
 		rm -fv "$modFile-e" >> $archetypeLog
 	fi
 
+	## Make backup copies of maven files that ./gensvc.sh will have to modify ##
+
+	echo "+>> Make '*_ORIGINAL.xml' back up of archetype-metadata.xml" 2>&1 | tee -a $archetypeLog
+	echo "cp -fv $archetypeTargetDir/src/main/resources/META-INF/maven/archetype-metadata.xml $archetypeTargetDir/src/main/resources/META-INF/maven/archetype-metadata_ORIGINAL.xml" 2>&1 | tee -a $archetypeLog
+	# tee does not play well with some bash commands, so just redirect output to the log
+	cp -fv "$archetypeTargetDir/src/main/resources/META-INF/maven/archetype-metadata.xml" "$archetypeTargetDir/src/main/resources/META-INF/maven/archetype-metadata_ORIGINAL.xml" 2>&1 >> $archetypeLog
+	returnStatus="$?"
+	if [ "$returnStatus" -eq "0" ]; then
+		echo "[OK]" 2>&1 | tee -a $archetypeLog
+	else
+		exit_now $returnStatus "*** FAILURE: could not copy $archetypeOriginName/archive/.gitignore to $archetypeTargetDir/.gitignore"
+	fi
+
+	echo "+>> Make '*_ORIGINAL.properties' back up of archetype.properties" 2>&1 | tee -a $archetypeLog
+	echo "cp -fv $archetypeTargetDir/src/test/resources/projects/basic/archetype.properties $archetypeTargetDir/src/test/resources/projects/basic/archetype_ORIGINAL.properties" 2>&1 | tee -a $archetypeLog
+	# tee does not play well with some bash commands, so just redirect output to the log
+	cp -fv "$archetypeTargetDir/src/test/resources/projects/basic/archetype.properties" "$archetypeTargetDir/src/test/resources/projects/basic/archetype_ORIGINAL.properties" 2>&1 >> $archetypeLog
+	returnStatus="$?"
+	if [ "$returnStatus" -eq "0" ]; then
+		echo "[OK]" 2>&1 | tee -a $archetypeLog
+	else
+		exit_now $returnStatus "*** FAILURE: could not copy $archetypeOriginName/archive/.gitignore to $archetypeTargetDir/.gitignore"
+	fi
+
+	## Clean up the maven projects/basic/archetype.properties ##
+
+	## Copy files from the archive folder ##
+
 	echo "+>> Copy .gitignore file into the archetype" 2>&1 | tee -a $archetypeLog
 	echo "cp -fv $cwd/$archetypeOriginName/archive/.gitignore $archetypeTargetDir/.gitignore" 2>&1 | tee -a $archetypeLog
 	# tee does not play well with some bash commands, so just redirect output to the log
-	cp -fv $cwd/$archetypeOriginName/archive/.gitignore $archetypeTargetDir/.gitignore 2>&1 >> $archetypeLog
+	cp -fv "$cwd/$archetypeOriginName/archive/.gitignore" "$archetypeTargetDir/.gitignore" 2>&1 >> $archetypeLog
 	returnStatus="$?"
 	if [ "$returnStatus" -eq "0" ]; then
 		echo "[OK]" 2>&1 | tee -a $archetypeLog
@@ -274,25 +316,25 @@ function clean_archetype_files() {
 	fi
 
 	echo "+>> Copy basic README.md for new projects" 2>&1 | tee -a $archetypeLog
-	echo "cp -fv $cwd/$archetypeOriginName/archive/$archetypeServiceName-README.md $archetypeTargetDir/README.md" 2>&1 | tee -a $archetypeLog
+	echo "cp -fv $cwd/$archetypeOriginName/archive/$archetypeServiceName-newprojects-README.md $archetypeTargetDir/src/main/resources/archetype-resources/README.md" 2>&1 | tee -a $archetypeLog
 	# tee does not play well with some bash commands, so just redirect output to the log
-	cp -fv $cwd/$archetypeOriginName/archive/$archetypeServiceName-README.md $archetypeTargetDir/README.md 2>&1 >> $archetypeLog
+	cp -fv "$cwd/$archetypeOriginName/archive/$archetypeServiceName-newprojects-README.md" "$archetypeTargetDir/src/main/resources/archetype-resources/README.md" 2>&1 >> $archetypeLog
 	returnStatus="$?"
 	if [ "$returnStatus" -eq "0" ]; then
 		echo "[OK]" 2>&1 | tee -a $archetypeLog
 	else
-		exit_now $returnStatus "*** FAILURE: could not copy $archetypeServiceName-README.md to $archetypeTargetDir/README.md"
+		exit_now $returnStatus "*** FAILURE: $archetypeOriginName/archive/$archetypeServiceName-newprojects-README.md to $archetypeTargetDir/src/main/resources/archetype-resources/README.md"
 	fi
 
-	echo "+>> Copy README.md for $archetypeServiceName project" 2>&1 | tee -a $archetypeLog
-	echo "cp -fv $cwd/$archetypeOriginName/archive/$archetypeServiceName-project-README.md $cwd/$archetypeServiceName/README.md" 2>&1 | tee -a $archetypeLog
+	echo "+>> Copy README.md for $archetypeServiceName archetype project" 2>&1 | tee -a $archetypeLog
+	echo "cp -fv $cwd/$archetypeOriginName/archive/$archetypeServiceName-archetype-README.md $archetypeTargetDir/README.md" 2>&1 | tee -a $archetypeLog
 	# tee does not play well with some bash commands, so just redirect output to the log
-	cp -fv $cwd/$archetypeOriginName/archive/$archetypeServiceName-project-README.md $cwd/$archetypeServiceName/README.md 2>&1 >> $archetypeLog
+	cp -fv "$cwd/$archetypeOriginName/archive/$archetypeServiceName-archetype-README.md" "$archetypeTargetDir/README.md" 2>&1 >> $archetypeLog
 	returnStatus="$?"
 	if [ "$returnStatus" -eq "0" ]; then
 		echo "[OK]" 2>&1 | tee -a $archetypeLog
 	else
-		exit_now $returnStatus "*** FAILURE: could not copy $cwd/$archetypeOriginName/archive/$archetypeServiceName-project-README.md to $cwd/$archetypeServiceName/README.md"
+		exit_now $returnStatus "*** FAILURE: could not copy $cwd/$archetypeOriginName/archive/$archetypeServiceName-archetype-README.md to $archetypeTargetDir/README.md"
 	fi
 
 	## Remove unnecessary files from the generated archetype ##
@@ -300,7 +342,7 @@ function clean_archetype_files() {
 	echo "+>> Remove the archive directory from the archetype" 2>&1 | tee -a $archetypeLog
 	echo "rm -rfv $archetypeTargetDir/src/main/resources/archetype-resources/archive" 2>&1 | tee -a $archetypeLog
 	# tee does not play well with some bash commands, so just redirect output to the log
-	rm -rfv $archetypeTargetDir/src/main/resources/archetype-resources/archive 2>&1 >> $archetypeLog
+	rm -rfv "$archetypeTargetDir/src/main/resources/archetype-resources/archive" 2>&1 >> $archetypeLog
 	returnStatus="$?"
 	if [ "$returnStatus" -eq "0" ]; then
 		echo "[OK]" 2>&1 | tee -a $archetypeLog
@@ -319,7 +361,7 @@ function rename_archetype_origin_dirs() {
 	echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" 2>&1 | tee -a $archetypeLog
 	echo "cd $cwd/$archetypeOriginName/$archetypeTargetDir" 2>&1 | tee -a $archetypeLog
 	# tee does not play well with some bash commands, so just redirect output to the log
-	cd $cwd/$archetypeOriginName/$archetypeTargetDir 2>&1 >> $archetypeLog
+	cd "$cwd/$archetypeOriginName/$archetypeTargetDir" 2>&1 >> $archetypeLog
 	echo "+>> pwd = `pwd`" 2>&1 | tee -a $archetypeLog
 
 	echo "+>> Renaming directories in place: $archetypeTargetDir" 2>&1 | tee -a $archetypeLog
@@ -331,7 +373,7 @@ function rename_archetype_origin_dirs() {
 	do
 		echo "mv -f -v $d \${$d//origin/newname}" 2>&1 | tee -a $archetypeLog
 		# tee does not play well with some bash commands, so just redirect output to the log
-		mv -f -v $d ${d//origin/__artifactNameLowerCase__} 2>&1 >> $archetypeLog
+		mv -f -v "$d" "${d//origin/__artifactNameLowerCase__}" 2>&1 >> $archetypeLog
 		returnStatus="$?"
 		if [ "$returnStatus" -eq "0" ]; then
 			echo "[OK]" 2>&1 | tee -a $archetypeLog
@@ -348,9 +390,9 @@ function delete_old_archetype() {
 	if [ -d $cwd/$archetypeServiceName ]; then
 		echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" 2>&1 | tee -a $archetypeLog
 		echo "+>> Deleting old $archetypeServiceName directory" 2>&1 | tee -a $archetypeLog
-		echo "rm -rfv $cwd/$archetypeServiceName" 2>&1 | tee -a $archetypeLog
+		echo "rm -rf $cwd/$archetypeServiceName" 2>&1 | tee -a $archetypeLog
 		# tee does not play well with some bash commands, so just redirect output to the log
-		rm -rfv $cwd/$archetypeServiceName 2>&1 >> $archetypeLog
+		rm -rf "$cwd/$archetypeServiceName" 2>&1 >> $archetypeLog
 		returnStatus="$?"
 		if [ "$returnStatus" -eq "0" ]; then
 			echo "[OK]" 2>&1 | tee -a $archetypeLog
@@ -367,24 +409,16 @@ function copy_archetype() {
 	echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" 2>&1 | tee -a $archetypeLog
 	echo "cd $cwd/$archetypeOriginName" 2>&1 | tee -a $archetypeLog
 	# tee does not play well with some bash commands, so just redirect output to the log
-	cd $cwd/$archetypeOriginName 2>&1 >> $archetypeLog
-	echo "+>> pwd = `pwd`" 2>&1 >> $archetypeLog
+	cd "$cwd/$archetypeOriginName" 2>&1 >> $archetypeLog
+	echo "+>> pwd = `pwd`" 2>&1 | tee -a $archetypeLog
 
-	echo "+>> Make directory ../$archetypeServiceName" 2>&1 | tee -a $archetypeLog
-	echo "mkdir -v ../$archetypeServiceName" 2>&1 | tee -a $archetypeLog
-	# tee does not play well with some bash commands, so just redirect output to the log
-	mkdir -v ../$archetypeServiceName 2>&1 >> $archetypeLog
-	returnStatus="$?"
-	if [ "$returnStatus" -eq "0" ]; then
-		echo "[OK]" 2>&1 | tee -a $archetypeLog
-	else
-		exit_now $returnStatus "*** FAILURE: could not create ../bip-archetype-service"
-	fi
+	## Copy the generated-sources/archetype directory, then rename it to the correct name ##
+	## Doing it this way due to behavior of cp in this situation                          ##
 
 	echo "+>> Copy archetype files to $archetypeServiceName" 2>&1 | tee -a $archetypeLog
-	echo "cp -R -f $archetypeTargetDir/* ../$archetypeServiceName" 2>&1 | tee -a $archetypeLog
+	echo "cp -R -f $archetypeTargetDir ../" 2>&1 | tee -a $archetypeLog
 	# tee does not play well with some bash commands, so just redirect output to the log
-	cp -R -f $archetypeTargetDir/* ../$archetypeServiceName 2>&1 >> $archetypeLog
+	cp -R -f "$archetypeTargetDir" "../" 2>&1 >> $archetypeLog
 	returnStatus="$?"
 	if [ "$returnStatus" -eq "0" ]; then
 		echo "[OK]" 2>&1 | tee -a $archetypeLog
@@ -392,11 +426,22 @@ function copy_archetype() {
 		exit_now $returnStatus "*** FAILURE: could not copy $archetypeTargetDir/* to ../$archetypeServiceName"
 	fi
 
+	echo "+>> Rename directory ../archetype" 2>&1 | tee -a $archetypeLog
+	echo "mv -f -v ../archetype ../$archetypeServiceName" 2>&1 | tee -a $archetypeLog
+	# tee does not play well with some bash commands, so just redirect output to the log
+	mv -f -v "../archetype" "../$archetypeServiceName" 2>&1 >> $archetypeLog
+	returnStatus="$?"
+	if [ "$returnStatus" -eq "0" ]; then
+		echo "[OK]" 2>&1 | tee -a $archetypeLog
+	else
+		exit_now $returnStatus "*** FAILURE: could not create ../bip-archetype-service"
+	fi
+
 	## for some reason, above copy does NOT copy $archetypeTargetDir/.gitignore, so will do it manually here ##
 	echo "+>> Copy .gitignore file into the archetype" 2>&1 | tee -a $archetypeLog
 	echo "cp -f $archetypeTargetDir/.gitignore ../$archetypeServiceName/.gitignore" 2>&1 | tee -a $archetypeLog
 	# tee does not play well with some bash commands, so just redirect output to the log
-	cp -f $archetypeTargetDir/.gitignore ../$archetypeServiceName/.gitignore 2>&1 >> $archetypeLog
+	cp -f "$archetypeTargetDir/.gitignore" "../$archetypeServiceName/.gitignore" 2>&1 >> $archetypeLog
 	returnStatus="$?"
 	if [ "$returnStatus" -eq "0" ]; then
 		echo "[OK]" 2>&1 | tee -a $archetypeLog
@@ -411,9 +456,9 @@ function copy_archetype() {
 function install_archetype() {
 	echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" 2>&1 | tee -a $archetypeLog
 	echo "" 2>&1 | tee -a $archetypeLog
-	echo "cd $archetypeServiceName" 2>&1 | tee -a $archetypeLog
+	echo "cd $cwd/$archetypeServiceName" 2>&1 | tee -a $archetypeLog
 	# tee does not play well with some bash commands, so just redirect output to the log
-	cd $archetypeServiceName 2>&1 >> $archetypeLog
+	cd "$cwd/$archetypeServiceName" 2>&1 >> $archetypeLog
 	echo "+>> pwd=`pwd`" 2>&1 | tee -a $archetypeLog
 
 	echo "+>> Install the archetype" 2>&1 | tee -a $archetypeLog
@@ -432,6 +477,7 @@ function install_archetype() {
 ####################################
 
 ## output header info, get the log started ##
+
 echo "" 2>&1 | tee $archetypeLog
 echo "=========================================================================" 2>&1 | tee -a $archetypeLog
 echo "Generate $archetypeServiceName" 2>&1 | tee -a $archetypeLog
@@ -439,6 +485,7 @@ echo "========================================================================="
 echo "" 2>&1 | tee -a $archetypeLog
 
 ## call each function in order ##
+
 get_args $args
 pre_processing
 build_origin
@@ -450,17 +497,23 @@ copy_archetype
 install_archetype
 
 ## success message (didn't exit_now anwhere along the way) ##
+
+cd "$cwd"
 echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" 2>&1 | tee -a $archetypeLog
 echo "+>> SUCCESS - archetype project created: $archetypeServiceName" 2>&1 | tee -a $archetypeLog
 
 echo "   To generate a new service project:" 2>&1 | tee -a $archetypeLog
-echo "   - a gensvc.* has been copied into the ../ (should be your git root)" 2>&1 | tee -a $archetypeLog
 echo "   - ensure values in gensvc.properties are correct" 2>&1 | tee -a $archetypeLog
 echo "   - ensure gensvc.sh is executable:" 2>&1 | tee -a $archetypeLog
 echo "     \$ chmod +x gensvc.sh" 2>&1 | tee -a $archetypeLog
 echo "   - execute gensvc.sh" 2>&1 | tee -a $archetypeLog
 echo "     \$ ./gensvc.sh" 2>&1 | tee -a $archetypeLog
 echo "" 2>&1 | tee -a $archetypeLog
-
-cd $cwd
+echo " ###############################################################" 2>&1 | tee -a $archetypeLog
+echo " ## NOTE                                                      ##" 2>&1 | tee -a $archetypeLog
+echo " ## You *must* manually edit $archetypeServiceName/pom.xml    ##" 2>&1 | tee -a $archetypeLog
+echo " ## and add your Nexus <repository> tags. These can be copied ##" 2>&1 | tee -a $archetypeLog
+echo " ## from any other BIP project.                               ##" 2>&1 | tee -a $archetypeLog
+echo " ###############################################################" 2>&1 | tee -a $archetypeLog
+echo "" 2>&1 | tee -a $archetypeLog
 exit_now 0

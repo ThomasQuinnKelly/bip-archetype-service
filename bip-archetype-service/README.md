@@ -12,4 +12,11 @@ The steps to generate a new project from the archetype are encoded in the `gensv
 2. From the root of the archetype projects, execute the `gensvc.sh` script.
 3. Run the spring-boot server for the newly created project and open its [localhost swagger page](http://localhost:8080/swagger-ui.html) page to ensure everything responds as expected.
 4. Move the new project directory (and all its files) to the root of your local git directory.
-5. Run `$ git init` on the new project, and push it to the GitHub repo.
+5. Update the git repo...
+
+  - `$ cd ~/git/[yourNewProjectName]`
+  - Initialize the repo with `$ git init`
+  - Make your branch `$ git checkout -b [branchName]`
+  - and `$ git add .` on the new project,
+  - Register it with the remote repo with `$ git remote add origin [URL]`,
+  - and push it to the GitHub repo with `$ git push -u origin [branchName]`.
