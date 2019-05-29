@@ -5,6 +5,7 @@ cwd=`pwd`
 thisScript="$0"
 thisFileName=$(echo "$thisScript" | rev | cut -d'/' -f1 | rev | cut -d'.' -f1)
 args="$@"
+returnStatus=0
 # script variables
 propertiesFile="$thisFileName.properties"
 overwriteExisting=-1
@@ -58,7 +59,7 @@ function exit_now() {
 			echo "        or execute this generate script and properties in another directory. " 2>&1 | tee -a "$generateLog"
 		elif [ "$exit_code" -eq "20" ]; then
 			# A maven error occurred
-			echo " FAILURE: 'mvn' exited with $mvnStatus" 2>&1 | tee -a "$generateLog"
+			echo " FAILURE: 'mvn' exited with $returnStatus" 2>&1 | tee -a "$generateLog"
 		elif [ "$exit_code" -eq "126" ]; then
 			# Permission problem or command is not an executable
 			echo " ERROR: Invalid permissions or non-executable command ... aborting immediately" 2>&1 | tee -a "$generateLog"
@@ -258,10 +259,17 @@ function pre_build() {
 			echo "rm -rf $artifactId/" 2>&1 | tee -a "$generateLog"
 			# tee does not play well with some bash commands, so just redirect output to the log
 			rm -rf "$artifactId/" 2>&1 >> "$generateLog"
+			returnStatus="$?"
+			if [ "$returnStatus" -ne "0" ]; then
+				exit_now $returnStatus
+			fi
 		else
+			echo "+>> Cannot overwrite project $artifactId."
+			echo "+>> Delete it, or run this script with the -o argument."
 			exit_now 7
 		fi
 	fi
+	echo "+>> Project check complete"
 
 	## Clean up the META-INF/maven/archetyp-metadata.xml ##
 
@@ -278,35 +286,58 @@ function pre_build() {
 	cd "$cwd/$archetypeArtifactId" 2>&1 >> "$generateLog"
 	echo "+>> pwd = `pwd`" 2>&1 | tee -a "$generateLog"
 
-	modFile="src/main/resources/META-INF/maven/archetype-metadata.xml"
+	## Can't find a way to include "no extension" files in mavens archetype:create-from-project filteredExtensions list
+	modFile="./src/main/resources/archetype-resources"
+	echo "+>> Preparing $modFile extension-less files" 2>&1 | tee -a "$generateLog"
 
+	# Jenkinsfile
+	oldVal="__artifactId__"
+	newVal="$artifactId"
+	echo "sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' \"$modFile/Jenkinsfile\"" 2>&1 | tee -a "$generateLog"
+	sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' "$modFile/Jenkinsfile" 2>&1 >> "$generateLog"
+
+	# Dockerfile
+	oldVal="__artifactId__"
+	newVal="$artifactId"
+	echo "sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' \"$modFile/__rootArtifactId__/Dockerfile\"" 2>&1 | tee -a "$generateLog"
+	sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' "$modFile/__rootArtifactId__/Dockerfile" 2>&1 >> "$generateLog"
+
+	## Clean up maven META-INF/maven/archetype-metadata.xml
+
+	modFile="./src/main/resources/META-INF/maven/archetype-metadata.xml"
 	echo "+>> Preparing $modFile" 2>&1 | tee -a "$generateLog"
+
 	# camelcase replacement
-	oldVal="Origin"
+	oldVal="__rootArtifactId__"
+	newVal="$artifactId"
+	echo "sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' \"$modFile\"" 2>&1 | tee -a "$generateLog"
+	sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' "$modFile" 2>&1 >> "$generateLog"
+	# camelcase replacement
+	oldVal="__artifactName__"
 	newVal="$artifactName"
 	echo "sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' \"$modFile\"" 2>&1 | tee -a "$generateLog"
 	sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' "$modFile" 2>&1 >> "$generateLog"
 	# lowercase replacement
-	oldVal="origin"
+	oldVal="__artifactNameLowerCase__"
 	newVal="$artifactNameLowerCase"
 	echo "sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' \"$modFile\"" 2>&1 | tee -a "$generateLog"
 	sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' "$modFile" 2>&1 >> "$generateLog"
 	# uppercase replacement
-	oldVal="ORIGIN"
+	oldVal="__artifactNameUpperCase__"
 	newVal="$artifactNameUpperCase"
 	echo "sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' \"$modFile\"" 2>&1 | tee -a "$generateLog"
 	sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' "$modFile" 2>&1 >> "$generateLog"
 
-	echo "+>> Content of $modFile"
+	echo "+>> Content of $modFile" 2>&1 | tee -a "$generateLog"
 	cat "$modFile" 2>&1 >> "$generateLog"
-	echo "< EOF"
-	echo ""
+	echo "-- EOF --" 2>&1 | tee -a "$generateLog"
+	echo "" 2>&1 | tee -a "$generateLog"
 
 	## Clean up the maven projects/basic/archetype.properties ##
 
-	modFile="src/test/resources/projects/basic/archetype.properties"
-
+	modFile="./src/test/resources/projects/basic/archetype.properties"
 	echo "+>> Preparing $modFile" 2>&1 | tee -a "$generateLog"
+
 	# default package replacement
 	oldVal="it.pkg"
 	newVal="$groupId"
@@ -328,25 +359,25 @@ function pre_build() {
 	echo "sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' $modFile" 2>&1 | tee -a "$generateLog"
 	sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' "$modFile" 2>&1 >> "$generateLog"
 	# camelcase replacement
-	oldVal="Origin"
+	oldVal="__artifactName__"
 	newVal="$artifactName"
 	echo "sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' $modFile" 2>&1 | tee -a "$generateLog"
 	sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' "$modFile" 2>&1 >> "$generateLog"
 	# lowercase replacement
-	oldVal="origin"
+	oldVal="__artifactNameLowerCase__"
 	newVal="$artifactNameLowerCase"
 	echo "sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' $modFile" 2>&1 | tee -a "$generateLog"
 	sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' "$modFile" 2>&1 >> "$generateLog"
 	# uppercase replacement
-	oldVal="ORIGIN"
+	oldVal="__artifactNameUpperCase__"
 	newVal="$artifactNameUpperCase"
 	echo "sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' $modFile" 2>&1 | tee -a "$generateLog"
 	sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' "$modFile" 2>&1 >> "$generateLog"
 
-	echo "+>> Content of $modFile"
+	echo "+>> Content of $modFile" 2>&1 | tee -a "$generateLog"
 	cat "$modFile" 2>&1 >> "$generateLog"
-	echo "< EOF"
-	echo ""
+	echo "-- EOF --" 2>&1 | tee -a "$generateLog"
+	echo "" 2>&1 | tee -a "$generateLog"
 }
 
 ## function to execute the maven archetype:generate command ##
@@ -386,14 +417,15 @@ function generate_project() {
 		-DartifactNameLowerCase="$artifactNameLowerCase" \
 		-DartifactNameUpperCase="$artifactNameUpperCase" \
 		-DservicePort="$servicePort" \
+		-DoutputDirectory="../." \
 		-Dgoals=package \
-		-e -X 2>&1 | tee -a "$generateLog"
-	mvnStatus="$?"
-	if [ "$mvnStatus" -ne "0" ]; then
+		-e -X 2>&1 >> "$generateLog"
+	returnStatus="$?"
+	if [ "$returnStatus" -ne "0" ]; then
 		# 	echo "------------------------------------------------------------------------" 2>&1 | tee -a "$generateLog"
 		# 	echo " BUILD SUCCESS" 2>&1 | tee -a "$generateLog"
-		# elif [ "$mvnStatus" -ge "126" ]; then
-		# 	exit_now $mvnStatus
+		# elif [ "$returnStatus" -ge "126" ]; then
+		# 	exit_now $returnStatus
 		# else
 		exit_now 20
 	fi
@@ -406,22 +438,87 @@ function post_creation() {
 	echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" 2>&1 | tee -a "$generateLog"
 	echo "+>> Performing post-build activities" 2>&1 | tee -a "$generateLog"
 
-	## Reset the archetype-metadata.xml and archetype.properties files ##
+	## Remove and Fix any remining files that need it ##
 
-	echo "cd $cwd/$archetypeArtifactId" 2>&1 | tee -a "$generateLog"
+	# tee does not play well with some bash commands, so just redirect output to the log
+	cd "$cwd/$artifactId" 2>&1 >> "$generateLog"
+	echo "+>> pwd = `pwd`" 2>&1 | tee -a "$generateLog"
+
+	# Remove unneeded Jenkinsfile_ORIGINAL file in new project
+	if [ -z "./Jenkinsfile_ORIGINAL" ]; then
+		echo "+>> rm -f ./Jenkinsfile_ORIGINAL" 2>&1 | tee -a "$generateLog"
+		rm -f "./Jenkinsfile_ORIGINAL" 2>&1 >> "$generateLog"
+		returnStatus="$?"
+		if [ "$returnStatus" -ne "0" ]; then
+			exit_now $returnStatus
+		fi
+	fi
+
+	# Remove unneeded Dockerfile_ORIGINAL file in new project
+	if [ -z "./$artifactId/Dockerfile_ORIGINAL" ]; then
+		echo "+>> rm -f ./$artifactId/Dockerfile_ORIGINAL" 2>&1 | tee -a "$generateLog"
+		rm -f "./$artifactId/Dockerfile_ORIGINAL" 2>&1 >> "$generateLog"
+		returnStatus="$?"
+		if [ "$returnStatus" -ne "0" ]; then
+			exit_now $returnStatus
+		fi
+	fi
+
+	# Fix base readme in new project
+	echo "+>> Fix ./README.md" 2>&1 | tee -a "$generateLog"
+	modFile="./README.md"
+	oldVal="__artifactId__"
+	newVal="$artifactId"
+	echo "sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' \"$modFile\"" 2>&1 | tee -a "$generateLog"
+	sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' "$modFile" 2>&1 >> "$generateLog"
+
+	## Reset the archetype-metadata.xml and archetype.properties files in the Archetype project ##
+
 	# tee does not play well with some bash commands, so just redirect output to the log
 	cd "$cwd/$archetypeArtifactId" >> "$generateLog" 2>&1
 	echo "+>> pwd = `pwd`" 2>&1 | tee -a "$generateLog"
 
-	modDir="src/main/resources/META-INF/maven"
+	# reset archetype-metadata in the Archetype project
+	echo "+>> Reset archetype-metadata.xml" 2>&1 | tee -a "$generateLog"
+	modDir="./src/main/resources/META-INF/maven"
 	echo "cp -fv $modDir/archetype-metadata_ORIGINAL.xml $modDir/archetype-metadata.xml" 2>&1 | tee -a "$generateLog"
 	cp -fv "$modDir/archetype-metadata_ORIGINAL.xml" "$modDir/archetype-metadata.xml"  >> "$generateLog" 2>&1
+	returnStatus="$?"
+	if [ "$returnStatus" -ne "0" ]; then
+		exit_now $returnStatus
+	fi
 
-	modDir="src/test/resources/projects/basic"
+	# reset archetype.properties in the Archetype project
+	echo "+>> Reset archetype.properties" 2>&1 | tee -a "$generateLog"
+	modDir="./src/test/resources/projects/basic"
 	echo "cp -fv $modDir/archetype_ORIGINAL.properties $modDir/archetype.properties" 2>&1 | tee -a "$generateLog"
 	cp -fv "$modDir/archetype_ORIGINAL.properties" "$modDir/archetype.properties"  >> "$generateLog" 2>&1
+	returnStatus="$?"
+	if [ "$returnStatus" -ne "0" ]; then
+		exit_now $returnStatus
+	fi
 
-	## Ensure no './.git' repo directory ##
+	# reset Jenkinsfile in the Archetype project
+	echo "+>> Reset Jenkinsfile" 2>&1 | tee -a "$generateLog"
+	modDir="./src/main/resources/archetype-resources"
+	echo "cp -fv $modDir/Jenkinsfile_ORIGINAL $modDir/Jenkinsfile" 2>&1 | tee -a "$generateLog"
+	cp -fv "$modDir/Jenkinsfile_ORIGINAL" "$modDir/Jenkinsfile"  >> "$generateLog" 2>&1
+	returnStatus="$?"
+	if [ "$returnStatus" -ne "0" ]; then
+		exit_now $returnStatus
+	fi
+
+	# reset Dockerfile in the Archetype project
+	echo "+>> Reset Dockerfile" 2>&1 | tee -a "$generateLog"
+	modDir="./src/main/resources/archetype-resources/__rootArtifactId__"
+	echo "cp -fv $modDir/Dockerfile_ORIGINAL $modDir/Dockerfile" 2>&1 | tee -a "$generateLog"
+	cp -fv "$modDir/Dockerfile_ORIGINAL" "$modDir/Dockerfile"  >> "$generateLog" 2>&1
+	returnStatus="$?"
+	if [ "$returnStatus" -ne "0" ]; then
+		exit_now $returnStatus
+	fi
+
+	## Remove any './.git' repo directory ##
 
 	echo "cd $cwd/$artifactId" 2>&1 | tee -a "$generateLog"
 	# tee does not play well with some bash commands, so just redirect output to the log
@@ -432,7 +529,12 @@ function post_creation() {
 		echo "rm -rf ./.git" 2>&1 | tee -a "$generateLog"
 		# tee does not play well with some bash commands, so just redirect output to the log
 		rm -rf ./.git 2>&1 >> "$generateLog"
+		returnStatus="$?"
+		if [ "$returnStatus" -ne "0" ]; then
+			exit_now $returnStatus
+		fi
 	fi
+
 	#  cd "$cwd/$artifactId" >> "$generateLog" 2>&1
 	#  sed -i -- 's/__rootArtifactId__/'$artifactId'/g' pom.xml >> "$generateLog" 2>&1
 	#  rm pom.xml-- >> "$generateLog" 2>&1
@@ -458,4 +560,15 @@ pre_build
 #read -p "+>>>>>> AFTER SED COMMANDS "
 generate_project
 post_creation
+echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" 2>&1 | tee -a "$generateLog"
+echo "+>> Project created: $archetypeArtifactId" 2>&1 | tee -a "$generateLog"
+echo "" 2>&1 | tee -a "$generateLog"
+echo " ##################################################################################" 2>&1 | tee -a "$generateLog"
+echo " ## NOTE                                                                         ##" 2>&1 | tee -a "$generateLog"
+echo " ## - You must move your new project to a valid location in your local git repo. ##" 2>&1 | tee -a "$generateLog"
+echo " ## - You must also manually initialize, commit, register with the remote repo   ##" 2>&1 | tee -a "$generateLog"
+echo " ##   and push the new project to it.                                            ##" 2>&1 | tee -a "$generateLog"
+echo " ## SEE: https://github.com/department-of-veterans-affairs/bip-archetype-service ##" 2>&1 | tee -a "$generateLog"
+echo " ##################################################################################" 2>&1 | tee -a "$generateLog"
+echo "" 2>&1 | tee -a "$generateLog"
 exit_now 0

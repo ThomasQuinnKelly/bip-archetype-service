@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<archetype-descriptor xsi:schemaLocation="https://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.1.0 http://maven.apache.org/xsd/archetype-descriptor-1.1.0.xsd" name="bip-origin-reactor"
+<archetype-descriptor xsi:schemaLocation="https://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.1.0 http://maven.apache.org/xsd/archetype-descriptor-1.1.0.xsd" name="__rootArtifactId__-reactor"
     xmlns="https://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.1.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <requiredProperties>
     <requiredProperty key="artifactNameLowerCase">
-      <defaultValue>origin</defaultValue>
+      <defaultValue>__artifactNameLowerCase__</defaultValue>
     </requiredProperty>
     <requiredProperty key="artifactName">
-      <defaultValue>Origin</defaultValue>
+      <defaultValue>__artifactName__</defaultValue>
     </requiredProperty>
     <requiredProperty key="artifactNameUpperCase">
-      <defaultValue>ORIGIN</defaultValue>
+      <defaultValue>__artifactNameUpperCase__</defaultValue>
     </requiredProperty>
   </requiredProperties>
   <fileSets>
@@ -55,7 +55,7 @@
       </includes>
     </fileSet>
     <fileSet filtered="true" encoding="UTF-8">
-      <directory>helm/ocp-origin</directory>
+      <directory>helm/ocp-__artifactNameLowerCase__</directory>
       <includes>
         <include>**/*.txt</include>
         <include>**/*.tpl</include>
@@ -88,7 +88,7 @@
       </includes>
     </fileSet>
     <fileSet encoding="UTF-8">
-      <directory>helm/ocp-origin</directory>
+      <directory>helm/ocp-__artifactNameLowerCase__</directory>
       <includes>
         <include>**/*.helmignore</include>
       </includes>
@@ -113,7 +113,7 @@
     </fileSet>
   </fileSets>
   <modules>
-    <module id="bip-origin" dir="bip-origin" name="bip-origin">
+    <module id="__rootArtifactId__" dir="__rootArtifactId__" name="__rootArtifactId__">
       <fileSets>
         <fileSet filtered="true" packaged="true" encoding="UTF-8">
           <directory>src/main/java</directory>
@@ -169,7 +169,7 @@
         </fileSet>
       </fileSets>
     </module>
-    <module id="bip-origin-inttest" dir="bip-origin-inttest" name="bip-origin-inttest">
+    <module id="__rootArtifactId__-inttest" dir="__rootArtifactId__-inttest" name="__rootArtifactId__-inttest">
       <fileSets>
         <fileSet filtered="true" packaged="true" encoding="UTF-8">
           <directory>src/inttest/java</directory>
@@ -205,7 +205,7 @@
         </fileSet>
       </fileSets>
     </module>
-    <module id="bip-origin-perftest" dir="bip-origin-perftest" name="bip-origin-perftest">
+    <module id="__rootArtifactId__-perftest" dir="__rootArtifactId__-perftest" name="__rootArtifactId__-perftest">
       <fileSets>
         <fileSet filtered="true" encoding="UTF-8">
           <directory>src/test/jmeter</directory>
