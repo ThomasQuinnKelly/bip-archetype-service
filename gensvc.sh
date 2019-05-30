@@ -79,7 +79,7 @@ function exit_now() {
 	fi
 	echo "" 2>&1 | tee -a "$generateLog"
 	echo " See \""$generateLog"\", search \"+>> \" for script actions." 2>&1 | tee -a "$generateLog"
-	echo " Use \"./$thisScript -h\" for script usage help." 2>&1 | tee -a "$generateLog"
+	echo " Use \"$thisScript -h\" for script usage help." 2>&1 | tee -a "$generateLog"
 	echo "------------------------------------------------------------------------"2>&1 | tee -a "$generateLog"
 	# exit
 	exit $exit_code
@@ -286,22 +286,6 @@ function pre_build() {
 	cd "$cwd/$archetypeArtifactId" 2>&1 >> "$generateLog"
 	echo "+>> pwd = `pwd`" 2>&1 | tee -a "$generateLog"
 
-	## Can't find a way to include "no extension" files in mavens archetype:create-from-project filteredExtensions list
-	modFile="./src/main/resources/archetype-resources"
-	echo "+>> Preparing $modFile extension-less files" 2>&1 | tee -a "$generateLog"
-
-	# Jenkinsfile
-	oldVal="__artifactId__"
-	newVal="$artifactId"
-	echo "sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' \"$modFile/Jenkinsfile\"" 2>&1 | tee -a "$generateLog"
-	sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' "$modFile/Jenkinsfile" 2>&1 >> "$generateLog"
-
-	# Dockerfile
-	oldVal="__artifactId__"
-	newVal="$artifactId"
-	echo "sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' \"$modFile/__rootArtifactId__/Dockerfile\"" 2>&1 | tee -a "$generateLog"
-	sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' "$modFile/__rootArtifactId__/Dockerfile" 2>&1 >> "$generateLog"
-
 	## Clean up maven META-INF/maven/archetype-metadata.xml
 
 	modFile="./src/main/resources/META-INF/maven/archetype-metadata.xml"
@@ -328,10 +312,10 @@ function pre_build() {
 	echo "sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' \"$modFile\"" 2>&1 | tee -a "$generateLog"
 	sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' "$modFile" 2>&1 >> "$generateLog"
 
-	echo "+>> Content of $modFile" 2>&1 | tee -a "$generateLog"
+	echo "+>> Content of $modFile" 2>&1 >> "$generateLog"
 	cat "$modFile" 2>&1 >> "$generateLog"
-	echo "-- EOF --" 2>&1 | tee -a "$generateLog"
-	echo "" 2>&1 | tee -a "$generateLog"
+	echo "+>> -- EOF --" 2>&1 >> "$generateLog"
+	echo "" 2>&1 >> "$generateLog"
 
 	## Clean up the maven projects/basic/archetype.properties ##
 
@@ -374,10 +358,10 @@ function pre_build() {
 	echo "sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' $modFile" 2>&1 | tee -a "$generateLog"
 	sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' "$modFile" 2>&1 >> "$generateLog"
 
-	echo "+>> Content of $modFile" 2>&1 | tee -a "$generateLog"
+	echo "+>> Content of $modFile" 2>&1 >> "$generateLog"
 	cat "$modFile" 2>&1 >> "$generateLog"
-	echo "-- EOF --" 2>&1 | tee -a "$generateLog"
-	echo "" 2>&1 | tee -a "$generateLog"
+	echo "+>> -- EOF --" 2>&1 | tee -a "$generateLog"
+	echo "" 2>&1 >> "$generateLog"
 }
 
 ## function to execute the maven archetype:generate command ##
@@ -422,14 +406,8 @@ function generate_project() {
 		-e -X 2>&1 >> "$generateLog"
 	returnStatus="$?"
 	if [ "$returnStatus" -ne "0" ]; then
-		# 	echo "------------------------------------------------------------------------" 2>&1 | tee -a "$generateLog"
-		# 	echo " BUILD SUCCESS" 2>&1 | tee -a "$generateLog"
-		# elif [ "$returnStatus" -ge "126" ]; then
-		# 	exit_now $returnStatus
-		# else
 		exit_now 20
 	fi
-
 }
 
 ## function to perform post-build activities                ##
@@ -444,25 +422,31 @@ function post_creation() {
 	cd "$cwd/$artifactId" 2>&1 >> "$generateLog"
 	echo "+>> pwd = `pwd`" 2>&1 | tee -a "$generateLog"
 
-	# Remove unneeded Jenkinsfile_ORIGINAL file in new project
-	if [ -z "./Jenkinsfile_ORIGINAL" ]; then
-		echo "+>> rm -f ./Jenkinsfile_ORIGINAL" 2>&1 | tee -a "$generateLog"
-		rm -f "./Jenkinsfile_ORIGINAL" 2>&1 >> "$generateLog"
+	# remove /archive if it has mysteriously appeared again
+	if [ -d "./archive" ]; then
+		echo "+>> rm -rf ./archive" 2>&1 | tee -a "$generateLog"
+		rm -rf "./archive" 2>&1 >> "$generateLog"
 		returnStatus="$?"
 		if [ "$returnStatus" -ne "0" ]; then
 			exit_now $returnStatus
 		fi
 	fi
 
-	# Remove unneeded Dockerfile_ORIGINAL file in new project
-	if [ -z "./$artifactId/Dockerfile_ORIGINAL" ]; then
-		echo "+>> rm -f ./$artifactId/Dockerfile_ORIGINAL" 2>&1 | tee -a "$generateLog"
-		rm -f "./$artifactId/Dockerfile_ORIGINAL" 2>&1 >> "$generateLog"
-		returnStatus="$?"
-		if [ "$returnStatus" -ne "0" ]; then
-			exit_now $returnStatus
-		fi
-	fi
+	## Can't find a way to include "no extension" files in mavens archetype:create-from-project filteredExtensions list
+	modFile="."
+	echo "+>> Preparing $modFile extension-less files" 2>&1 | tee -a "$generateLog"
+
+	# Jenkinsfile
+	oldVal="__artifactId__"
+	newVal="$artifactId"
+	echo "sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' \"$modFile/Jenkinsfile\"" 2>&1 | tee -a "$generateLog"
+	sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' "$modFile/Jenkinsfile" 2>&1 >> "$generateLog"
+
+	# Dockerfile
+	oldVal="__artifactId__"
+	newVal="$artifactId"
+	echo "sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' \"$modFile/$artifactId/Dockerfile\"" 2>&1 | tee -a "$generateLog"
+	sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' "$modFile/$artifactId/Dockerfile" 2>&1 >> "$generateLog"
 
 	# Fix base readme in new project
 	echo "+>> Fix ./README.md" 2>&1 | tee -a "$generateLog"
@@ -498,26 +482,6 @@ function post_creation() {
 		exit_now $returnStatus
 	fi
 
-	# reset Jenkinsfile in the Archetype project
-	echo "+>> Reset Jenkinsfile" 2>&1 | tee -a "$generateLog"
-	modDir="./src/main/resources/archetype-resources"
-	echo "cp -fv $modDir/Jenkinsfile_ORIGINAL $modDir/Jenkinsfile" 2>&1 | tee -a "$generateLog"
-	cp -fv "$modDir/Jenkinsfile_ORIGINAL" "$modDir/Jenkinsfile"  >> "$generateLog" 2>&1
-	returnStatus="$?"
-	if [ "$returnStatus" -ne "0" ]; then
-		exit_now $returnStatus
-	fi
-
-	# reset Dockerfile in the Archetype project
-	echo "+>> Reset Dockerfile" 2>&1 | tee -a "$generateLog"
-	modDir="./src/main/resources/archetype-resources/__rootArtifactId__"
-	echo "cp -fv $modDir/Dockerfile_ORIGINAL $modDir/Dockerfile" 2>&1 | tee -a "$generateLog"
-	cp -fv "$modDir/Dockerfile_ORIGINAL" "$modDir/Dockerfile"  >> "$generateLog" 2>&1
-	returnStatus="$?"
-	if [ "$returnStatus" -ne "0" ]; then
-		exit_now $returnStatus
-	fi
-
 	## Remove any './.git' repo directory ##
 
 	echo "cd $cwd/$artifactId" 2>&1 | tee -a "$generateLog"
@@ -535,9 +499,6 @@ function post_creation() {
 		fi
 	fi
 
-	#  cd "$cwd/$artifactId" >> "$generateLog" 2>&1
-	#  sed -i -- 's/__rootArtifactId__/'$artifactId'/g' pom.xml >> "$generateLog" 2>&1
-	#  rm pom.xml-- >> "$generateLog" 2>&1
 	cd "$cwd" >> "$generateLog" 2>&1
 }
 

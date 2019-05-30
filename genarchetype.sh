@@ -376,30 +376,6 @@ function clean_archetype_files() {
 		exit_now $returnStatus "*** FAILURE: ./$archetypeTargetDir/src/test/resources/projects/basic/archetype.properties to ./$archetypeTargetDir/src/test/resources/projects/basic/archetype_ORIGINAL.properties"
 	fi
 
-	# make a copy of the "original" Jenkinsfile for gensvc.sh
-	echo "+>> Make 'Jenkinsfile_ORIGINAL' back up of Jenkinsfile" 2>&1 | tee -a "$archetypeLog"
-	echo "cp -fv ./$archetypeTargetDir/src/main/resources/archetype-resources/Jenkinsfile ./$archetypeTargetDir/src/main/resources/archetype-resources/Jenkinsfile_ORIGINAL" 2>&1 | tee -a "$archetypeLog"
-	# tee does not play well with some bash commands, so just redirect output to the log
-	cp -fv "./$archetypeTargetDir/src/main/resources/archetype-resources/Jenkinsfile" "./$archetypeTargetDir/src/main/resources/archetype-resources/Jenkinsfile_ORIGINAL" 2>&1 >> "$archetypeLog"
-	returnStatus="$?"
-	if [ "$returnStatus" -eq "0" ]; then
-		echo "[OK]" 2>&1 | tee -a "$archetypeLog"
-	else
-		exit_now $returnStatus "*** FAILURE: could not copy ./$archetypeTargetDir/src/main/resources/archetype-resources/Jenkinsfile to ./$archetypeTargetDir/src/main/resources/archetype-resources/Jenkinsfile_ORIGINAL"
-	fi
-
-	# make a copy of the "original" Dockerfile for gensvc.sh
-	echo "+>> Make 'Dockerfile_ORIGINAL' back up of Dockerfile" 2>&1 | tee -a "$archetypeLog"
-	echo "cp -fv ./$archetypeTargetDir/src/main/resources/archetype-resources/bip-origin/Dockerfile ./$archetypeTargetDir/src/main/resources/archetype-resources/bip-origin/Dockerfile_ORIGINAL" 2>&1 | tee -a "$archetypeLog"
-	# tee does not play well with some bash commands, so just redirect output to the log
-	cp -fv "./$archetypeTargetDir/src/main/resources/archetype-resources/bip-origin/Dockerfile" "./$archetypeTargetDir/src/main/resources/archetype-resources/bip-origin/Dockerfile_ORIGINAL" 2>&1 >> "$archetypeLog"
-	returnStatus="$?"
-	if [ "$returnStatus" -eq "0" ]; then
-		echo "[OK]" 2>&1 | tee -a "$archetypeLog"
-	else
-		exit_now $returnStatus "*** FAILURE: could not copy ./$archetypeTargetDir/src/main/resources/archetype-resources/bip-origin/Dockerfile to ./$archetypeTargetDir/src/main/resources/archetype-resources/bip-origin/Dockerfile_ORIGINAL"
-	fi
-
 	## Copy files from the archive folder ##
 
 	# copy .gitignore

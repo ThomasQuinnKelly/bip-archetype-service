@@ -1,4 +1,4 @@
-**artifactId**# What is this repository for?
+# What is this repository for?
 
 This is a suite of BIP projects for
 
