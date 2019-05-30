@@ -5,6 +5,19 @@
 #set -x
 ##
 
+#########################################################################
+## genarchetype.sh [-h|-s]
+## Creates a maven archetype from an origin project (the easy part),
+## and fixes everything missed by the creation mojo (less easy part)
+## in order to:
+## - create an archetype project from the origin source project
+## - in the archetype, replace references (bip-origin, Origin, etc) in
+##   files, filenames, and directory names, using the appropriate
+##   variable declarations for use by gensvc.sh
+## - copy and remove files to prepare the way for gensvc.sh execution
+## Changes in the origin project may require changes in this script.
+#########################################################################
+
 ### helpful values
 cwd="`pwd`"
 thisScript="$0"
@@ -231,7 +244,6 @@ function clean_archetype_files() {
 
 	modFile="./$archetypeTargetDir/pom.xml"
 	echo "+>> Fix $modfile in place"
-
 	# replace archetype package/groupId
 	oldVal="gov.va.bip.origin"
 	newVal="gov.va.bip.archetype.service"
@@ -247,7 +259,6 @@ function clean_archetype_files() {
 	newVal="BIP Service Archetype"
 	echo "sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' \"$modFile\"" 2>&1 | tee -a "$archetypeLog"
 	sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' "$modFile" 2>&1 >> "$archetypeLog"
-
 	# delete the bad url tag # oldVal: slashes and double-quotes (and possibly commas) must be escaped
 	oldVal="<url>https:\/\/github.com\/spring-projects\/spring-boot\/spring-boot-starter-parent\/bip-framework-parentpom\/bip-origin-reactor<\/url>"
 	newVal=""
@@ -258,7 +269,6 @@ function clean_archetype_files() {
 	newVal=""
 	echo "sed -i \"\" -e '/'\"$oldVal\"'/d' \"$modFile\"" 2>&1 | tee -a "$archetypeLog"
 	sed -i "" -e '/'"$oldVal"'/d' "$modFile" 2>&1 >> "$archetypeLog"
-
 	# replace the bad URLs # oldVal: slashes and double-quotes (and possibly commas) must be escaped
 	oldVal="<url>https:\/\/projects.spring.io\/spring-boot\/#\/spring-boot-starter-parent\/bip-framework-parentpom\/bip-origin-reactor<\/url>"
 	newVal="<repositories><!-- ADD REPOSITORIES HERE --><\/repositories>"
@@ -269,7 +279,6 @@ function clean_archetype_files() {
 	newVal="<pluginrepositories><!-- ADD PLUGIN REPOSITORIES HERE --><\/pluginrepositories>"
 	echo "sed -i \"\" -e '/'\"$oldVal\"'/d' \"$modFile\"" 2>&1 | tee -a "$archetypeLog"
 	sed -i "" -e '/'"$oldVal"'/d' "$modFile" 2>&1 >> "$archetypeLog"
-
 	# now also have to clean up after sed
 	if [ -f "$modFile-e" ]; then
 		echo "+>> Remove sed artifacts" 2>&1 | tee -a "$archetypeLog"
@@ -283,19 +292,16 @@ function clean_archetype_files() {
 	## Can't find a way to include "no extension" files in mavens archetype:create-from-project filteredExtensions list
 	modFile="./$archetypeTargetDir/src/main/resources/archetype-resources"
 	echo "+>> Preparing $modFile extension-less files" 2>&1 | tee -a "$archetypeLog"
-
 	# Jenkinsfile
 	oldVal="bip-origin"
 	newVal="__artifactId__"
 	echo "sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' \"$modFile/Jenkinsfile\"" 2>&1 | tee -a "$archetypeLog"
 	sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' "$modFile/Jenkinsfile" 2>&1 >> "$archetypeLog"
-
-	# Dockerfile
+	# Dockerfile - note that the "/bip-origin" folders have not yet been renamed
 	oldVal="bip-origin"
 	newVal="__artifactId__"
-	echo "sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' \"$modFile/__rootArtifactId__/Dockerfile\"" 2>&1 | tee -a "$archetypeLog"
-	sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' "$modFile/__rootArtifactId__/Dockerfile" 2>&1 >> "$archetypeLog"
-
+	echo "sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' \"$modFile/bip-origin/Dockerfile\"" 2>&1 | tee -a "$archetypeLog"
+	sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' "$modFile/bip-origin/Dockerfile" 2>&1 >> "$archetypeLog"
 	# Because framework shares the same base package as services, need to go back and fix framework references
 	# change "import ${package\}.framework" back to "import gov.va.bip.framework"
 	echo "find $archetypeTargetDir/src -name '*.java' -type f -print0 | xargs -0 sed -i \"\" 's/import \${package\}.framework/import\ gov\.va\.bip\.framework/g'" 2>&1 | tee -a "$archetypeLog"
@@ -346,7 +352,7 @@ function clean_archetype_files() {
 
 	## Make backup copies of maven files that ./gensvc.sh will have to modify ##
 
-	# keep original of archetype-metadata.xml
+	# make a copy of the "original" archetype-metadata.xml for gensvc.sh
 	echo "+>> Make '*_ORIGINAL.xml' back up of archetype-metadata.xml" 2>&1 | tee -a "$archetypeLog"
 	echo "cp -fv ./$archetypeTargetDir/src/main/resources/META-INF/maven/archetype-metadata.xml $./archetypeTargetDir/src/main/resources/META-INF/maven/archetype-metadata_ORIGINAL.xml" 2>&1 | tee -a "$archetypeLog"
 	# tee does not play well with some bash commands, so just redirect output to the log
@@ -358,7 +364,7 @@ function clean_archetype_files() {
 		exit_now $returnStatus "*** FAILURE: could not copy ./$archetypeTargetDir/src/main/resources/META-INF/maven/archetype-metadata.xml to ./$archetypeTargetDir/src/main/resources/META-INF/maven/archetype-metadata_ORIGINAL.xml"
 	fi
 
-	# keep original of archetype.properties
+	# make a copy of the "original" archetype.properties for gensvc.sh
 	echo "+>> Make '*_ORIGINAL.properties' back up of archetype.properties" 2>&1 | tee -a "$archetypeLog"
 	echo "cp -fv ./$archetypeTargetDir/src/test/resources/projects/basic/archetype.properties ./$archetypeTargetDir/src/test/resources/projects/basic/archetype_ORIGINAL.properties" 2>&1 | tee -a "$archetypeLog"
 	# tee does not play well with some bash commands, so just redirect output to the log
@@ -370,7 +376,7 @@ function clean_archetype_files() {
 		exit_now $returnStatus "*** FAILURE: ./$archetypeTargetDir/src/test/resources/projects/basic/archetype.properties to ./$archetypeTargetDir/src/test/resources/projects/basic/archetype_ORIGINAL.properties"
 	fi
 
-	# keep original of Jenkinsfile
+	# make a copy of the "original" Jenkinsfile for gensvc.sh
 	echo "+>> Make 'Jenkinsfile_ORIGINAL' back up of Jenkinsfile" 2>&1 | tee -a "$archetypeLog"
 	echo "cp -fv ./$archetypeTargetDir/src/main/resources/archetype-resources/Jenkinsfile ./$archetypeTargetDir/src/main/resources/archetype-resources/Jenkinsfile_ORIGINAL" 2>&1 | tee -a "$archetypeLog"
 	# tee does not play well with some bash commands, so just redirect output to the log
@@ -382,7 +388,7 @@ function clean_archetype_files() {
 		exit_now $returnStatus "*** FAILURE: could not copy ./$archetypeTargetDir/src/main/resources/archetype-resources/Jenkinsfile to ./$archetypeTargetDir/src/main/resources/archetype-resources/Jenkinsfile_ORIGINAL"
 	fi
 
-	# keep original of Dockerfile
+	# make a copy of the "original" Dockerfile for gensvc.sh
 	echo "+>> Make 'Dockerfile_ORIGINAL' back up of Dockerfile" 2>&1 | tee -a "$archetypeLog"
 	echo "cp -fv ./$archetypeTargetDir/src/main/resources/archetype-resources/bip-origin/Dockerfile ./$archetypeTargetDir/src/main/resources/archetype-resources/bip-origin/Dockerfile_ORIGINAL" 2>&1 | tee -a "$archetypeLog"
 	# tee does not play well with some bash commands, so just redirect output to the log
@@ -408,7 +414,7 @@ function clean_archetype_files() {
 		exit_now $returnStatus "*** FAILURE: could not copy ./$archetypeOriginName/archive/.gitignore to ./$archetypeTargetDir/.gitignore"
 	fi
 
-	# copy the base README for new projects
+	# copy the reactor (root) README for new projects
 	echo "+>> Copy basic README.md for new projects" 2>&1 | tee -a "$archetypeLog"
 	echo "cp -fv $cwd/$archetypeOriginName/archive/$archetypeServiceName-newprojects-README.md ./$archetypeTargetDir/src/main/resources/archetype-resources/README.md" 2>&1 | tee -a "$archetypeLog"
 	# tee does not play well with some bash commands, so just redirect output to the log

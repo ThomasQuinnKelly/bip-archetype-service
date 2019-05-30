@@ -4,10 +4,10 @@ FROM java:8
 VOLUME /tmp
 
 # The application's jar file
-ARG JAR_FILE=target/bip-origin.jar
+ARG JAR_FILE=target/__artifactId__.jar
 
 # Add the application's jar to the container
-ADD ${JAR_FILE} bip-origin.jar
+ADD ${JAR_FILE} __artifactId__.jar
 
 # Run the jar file 
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/bip-origin.jar"]
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/__artifactId__.jar"]

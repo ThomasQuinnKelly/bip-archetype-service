@@ -1,4 +1,4 @@
-# What is this repository for?
+**artifactId**# What is this repository for?
 
 This is a suite of BIP projects for
 
@@ -10,15 +10,15 @@ This is a suite of BIP projects for
 
 1. <span color="red">add github URLs to any partner projects, and brief description here</span>
 
-2. [**artifactId**](https://github.com/department-of-veterans-affairs/__artifactId__/tree/master/__artifactId__): Service implementation project. This project demonstrates the recommended design patterns, configuration pointers, and coding examples. It shows how to produce a documented endpoint, how to register the app with Consul, how to use secrets from Vault, how to implement a Hystrix circuit breaker, how to get and use loggers, etc. The design consists of three layers:
+2. [__artifactId__](https://github.com/department-of-veterans-affairs/__artifactId__/tree/master/__artifactId__): Service implementation project. This project demonstrates the recommended design patterns, configuration pointers, and coding examples. It shows how to produce a documented endpoint, how to register the app with Consul, how to use secrets from Vault, how to implement a Hystrix circuit breaker, how to get and use loggers, etc. The design consists of three layers:
 
   - The Provider (or "web") layer contains the REST endpoints and model, JSR 303 annotations in the resource class and the model, and the use of an adapter class to transform models and call the service interface.
   - The Domain (or "service") layer contains business validation, business logic, client helpers to call Partner services and process the returned data, and exception handling.
   - The Partner (or "client") layer performs partner client model transformation, calls to partner client interfaces, and response handling.
 
-3. [**artifactId**-inttest](https://github.com/department-of-veterans-affairs/__artifactId__/tree/master/__artifactId__-inttest): Contains the integration tests using the framework Test Library (Spring Rest Template, Cucumber libraries, and other capabilities). It includes test cases that run against the service endpoints.
+3. [__artifactId__-inttest](https://github.com/department-of-veterans-affairs/__artifactId__/tree/master/__artifactId__-inttest): Contains the integration tests using the framework Test Library (Spring Rest Template, Cucumber libraries, and other capabilities). It includes test cases that run against the service endpoints.
 
-4. [**artifactId**-perftest](https://github.com/department-of-veterans-affairs/__artifactId__/tree/master/__artifactId__-perftest): Contains performance JMX test scripts for Apache JMeter that run against the service endpoints.
+4. [__artifactId__-perftest](https://github.com/department-of-veterans-affairs/__artifactId__/tree/master/__artifactId__-perftest): Contains performance JMX test scripts for Apache JMeter that run against the service endpoints.
 
 For examples and documentation about how projects are structured, configured, and developed on the BIP Platform:
 
