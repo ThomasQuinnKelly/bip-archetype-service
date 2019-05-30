@@ -164,6 +164,7 @@
           <directory></directory>
           <includes>
             <include>Dockerfile</include>
+            <include>.docker-jar-project-marker</include>
             <include>.gitignore</include>
           </includes>
         </fileSet>
