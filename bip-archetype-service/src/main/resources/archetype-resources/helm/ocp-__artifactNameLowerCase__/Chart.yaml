@@ -1,8 +1,0 @@
-#set( $symbol_pound = '#' )
-#set( $symbol_dollar = '$' )
-#set( $symbol_escape = '\' )
-apiVersion: v1
-appVersion: "${version}"
-description: A Helm chart for BIP ${artifactName} Services
-name: bip-${artifactNameLowerCase}
-version: 0.1.0
