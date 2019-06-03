@@ -15,18 +15,12 @@ returnStatus=0
 propertiesFile="$thisFileName.properties"
 overwriteExisting=-1
 skipBuild=-1
-genLog="$cwd/$thisFileName.log"
 originDirName="bip-archetype-service-origin"
 originGroupId="gov.va.bip.origin"
+genLog="$cwd/$thisFileName.log"
 
 ###   properties   ###
-# not required in properties file
-archetypeCatalog="local"
-interactiveMode="false"
-archetypeGroupId="gov.va.bip.archetype.service"
-archetypeArtifactId="bip-archetype-service"
 # required in properties file
-archetypeVersion=""
 groupId=""
 artifactId=""
 version=""
@@ -58,9 +52,9 @@ function exit_now() {
 		echo " BUILD COMPLETE" 2>&1 | tee -a "$genLog"
 		echo "" 2>&1 | tee -a "$genLog"
 		echo " ##################################################################################" 2>&1 | tee -a "$genLog"
-		echo " ## - Move $artifactId to a valid location in your local git repo." 2>&1 | tee -a "$genLog"
-		echo " ## - Build and test $artifactId." 2>&1 | tee -a "$genLog"
-		echo " ## - Use git to initialize, commit, and register with the remote repo. " 2>&1 | tee -a "$genLog"
+		echo " ## 1. Move $artifactId to a valid location in your local git repo." 2>&1 | tee -a "$genLog"
+		echo " ## 2. Build and test $artifactId." 2>&1 | tee -a "$genLog"
+		echo " ## 3. Use git to initialize, commit, and register with the remote repo. " 2>&1 | tee -a "$genLog"
 		echo " ## SEE: https://github.com/department-of-veterans-affairs/bip-archetype-service " 2>&1 | tee -a "$genLog"
 		echo " ##################################################################################" 2>&1 | tee -a "$genLog"
 		echo "" 2>&1 | tee -a "$genLog"
@@ -94,7 +88,7 @@ function exit_now() {
 	echo "" 2>&1 | tee -a "$genLog"
 	echo " Help: \"$thisScript -h\"" 2>&1 | tee -a "$genLog"
 	echo " Logs: \"$genLog\"" 2>&1 | tee -a "$genLog"
-	echo "       search: \"+>> \" = script; \"sed: \" = sed; \"FAIL\" = mvn." 2>&1 | tee -a "$genLog"
+	echo "       search: \"+>> \" (script); \"sed: \" (sed); \"FAIL\" (mvn & cmd)" 2>&1 | tee -a "$genLog"
 	echo "------------------------------------------------------------------------"2>&1 | tee -a "$genLog"
 	# exit
 	exit $exit_code
@@ -107,10 +101,10 @@ function show_help() {
 	echo "" 2>&1 | tee -a "$genLog"
 	echo "Examples:" 2>&1 | tee -a "$genLog"
 	echo "  $thisScript -h  show this help" 2>&1 | tee -a "$genLog"
-	echo "  $thisScript     generate project using default generate.properties file" 2>&1 | tee -a "$genLog"
+	echo "  $thisScript     generate project using gen.properties file" 2>&1 | tee -a "$genLog"
 	echo "  $thisScript -s  skip (re)building the Origin source project" 2>&1 | tee -a "$genLog"
-	echo "  $thisScript -o  over-write output project if it already exists" 2>&1 | tee -a "$genLog"
-	echo "  $thisScript -so skip build and overwrite" 2>&1 | tee -a "$genLog"
+	echo "  $thisScript -o  over-write new project if it already exists" 2>&1 | tee -a "$genLog"
+	echo "  $thisScript -so both skip build, and overwrite" 2>&1 | tee -a "$genLog"
 	echo "" 2>&1 | tee -a "$genLog"
 	echo "Notes:" 2>&1 | tee -a "$genLog"
 	echo "* Full instructions available in development branch at:" 2>&1 | tee -a "$genLog"
@@ -136,7 +130,7 @@ function get_args() {
 	# echo "args: \"$@\""
 	#if [ "$@" -eq "" ]; then
 	if [[ "$@" == "" ]]; then
-		echo "+>> Using default properties file \"$propertiesFile\"" 2>&1 | tee -a "$genLog"
+		echo "+>> Using properties file \"$propertiesFile\"" 2>&1 | tee -a "$genLog"
 	fi
 	while getopts ":hso" opt; do
 		echo "+>> previous_opt value = $previous_opt"2>&1 | tee -a "$genLog"
@@ -202,11 +196,6 @@ function read_properties() {
 				echo "     tuple: $tuple" 2>&1 | tee -a "$genLog"
 
 				# assigning values cannot be done using declare or eval - this is what bash reduces us to ...
-				if [[ "$theKey" == "archetypeCatalog" ]]; then archetypeCatalog=$theVal; fi
-				if [[ "$theKey" == "interactiveMode" ]]; then interactiveMode=$theVal; fi
-				if [[ "$theKey" == "archetypeGroupId" ]]; then archetypeGroupId=$theVal; fi
-				if [[ "$theKey" == "archetypeArtifactId" ]]; then archetypeArtifactId=$theVal; fi
-				if [[ "$theKey" == "archetypeVersion" ]]; then archetypeVersion=$theVal; fi
 				if [[ "$theKey" == "groupId" ]]; then groupId=$theVal; fi
 				if [[ "$theKey" == "artifactId" ]]; then artifactId=$theVal; fi
 				if [[ "$theKey" == "version" ]]; then version=$theVal; fi
@@ -228,11 +217,6 @@ function validate_properties() {
 	echo "+>> Validating project properties declared in $propertiesFile" 2>&1 | tee -a "$genLog"
 
 	missingProperties=""
-	if [[ "$archetypeCatalog" == "" ]]; then missingProperties+="archetypeCatalog "; fi
-	if [[ "$interactiveMode" == "" ]]; then missingProperties+="interactiveMode "; fi
-	if [[ "$archetypeGroupId" == "" ]]; then missingProperties+="archetypeGroupId "; fi
-	if [[ "$archetypeArtifactId" == "" ]]; then missingProperties+="archetypeArtifactId "; fi
-	if [[ "$archetypeVersion" == "" ]]; then missingProperties+="archetypeVersion "; fi
 	if [[ "$groupId" == "" ]]; then missingProperties+="groupId "; fi
 	if [[ "$artifactId" == "" ]]; then missingProperties+=( "artifactId " ); fi
 	if [[ "$version" == "" ]]; then missingProperties+=( "version " ); fi
@@ -482,7 +466,7 @@ function build_new_project() {
 ## output header info, get the log started ##
 echo ""  2>&1 | tee "$genLog"
 echo "=========================================================================" 2>&1 | tee -a "$genLog"
-echo "Generate a BIP Service App project" 2>&1 | tee -a "$genLog"
+echo "Generate a BIP Service project" 2>&1 | tee -a "$genLog"
 echo "=========================================================================" 2>&1 | tee -a "$genLog"
 echo "" 2>&1 | tee -a "$genLog"
 
