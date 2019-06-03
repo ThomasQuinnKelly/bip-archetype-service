@@ -35,10 +35,10 @@ See the [bip-archetype-service-origin README.md](./bip-archetype-service-origin/
 ## Generating a New Project
 
 1. Update `gen.properties`. Read the comments in the properties file for each property. Existing property values provide examples of how they should appear.
-2. Generate the new project. From the command line:
+2. Generate the new project and read at least the last few lines of the script output. Example from the command line:
 
   ```bash
-  $ cd ~/git/bip-archetype-service-origin
+  $ cd ~/git/bip-archetype-service
   $ chmod +x gen.sh # optional if the script is not yet executable
   $ ./gen.sh
   ```
