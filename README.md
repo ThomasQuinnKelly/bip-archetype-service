@@ -1,13 +1,17 @@
 # BIP Service Archetype Project
 
+This project **_is not_** a "maven archetype" because the `archetype:create-from-project` and `archetype:generate` mojos were not built for the task undertaken here, and they introduce a great deal of unnecessary complexity with unresolvable circular processes.
+
+This project **_is_** an archetypal process from which an "origin" (or "source") project can be used to create the skeleton for a new BIP Service project.
+
 This repository is comprised of:
 
 - An origin (or source) project from which new BIP Service projects can be created.
 - A script that can be used to create the new BIP Service project.
 
-A newly created artifact will contain a skeleton project with some rudimentary sample data objects demonstrating a simple use case.
+The newly created artifact will contain a skeleton project with some rudimentary sample data objects demonstrating a simple use case.
 
-To prepare and publish a new project for development, Tech Leads have only a couple straight forward tasks, as outlined below.
+To prepare and publish a new project for development, Tech Leads have only a few straight forward tasks, as outlined below.
 
 ## Getting the BIP Archetype Service project
 
@@ -26,7 +30,7 @@ The root project directory hosts the `bip-archetype-service-origin` project. Thi
 
 ## About The Origin Project
 
-The `bip-archetype-service-origin` project contains the origin (or "source") project from which the archetype can be created. This project is based on the [bip-reference -person](https://github.com/department-of-veterans-affairs/bip-reference-person) project, with some sample features removed, and necessary naming genericized.
+The `bip-archetype-service-origin` project contains the origin (or "source") project from which the new project can be created. This project is based on the [bip-reference -person](https://github.com/department-of-veterans-affairs/bip-reference-person) project, with some sample features removed, and necessary naming genericized.
 
 This project need only be modified when there are new features or capabilities to be included in a new generation of BIP Service projects.
 
@@ -52,4 +56,4 @@ See the [bip-archetype-service-origin README.md](./bip-archetype-service-origin/
 
 4. Make any desired changes, for example remove the sample objects, add real data objects, add skeleton API, add skeleton service methods/classes, etc.
 
-5. Make an initial commit to publish to a GitHub branch. For an example of how to do this, see [git_newrepo](https://gist.github.com/c0ldlimit/4089101).
+5. Make an initial commit to publish to a GitHub branch. For an example of how to do this, see [git_newrepo](https://gist.github.com/c0ldlimit/4089101) - the only difference is that you may want to commit into some branch other than _master_.
