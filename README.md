@@ -46,7 +46,7 @@ See the [bip-archetype-service-origin README.md](./bip-archetype-service-origin/
 3. Move the project to the desired local git directory. For example:
 
   ```bash
-  $ cd ~/git/bip-archetype-service-origin
+  $ cd ~/git/bip-archetype-service
   $ mv [new-project-dir] ~/git/[new-project-dir]
   ```
 
