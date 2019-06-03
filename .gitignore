@@ -2,7 +2,7 @@
 gen*.log
 
 ### Maven ###
-target/
+**/target/
 
 ### MAC ###
 *.DS_Store
