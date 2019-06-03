@@ -28,7 +28,7 @@ See the [bip-archetype-service-origin README.md](./bip-archetype-service-origin/
 From the command line:
 
 ```bash
-$ cd ~/git/bip-archetype-service-origin
+$ cd ~/git/bip-archetype-service
     $ chmod +x gen.sh # optional if the script is not yet executable
     $ ./gen.sh -h
 ```
