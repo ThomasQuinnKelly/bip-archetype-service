@@ -246,12 +246,13 @@ objects:
     data:
       spring.cloud.consul.config.enabled: "true"
       spring.cloud.consul.config.failFast: "true"
+      spring.cloud.consul.config.prefix: "config/bip-project-namespace-prefix/${CONFIG_BRANCH}"
       spring.cloud.consul.discovery.enabled: "true"
       spring.cloud.consul.discovery.register: "true"
       spring.cloud.vault.enabled: "true"
       spring.cloud.vault.consul.enabled: "true"
       spring.cloud.vault.authentication: "KUBERNETES"
       spring.cloud.vault.kubernetes.service-account-token-file: "/var/run/secrets/kubernetes.io/serviceaccount/token"
-      spring.cloud.vault.kv.application-name: "blue/bip-origin"
+      spring.cloud.vault.kv.application-name: "bip-project-namespace-prefix/bip-origin"
       spring.profiles.active: "dev"
  

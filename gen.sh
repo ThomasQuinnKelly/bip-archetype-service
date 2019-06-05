@@ -28,6 +28,7 @@ artifactName=""
 artifactNameLowerCase=""
 artifactNameUpperCase=""
 servicePort=""
+projectNameSpacePrefix=""
 
 ################################################################################
 #########################                              #########################
@@ -203,6 +204,7 @@ function read_properties() {
 				if [[ "$theKey" == "artifactNameLowerCase" ]]; then artifactNameLowerCase=$theVal; fi
 				if [[ "$theKey" == "artifactNameUpperCase" ]]; then artifactNameUpperCase=$theVal; fi
 				if [[ "$theKey" == "servicePort" ]]; then servicePort=$theVal; fi
+				if [[ "$theKey" == "projectNameSpacePrefix" ]]; then projectNameSpacePrefix=$theVal; fi
 			fi
 		done < "$cwd/$propertiesFile"
 		IFS=$OIFS
@@ -224,6 +226,7 @@ function validate_properties() {
 	if [[ "$artifactNameLowerCase" == "" ]]; then missingProperties+=( "artifactNameLowerCase " ); fi
 	if [[ "$artifactNameUpperCase" == "" ]]; then missingProperties+=( "artifactNameUpperCase " ); fi
 	if [[ "$servicePort" == "" ]]; then missingProperties+=( "servicePort " ); fi
+	if [[ "$projectNameSpacePrefix" == "" ]]; then missingProperties+=( "projectNameSpacePrefix " ); fi
 
 	if [[ "$missingProperties" != "" ]]; then
 		exit_now 6
@@ -440,6 +443,11 @@ function change_text() {
 		# uppercase replacement
 		oldVal="ORIGIN"
 		newVal="$artifactNameUpperCase"
+		echo "sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' \"$tmpFile\"" 2>&1 | tee -a "$genLog"
+		sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' "$tmpFile" 2>&1 >> "$genLog"
+	    # projectNameSpacePrefix replacement
+		oldVal="bip-project-namespace-prefix"
+		newVal="$projectNameSpacePrefix"
 		echo "sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' \"$tmpFile\"" 2>&1 | tee -a "$genLog"
 		sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' "$tmpFile" 2>&1 >> "$genLog"
 	done; check_exit_status "$?"
