@@ -272,8 +272,8 @@ function build_origin() {
 		echo "+>> Not building $originDirName" 2>&1 | tee -a "$genLog"
 	else
 		echo "+>> Building the $originDirName project" 2>&1 | tee -a "$genLog"
-		echo "mvn clean install -e -X" 2>&1 | tee -a "$genLog"
-		mvn clean install -e -X  2>&1 >> "$genLog"
+		echo "mvn clean install -Ddockerfile.skip=true -e -X" 2>&1 | tee -a "$genLog"
+		mvn clean install -Ddockerfile.skip=true -e -X  2>&1 >> "$genLog"
 		check_exit_status "$?"
 	fi
 }
@@ -452,8 +452,8 @@ function build_new_project() {
 	cd_to "$cwd/$artifactId"
 
 	echo "+>> Building the $artifactId project" 2>&1 | tee -a "$genLog"
-	echo "mvn clean package -e -X" 2>&1 | tee -a "$genLog"
-	mvn clean package -e -X  2>&1 >> "$genLog"
+	echo "mvn clean package -Ddockerfile.skip=true -e -X" 2>&1 | tee -a "$genLog"
+	mvn clean package -Ddockerfile.skip=true -e -X  2>&1 >> "$genLog"
 	check_exit_status "$?"
 }
 
