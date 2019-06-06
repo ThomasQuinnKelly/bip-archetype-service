@@ -50,10 +50,10 @@ Feature: PID based SampleInfo derived from the partner service.
 
     @DEV
     Examples: 
-      | Veteran     | tokenrequestfile         | ServiceURL          | RequestFile               | Severity | Text                                                                                                                                                                                                                 |
-      | dev-janedoe | dev/janedoetoken.request | /api/v1/origin/pid | dev/norecordfound.request | WARN    | Could not read mock XML file test/mocks/sampleInfo.getSampleInfoByPtcpntId.6666355.xml using key sampleInfo.getSampleInfoByPtcpntId.6666355. Please make sure this response file exists in the main/resources directory. |
+      | Veteran     | tokenrequestfile         | ServiceURL          | RequestFile               | Severity | participantID |
+      | dev-janedoe | dev/janedoetoken.request | /api/v1/origin/pid | dev/norecordfound.request | WARN    | 6666345 |
 
     @VA
     Examples: 
-      | Veteran    | tokenrequestfile        | ServiceURL          | RequestFile              | Severity | Text                                                                                                                                                                                                                 |
-      | va-janedoe | va/janedoetoken.request | /api/v1/origin/pid | va/norecordfound.request | WARN    | Could not read mock XML file test/mocks/sampleInfo.getSampleInfoByPtcpntId.6666355.xml using key sampleInfo.getSampleInfoByPtcpntId.6666355. Please make sure this response file exists in the main/resources directory. |
+      | Veteran    | tokenrequestfile        | ServiceURL          | RequestFile              | Severity | participantID |
+      | va-janedoe | va/janedoetoken.request | /api/v1/origin/pid | va/norecordfound.request | WARN    | 13364995 |
