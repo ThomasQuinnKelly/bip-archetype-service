@@ -4,8 +4,6 @@ import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.actuate.health.Health;
-import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.WebDataBinder;
@@ -18,13 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 import gov.va.bip.framework.log.BipLogger;
 import gov.va.bip.framework.log.BipLoggerFactory;
 import gov.va.bip.framework.swagger.SwaggerResponseMessages;
-import gov.va.bip.framework.transfer.ProviderTransferObjectMarker;
 import gov.va.bip.origin.api.OriginApi;
 import gov.va.bip.origin.api.model.v1.SampleRequest;
 import gov.va.bip.origin.api.model.v1.SampleResponse;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 
 /**
  * REST Service endpoint
@@ -32,7 +27,7 @@ import io.swagger.annotations.ApiResponses;
  * @author akulkarni
  */
 @RestController
-public class OriginResource implements OriginApi, HealthIndicator, SwaggerResponseMessages {
+public class OriginResource implements OriginApi, SwaggerResponseMessages {
 
 	/** Logger instance */
 	private static final BipLogger LOGGER = BipLoggerFactory.getLogger(OriginResource.class);
@@ -58,25 +53,6 @@ public class OriginResource implements OriginApi, HealthIndicator, SwaggerRespon
 		LOGGER.info(buildProperties.getVersion());
 		LOGGER.info(buildProperties.getArtifact());
 		LOGGER.info(buildProperties.getGroup());
-	}
-
-	/**
-	 * A REST call to test this endpoint is up and running.
-	 * <p>
-	 * This endpoint is NOT intercepted by the standard publicServiceResponseRestMethod aspect
-	 * because the return type does not implement {@link ProviderTransferObjectMarker}.
-	 *
-	 * @see org.springframework.boot.actuate.health.HealthIndicator#health()
-	 */
-	@Override
-	@RequestMapping(value = URL_PREFIX + "/health", method = RequestMethod.GET)
-	@ApiOperation(value = "A health check of this endpoint",
-			notes = "Will perform a basic health check to see if the operation is running.")
-	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = MESSAGE_200) })
-	public Health health() {
-		return Health.up().withDetail("Origin Service REST Endpoint", "Origin Service REST Provider Up and Running!")
-				.build();
 	}
 
 	/**
