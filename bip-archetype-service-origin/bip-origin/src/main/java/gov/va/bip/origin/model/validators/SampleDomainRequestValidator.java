@@ -1,4 +1,4 @@
-package gov.va.bip.origin.validators;
+package gov.va.bip.origin.model.validators;
 
 import java.util.List;
 
@@ -19,9 +19,9 @@ import gov.va.bip.origin.model.SampleDomainRequest;
  * @see AbstractStandardValidator
  * @author aburkholder
  */
-public class SampleByPidDomainRequestValidator extends AbstractStandardValidator<SampleDomainRequest> {
+public class SampleDomainRequestValidator extends AbstractStandardValidator<SampleDomainRequest> {
 	/** Class logger */
-	private static final BipLogger LOGGER = BipLoggerFactory.getLogger(SampleByPidDomainRequestValidator.class);
+	private static final BipLogger LOGGER = BipLoggerFactory.getLogger(SampleDomainRequestValidator.class);
 
 	/*
 	 * (non-Javadoc)

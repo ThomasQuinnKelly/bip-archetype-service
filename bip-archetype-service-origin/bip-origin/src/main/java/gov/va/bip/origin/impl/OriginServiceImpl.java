@@ -79,7 +79,7 @@ public class OriginServiceImpl implements OriginService {
 	 */
 	@Override
 	@CachePut(value = CacheConstants.CACHENAME_ORIGIN_SERVICE,
-			key = "#root.methodName + T(gov.va.bip.framework.cache.BipCacheUtil).createKey(#sampleByPidDomainRequest.participantID)",
+			key = "#root.methodName + T(gov.va.bip.framework.cache.BipCacheUtil).createKey(#sampleDomainRequest.participantID)",
 			unless = "T(gov.va.bip.framework.cache.BipCacheUtil).checkResultConditions(#result)")
 	/* If a fallback position is possible, add attribute to @HystrixCommand: fallback="fallbackMethodName" */
 	@HystrixCommand(commandKey = "SampleFindByParticipantIDCommand",
