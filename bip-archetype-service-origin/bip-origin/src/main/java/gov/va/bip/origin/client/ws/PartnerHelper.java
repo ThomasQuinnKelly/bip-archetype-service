@@ -7,6 +7,7 @@ import gov.va.bip.framework.log.BipLogger;
 import gov.va.bip.framework.log.BipLoggerFactory;
 import gov.va.bip.origin.model.SampleDomainRequest;
 import gov.va.bip.origin.model.SampleDomainResponse;
+import gov.va.bip.origin.model.SampleInfoDomain;
 import gov.va.bip.origin.transform.impl.SampleByPid_DomainToPartner;
 import gov.va.bip.origin.transform.impl.SampleByPid_PartnerToDomain;
 
@@ -87,6 +88,13 @@ public class PartnerHelper {
 //				partnerResponse == null ? "null" : ToStringBuilder.reflectionToString(partnerResponse));
 //		LOGGER.debug("Domain response: SampleDomainResponse: {}",
 //				domainResponse == null ? "null" : ToStringBuilder.reflectionToString(domainResponse));
+
+		// For example purposes only (real response comes from the partner client)
+		SampleInfoDomain sampleInfoDomain = new SampleInfoDomain();
+		sampleInfoDomain.setName("JANE DOE");
+		sampleInfoDomain.setParticipantId(6666345l);
+		domainResponse = new SampleDomainResponse();
+		domainResponse.setSampleInfo(sampleInfoDomain);
 
 		return domainResponse;
 	}
