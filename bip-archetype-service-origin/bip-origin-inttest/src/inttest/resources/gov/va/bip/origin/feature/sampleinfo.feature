@@ -46,7 +46,7 @@ Feature: PID based SampleInfo derived from the partner service.
     And invoke token API by passing header from "<tokenrequestfile>" and sets the authorization in the header
     When client request SampleInfo "<ServiceURL>" with PID data "<RequestFile>"
     Then the service returns status code = 200
-    And the service returns message "<Severity>" and "<Text>"
+    And the service returns ParticipantID PID based on participantId <participantID>
 
     @DEV
     Examples: 

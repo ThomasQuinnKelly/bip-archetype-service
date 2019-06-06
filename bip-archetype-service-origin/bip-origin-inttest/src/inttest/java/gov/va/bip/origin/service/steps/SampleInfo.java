@@ -35,7 +35,7 @@ public class SampleInfo {
 		handler.initREST();
 	}
 
-	@When("^client request info \"([^\"]*)\" with PID data \"([^\"]*)\"$")
+	@When("^client request SampleInfo \"([^\"]*)\" with PID data \"([^\"]*)\"$")
 	public void ClientRequestPOSTWithJsondata(String strURL, String requestFile) throws Throwable {
 		String baseUrl = handler.getRestConfig().getProperty("baseURL", true);
 		handler.getRestUtil().setUpRequest(requestFile, handler.getHeaderMap());
