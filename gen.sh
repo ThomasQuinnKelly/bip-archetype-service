@@ -8,7 +8,8 @@
 # useful variables
 cwd=`pwd`
 thisScript="$0"
-thisFileName=$(echo "$thisScript" | rev | cut -d'/' -f1 | rev | cut -d'.' -f1)
+thisFileName=$(basename -- "$0" | cut -d'.' -f1)
+#$(echo "$thisScript" | rev | cut -d'/' -f1 | rev | cut -d'.' -f1)
 args="$@"
 returnStatus=0
 # script variables
@@ -102,7 +103,7 @@ function show_help() {
 	echo "" 2>&1 | tee -a "$genLog"
 	echo "Examples:" 2>&1 | tee -a "$genLog"
 	echo "  $thisScript -h  show this help" 2>&1 | tee -a "$genLog"
-	echo "  $thisScript     generate project using gen.properties file" 2>&1 | tee -a "$genLog"
+	echo "  $thisScript     generate project using $thisFileName.properties file" 2>&1 | tee -a "$genLog"
 	echo "  $thisScript -s  skip (re)building the Origin source project" 2>&1 | tee -a "$genLog"
 	echo "  $thisScript -o  over-write new project if it already exists" 2>&1 | tee -a "$genLog"
 	echo "  $thisScript -so both skip build, and overwrite" 2>&1 | tee -a "$genLog"
@@ -110,7 +111,7 @@ function show_help() {
 	echo "Notes:" 2>&1 | tee -a "$genLog"
 	echo "* Full instructions available in development branch at:" 2>&1 | tee -a "$genLog"
 	echo "  https://github.com/department-of-veterans-affairs/bip-archetype-service/" 2>&1 | tee -a "$genLog"
-	echo "* A valid \"gen.properties\" file must exist in the same directory" 2>&1 | tee -a "$genLog"
+	echo "* A valid \"$thisFileName.properties\" file must exist in the same directory" 2>&1 | tee -a "$genLog"
 	echo "  as this script." 2>&1 | tee -a "$genLog"
 	echo "* It is recommended that a git credential helper be utilized to" 2>&1 | tee -a "$genLog"
 	echo "  eliminate authentication requests while executing. For more info see" 2>&1 | tee -a "$genLog"
@@ -406,12 +407,12 @@ function change_text() {
 	## NOTE sed *always* returns "0" as its exit code      ##
 	##      regardless if it succeeds or not. If changes   ##
 	##      are made to sed commands, you must check the   ##
-	##      genarchetype.log (search "sed -i") to verify   ##
+	##      gen.log (search "sed -i") to verify   ##
 	##      that no sed error messages follow the command  ##
 	## Error lines will begin with "sed: "                 ##
 	#########################################################
 
-	find . -type f -maxdepth 20 \
+	find "$PWD" -type f -maxdepth 20 \
 		! -iwholename '*.DS_Store' \
 		! -iname '*.jks' \
 		! -iname '*.classpath' \
@@ -450,7 +451,9 @@ function change_text() {
 		newVal="$projectNameSpacePrefix"
 		echo "sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' \"$tmpFile\"" 2>&1 | tee -a "$genLog"
 		sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' "$tmpFile" 2>&1 >> "$genLog"
-	done; check_exit_status "$?"
+	done;
+	### do not check exit status, as windows editions of bash mysteriously report errors, but still do the work
+	# check_exit_status "$?"
 }
 
 ## function to build the new project    ##
