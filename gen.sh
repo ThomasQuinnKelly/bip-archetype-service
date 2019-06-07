@@ -424,33 +424,33 @@ function change_text() {
 		# replace archetype package/groupId
 		oldVal="gov.va.bip.origin"
 		newVal="$groupId"
-		echo "sed -i -e \'s/\'\"$oldVal\"\'/\'\"$newVal\"\'/g\' \"$tmpFile\"" 2>&1 | tee -a "$genLog"
-		sed -i -e 's/'"$oldVal"'/'"$newVal"'/g' "$tmpFile" 2>&1 >> "$genLog"
+		echo "sed -i \"\" -e \'s/\'\"$oldVal\"\'/\'\"$newVal\"\'/g\' \"$tmpFile\"" 2>&1 | tee -a "$genLog"
+		sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' "$tmpFile" 2>&1 >> "$genLog"
 		# artifactId replacement
 		oldVal="bip-origin"
 		newVal="$artifactId"
-		echo "sed -i -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' \"$tmpFile\"" 2>&1 | tee -a "$genLog"
-		sed -i -e 's/'"$oldVal"'/'"$newVal"'/g' "$tmpFile" 2>&1 >> "$genLog"
+		echo "sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' \"$tmpFile\"" 2>&1 | tee -a "$genLog"
+		sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' "$tmpFile" 2>&1 >> "$genLog"
 		# camelcase replacement
 		oldVal="Origin"
 		newVal="$artifactName"
-		echo "sed -i -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' \"$tmpFile\"" 2>&1 | tee -a "$genLog"
-		sed -i -e 's/'"$oldVal"'/'"$newVal"'/g' "$tmpFile" 2>&1 >> "$genLog"
+		echo "sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' \"$tmpFile\"" 2>&1 | tee -a "$genLog"
+		sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' "$tmpFile" 2>&1 >> "$genLog"
 		# lowercase replacement
 		oldVal="origin"
 		newVal="$artifactNameLowerCase"
-		echo "sed -i -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' \"$tmpFile\"" 2>&1 | tee -a "$genLog"
-		sed -i -e 's/'"$oldVal"'/'"$newVal"'/g' "$tmpFile" 2>&1 >> "$genLog"
+		echo "sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' \"$tmpFile\"" 2>&1 | tee -a "$genLog"
+		sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' "$tmpFile" 2>&1 >> "$genLog"
 		# uppercase replacement
 		oldVal="ORIGIN"
 		newVal="$artifactNameUpperCase"
-		echo "sed -i -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' \"$tmpFile\"" 2>&1 | tee -a "$genLog"
-		sed -i -e 's/'"$oldVal"'/'"$newVal"'/g' "$tmpFile" 2>&1 >> "$genLog"
-		# projectNameSpacePrefix replacement
+		echo "sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' \"$tmpFile\"" 2>&1 | tee -a "$genLog"
+		sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' "$tmpFile" 2>&1 >> "$genLog"
+	    # projectNameSpacePrefix replacement
 		oldVal="bip-project-namespace-prefix"
 		newVal="$projectNameSpacePrefix"
-		echo "sed -i -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' \"$tmpFile\"" 2>&1 | tee -a "$genLog"
-		sed -i -e 's/'"$oldVal"'/'"$newVal"'/g' "$tmpFile" 2>&1 >> "$genLog"
+		echo "sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' \"$tmpFile\"" 2>&1 | tee -a "$genLog"
+		sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' "$tmpFile" 2>&1 >> "$genLog"
 	done;
 	### do not check exit status, as windows editions of bash mysteriously report errors, but still do the work
 	# check_exit_status "$?"
