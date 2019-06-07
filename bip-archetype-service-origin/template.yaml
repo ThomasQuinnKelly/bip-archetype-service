@@ -1,0 +1,270 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: bip-origin-template
+parameters:
+  - name: APP_NAME
+    displayName: Application Name
+    description: Unique application identifier
+    required: true
+  - name: PROJECT
+    displayName: Project Name
+    description: Project Name in Openshift
+    required: true
+  - name: REPOSITORY
+    displayName: Repository URL
+    description: Repository URL
+    value: "docker-registry.default.svc:5000"
+    required: true
+  - name: IMAGE
+    displayName: Image Name
+    description: Container Image Name including repository (but not tag)
+    required: true
+  - name: IMAGE_TAG
+    displayName: Image Tag
+    description: Tag of the container image to deploy
+    value: "latest"
+    required: true
+  - name: REPLICA_COUNT
+    displayName: Number of Replicas
+    description: Number of replicas to run
+    value: "1"
+    required: true
+  - name: PORT
+    displayName: Port Number
+    description: Port number to expose the service on
+    value: "80"
+    required: true
+  - name: BRANCH
+    displayName: Branch name from SCM
+    description: Branch name from SCM, used to label objects for pipeline detection
+    value: "master"
+    required: false
+  - name: CONFIG_BRANCH
+    displayName: Configuration branch name from SCM
+    description: Configuration branch name from SCM, used to label objects for pipeline detection
+    value: "master"
+    required: false
+  - name: SPRING_PROFILES
+    displayName: Spring Profiles
+    description: Comma separated list of spring profiles to activate
+    value: "dev"
+    required: true
+objects:
+  - apiVersion: v1
+    kind: DeploymentConfig
+    metadata:
+      labels:
+        app: ${APP_NAME}
+        branch: ${BRANCH}
+      name: ${APP_NAME}-${BRANCH}
+    spec:
+      replicas: ${{REPLICA_COUNT}}
+      selector:
+        app: ${APP_NAME}
+        deploymentconfig: ${APP_NAME}-${BRANCH}
+        branch: ${BRANCH}
+      triggers:
+        - type: "ConfigChange"
+        - type: "ImageChange"
+          imageChangeParams:
+            automatic: true
+            from:
+              kind: "ImageStreamTag"
+              name: ${IMAGE}:${IMAGE_TAG}
+              namespace: ${PROJECT}
+            containerNames:
+              - ${APP_NAME}
+      strategy:
+        resources: {}
+        rollingParams:
+          intervalSeconds: 1
+          maxSurge: 25%
+          maxUnavailable: 25%
+          timeoutSeconds: 600
+          updatePeriodSeconds: 1
+        type: Rolling
+      template:
+        metadata:
+          annotations: null
+          labels:
+            app: ${APP_NAME}
+            deploymentconfig: ${APP_NAME}-${BRANCH}
+            branch: ${BRANCH}
+        spec:
+          containers:
+            - image: ${REPOSITORY}/${PROJECT}/${IMAGE}:${IMAGE_TAG}
+              imagePullPolicy: IfNotPresent
+              name: ${APP_NAME}
+              ports:
+                - containerPort: 8080
+                  protocol: TCP
+              resources:
+                requests:
+                  cpu: 750m
+                  memory: 1024Mi
+              terminationMessagePath: /dev/termination-log
+              env:
+                - name: spring.cloud.consul.discovery.enabled
+                  valueFrom:
+                    configMapKeyRef:
+                      name: ${IMAGE}-${BRANCH}-config
+                      key: spring.cloud.consul.discovery.enabled
+                - name: spring.cloud.consul.discovery.register
+                  valueFrom:
+                    configMapKeyRef:
+                      name: ${IMAGE}-${BRANCH}-config
+                      key: spring.cloud.consul.discovery.register
+                - name: spring.cloud.consul.host
+                  valueFrom:
+                    fieldRef:
+                      apiVersion: v1
+                      fieldPath: status.hostIP
+                - name: spring.cloud.consul.port
+                  valueFrom:
+                    configMapKeyRef:
+                      name: consul-config
+                      key: CONSUL_PORT
+                - name: spring.cloud.consul.scheme
+                  valueFrom:
+                    configMapKeyRef:
+                      name: consul-config
+                      key: CONSUL_SCHEME
+                - name: spring.cloud.vault.kv.application-name
+                  valueFrom:
+                    configMapKeyRef:
+                      name: ${IMAGE}-${BRANCH}-config
+                      key: spring.cloud.vault.kv.application-name
+                - name: spring.cloud.consul.config.enabled
+                  valueFrom:
+                    configMapKeyRef:
+                      name: ${IMAGE}-${BRANCH}-config
+                      key: spring.cloud.consul.config.enabled
+                - name: spring.cloud.consul.config.acl-token
+                  valueFrom:
+                    secretKeyRef:
+                      name: consul-acl-token
+                      key: CONSUL_ACL_TOKEN
+                - name: spring.cloud.consul.config.failFast
+                  valueFrom:
+                    configMapKeyRef:
+                      name: ${IMAGE}-${BRANCH}-config
+                      key: spring.cloud.consul.config.failFast
+                - name: spring.cloud.consul.config.prefix
+                  valueFrom:
+                    configMapKeyRef:
+                      name: ${IMAGE}-${BRANCH}-config
+                      key: spring.cloud.consul.config.prefix
+                - name: spring.profiles.active
+                  valueFrom:
+                    configMapKeyRef:
+                      name: ${IMAGE}-${BRANCH}-config
+                      key: spring.profiles.active
+                - name: spring.cloud.consul.discovery.acl-token
+                  valueFrom:
+                    secretKeyRef:
+                        name: consul-acl-token
+                        key: CONSUL_ACL_TOKEN
+                - name: spring.cloud.vault.enabled
+                  valueFrom:
+                    configMapKeyRef:
+                      name: ${IMAGE}-${BRANCH}-config
+                      key: spring.cloud.vault.enabled
+                - name: spring.cloud.vault.authentication
+                  valueFrom:
+                    configMapKeyRef:
+                      name: ${IMAGE}-${BRANCH}-config
+                      key: spring.cloud.vault.authentication
+                - name: spring.cloud.vault.kubernetes.service-account-token-file
+                  valueFrom:
+                    configMapKeyRef:
+                      name: ${IMAGE}-${BRANCH}-config
+                      key: spring.cloud.vault.kubernetes.service-account-token-file
+                - name: spring.cloud.vault.host
+                  valueFrom:
+                    configMapKeyRef:
+                      name: vault-config
+                      key: VAULT_HOST
+                - name: spring.cloud.vault.port
+                  valueFrom:
+                    configMapKeyRef:
+                      name: vault-config
+                      key: VAULT_PORT
+                - name: spring.cloud.vault.scheme
+                  valueFrom:
+                    configMapKeyRef:
+                      name: vault-config
+                      key: VAULT_SCHEME
+                - name: spring.cloud.vault.kubernetes.role
+                  valueFrom:
+                    configMapKeyRef:
+                      name: vault-config
+                      key: VAULT_KUBERNETES_ROLE
+                - name: spring.cloud.vault.ssl.trust-store
+                  value: file:/secrets/va-cacerts/truststore.jks
+                - name: LOGGING_LEVEL_COM_ZAXXER_HIKARI
+                  value: debug
+              volumeMounts:
+                - name: va-cacerts
+                  mountPath: "/secrets/va-cacerts" 
+                  readOnly: true
+          volumes:
+            - name: va-cacerts
+              secret:
+                secretName: va-cacerts
+                items:
+                - key: va-cacerts
+                  path: truststore.jks  
+          dnsPolicy: ClusterFirst
+          restartPolicy: Always
+          securityContext: {}
+          terminationGracePeriodSeconds: 30
+      test: false
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      labels:
+        app: ${APP_NAME}
+        branch: ${BRANCH}
+      name: ${APP_NAME}-${BRANCH}
+    spec:
+      ports:
+        - name: ${APP_NAME}
+          port: ${{PORT}}
+          protocol: TCP
+          targetPort: 8080
+      selector:
+        app: ${APP_NAME}
+        deploymentconfig: ${APP_NAME}-${BRANCH}
+      sessionAffinity: None
+      type: ClusterIP
+
+  - apiVersion: v1
+    kind: Route
+    metadata:
+      name: ${APP_NAME}-${BRANCH}
+    spec:
+      to:
+        kind: Service
+        name: ${APP_NAME}-${BRANCH}
+        
+  - apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: ${IMAGE}-${BRANCH}-config
+      labels:
+        app: ${APP_NAME}
+        branch: ${BRANCH}
+    data:
+      spring.cloud.consul.config.enabled: "true"
+      spring.cloud.consul.config.failFast: "true"
+      spring.cloud.consul.discovery.enabled: "true"
+      spring.cloud.consul.discovery.register: "true"
+      spring.cloud.vault.enabled: "true"
+      spring.cloud.vault.consul.enabled: "true"
+      spring.cloud.vault.authentication: "KUBERNETES"
+      spring.cloud.vault.kubernetes.service-account-token-file: "/var/run/secrets/kubernetes.io/serviceaccount/token"
+      spring.cloud.vault.kv.application-name: "bip-project-namespace-prefix/bip-origin"
+      spring.profiles.active: "dev"
+      spring.cloud.consul.config.prefix: "config/bip-project-namespace-prefix/${CONFIG_BRANCH}"
+ 
