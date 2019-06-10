@@ -95,7 +95,7 @@ function exit_now() {
 	echo " Help: \"$thisScript -h\"" 2>&1 | tee -a "$genLog"
 	echo " Logs: \"$genLog\"" 2>&1 | tee -a "$genLog"
 	echo "       search: \"+>> \" (script); \"sed: \" (sed); \"FAIL\" (mvn & cmd)" 2>&1 | tee -a "$genLog"
-	echo "------------------------------------------------------------------------"2>&1 | tee -a "$genLog"
+	echo "------------------------------------------------------------------------" 2>&1 | tee -a "$genLog"
 	# exit
 	exit $exit_code
 }
@@ -105,6 +105,11 @@ function exit_now() {
 ## scope: private (internal calls only) ##
 function show_help() {
 	echo "" 2>&1 | tee -a "$genLog"
+	echo "$thisScript : Generate a new skeleton project from the origin project." 2>&1 | tee -a "$genLog"
+	echo "  To generate your new project skeleton:" 2>&1 | tee -a "$genLog"
+	echo "  1. Update gen.properties with values for your new project." 2>&1 | tee -a "$genLog"
+	echo "  2. Run ./gen.sh (with relevant options) to create the new project." 2>&1 | tee -a "$genLog"
+	echo "  3. Move the project folder to your git directory and git initialize it." 2>&1 | tee -a "$genLog"
 	echo "Examples:" 2>&1 | tee -a "$genLog"
 	echo "  $thisScript -h  show this help" 2>&1 | tee -a "$genLog"
 	echo "  $thisScript     generate project using $thisFileName.properties file" 2>&1 | tee -a "$genLog"

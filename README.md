@@ -38,6 +38,48 @@ See the [bip-archetype-service-origin README.md](./bip-archetype-service-origin/
 
 ## Generating a New Project
 
+The `gen.sh` script is central to generating a new project skeleton.
+
+Script help can be displayed by executing `./gen.sh -h` - the output will look like:
+
+```text
+=========================================================================
+Generate a BIP Service project
+=========================================================================
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++>> Processing command-line arguments
+
+./gen.sh : Generate a new skeleton project from the origin project.
+  To generate your new project skeleton:
+  1\. Update gen.properties with values for your new project.
+  2\. Run ./gen.sh (with relevant options) to create the new project.
+  3\. Move the project folder to your git directory and git initialize it.
+Examples:
+  ./gen.sh -h  show this help
+  ./gen.sh     generate project using gen.properties file
+  ./gen.sh -s  skip (re)building the Origin source project
+  ./gen.sh -o  over-write new project if it already exists
+  ./gen.sh -d  build docker image (docker must be running)
+  ./gen.sh -so both skip build, and overwrite
+
+Notes:
+* Full instructions available in development branch at:
+  https://github.com/department-of-veterans-affairs/bip-archetype-service/
+* A valid "gen.properties" file must exist in the same directory
+  as this script.
+* It is recommended that a git credential helper be utilized to
+  eliminate authentication requests while executing. For more info see
+  https://help.github.com/articles/caching-your-github-password-in-git/
+
+
+
+ Help: "./gen.sh -h"
+ Logs: "/Users/aburkholder/git/bip-archetype-service/gen.log"
+       search: "+>> " (script); "sed: " (sed); "FAIL" (mvn & cmd)
+------------------------------------------------------------------------
+```
+
 1. Update `gen.properties`. Read the comments in the properties file for each property. Existing property values provide examples of how they should appear.
 2. Generate the new project and read at least the last few lines of the script output. Example from the command line:
 
