@@ -38,6 +38,12 @@ See the [bip-archetype-service-origin README.md](./bip-archetype-service-origin/
 
 ## Generating a New Project
 
+The `gen.sh` script is central to generating a new project skeleton.
+
+Script help can be displayed by executing `./gen.sh -h`
+
+### Steps to generate a new skeleton project
+
 1. Update `gen.properties`. Read the comments in the properties file for each property. Existing property values provide examples of how they should appear.
 2. Generate the new project and read at least the last few lines of the script output. Example from the command line:
 

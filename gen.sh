@@ -16,6 +16,7 @@ returnStatus=0
 propertiesFile="$thisFileName.properties"
 overwriteExisting=-1
 skipBuild=-1
+doDockerBuild="-Ddockerfile.skip=true"
 originDirName="bip-archetype-service-origin"
 originGroupId="gov.va.bip.origin"
 genLog="$cwd/$thisFileName.log"
@@ -67,6 +68,9 @@ function exit_now() {
 		# check exit codes
 		if [ "$exit_code" -eq "1" ]; then
 			echo "Command error. See output at end of $genLog"
+		elif [ "$exit_code" -eq "2" ]; then
+			# Invalie command line argument
+			echo " ERROR: Docker must be running for command-line argument \"-$OPTARG\" (use \"$thisScript -h\" for help) ... aborting immediately" 2>&1 | tee -a "$genLog"
 		elif [ "$exit_code" -eq "5" ]; then
 			# Invalie command line argument
 			echo " ERROR: Invalid command-line argument \"-$OPTARG\" (use \"$thisScript -h\" for help) ... aborting immediately" 2>&1 | tee -a "$genLog"
@@ -91,7 +95,7 @@ function exit_now() {
 	echo " Help: \"$thisScript -h\"" 2>&1 | tee -a "$genLog"
 	echo " Logs: \"$genLog\"" 2>&1 | tee -a "$genLog"
 	echo "       search: \"+>> \" (script); \"sed: \" (sed); \"FAIL\" (mvn & cmd)" 2>&1 | tee -a "$genLog"
-	echo "------------------------------------------------------------------------"2>&1 | tee -a "$genLog"
+	echo "------------------------------------------------------------------------" 2>&1 | tee -a "$genLog"
 	# exit
 	exit $exit_code
 }
@@ -101,11 +105,17 @@ function exit_now() {
 ## scope: private (internal calls only) ##
 function show_help() {
 	echo "" 2>&1 | tee -a "$genLog"
+	echo "$thisScript : Generate a new skeleton project from the origin project." 2>&1 | tee -a "$genLog"
+	echo "  To generate your new project skeleton:" 2>&1 | tee -a "$genLog"
+	echo "  1. Update gen.properties with values for your new project." 2>&1 | tee -a "$genLog"
+	echo "  2. Run ./gen.sh (with relevant options) to create the new project." 2>&1 | tee -a "$genLog"
+	echo "  3. Move the project folder to your git directory and git initialize it." 2>&1 | tee -a "$genLog"
 	echo "Examples:" 2>&1 | tee -a "$genLog"
 	echo "  $thisScript -h  show this help" 2>&1 | tee -a "$genLog"
 	echo "  $thisScript     generate project using $thisFileName.properties file" 2>&1 | tee -a "$genLog"
 	echo "  $thisScript -s  skip (re)building the Origin source project" 2>&1 | tee -a "$genLog"
 	echo "  $thisScript -o  over-write new project if it already exists" 2>&1 | tee -a "$genLog"
+	echo "  $thisScript -d  build docker image (docker must be running)" 2>&1 | tee -a "$genLog"
 	echo "  $thisScript -so both skip build, and overwrite" 2>&1 | tee -a "$genLog"
 	echo "" 2>&1 | tee -a "$genLog"
 	echo "Notes:" 2>&1 | tee -a "$genLog"
@@ -134,21 +144,29 @@ function get_args() {
 	if [[ "$@" == "" ]]; then
 		echo "+>> Using properties file \"$propertiesFile\"" 2>&1 | tee -a "$genLog"
 	fi
-	while getopts ":hso" opt; do
-		echo "+>> previous_opt value = $previous_opt"2>&1 | tee -a "$genLog"
-		echo "+>> current opt value = $opt"2>&1 | tee -a "$genLog"
+	while getopts ":hsod" opt; do
 		case "$opt" in
 			h)
 				show_help
 				;;
 			s)
 				skipBuild=0
-				echo "+>> Skipping build of Origin project" 2>&1 | tee -a "$genLog"
+				echo "+>> - Skipping build of Origin project" 2>&1 | tee -a "$genLog"
 				;;
 			o)
 				# echo "+>> -o > overwrite" 2>&1 | tee -a "$genLog"
 				overwriteExisting=0
-				echo "+>> Existing project will be deleted and recreated if it already exists" 2>&1 | tee -a "$genLog"
+				echo "+>> - Existing project will be deleted and recreated if it already exists" 2>&1 | tee -a "$genLog"
+				;;
+			d)
+				# echo "+>> -o > build docker" 2>&1 | tee -a "$genLog"
+				doDockerBuild=""
+				if ps ax | grep -v grep | grep -v docker.vmnetd | grep com.docker > /dev/null
+				then
+					echo "+>> - Build docker image (docker must be running)" 2>&1 | tee -a "$genLog"
+				else
+					exit_now 2
+				fi
 				;;
 			\?)
 				exit_now 5
@@ -276,8 +294,8 @@ function build_origin() {
 		echo "+>> Not building $originDirName" 2>&1 | tee -a "$genLog"
 	else
 		echo "+>> Building the $originDirName project" 2>&1 | tee -a "$genLog"
-		echo "mvn clean install -Ddockerfile.skip=true -e -X" 2>&1 | tee -a "$genLog"
-		mvn clean install -Ddockerfile.skip=true -e -X  2>&1 >> "$genLog"
+		echo "mvn clean install $doDockerBuild -e -X" 2>&1 | tee -a "$genLog"
+		mvn clean install $doDockerBuild -e -X  2>&1 >> "$genLog"
 		check_exit_status "$?"
 	fi
 }
@@ -446,7 +464,7 @@ function change_text() {
 		newVal="$artifactNameUpperCase"
 		echo "sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' \"$tmpFile\"" 2>&1 | tee -a "$genLog"
 		sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' "$tmpFile" 2>&1 >> "$genLog"
-	    # projectNameSpacePrefix replacement
+		# projectNameSpacePrefix replacement
 		oldVal="bip-project-namespace-prefix"
 		newVal="$projectNameSpacePrefix"
 		echo "sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' \"$tmpFile\"" 2>&1 | tee -a "$genLog"
@@ -463,8 +481,8 @@ function build_new_project() {
 	cd_to "$cwd/$artifactId"
 
 	echo "+>> Building the $artifactId project" 2>&1 | tee -a "$genLog"
-	echo "mvn clean package -Ddockerfile.skip=true -e -X" 2>&1 | tee -a "$genLog"
-	mvn clean package -Ddockerfile.skip=true -e -X  2>&1 >> "$genLog"
+	echo "mvn clean package $doDockerBuild -e -X" 2>&1 | tee -a "$genLog"
+	mvn clean package $doDockerBuild -e -X  2>&1 >> "$genLog"
 	check_exit_status "$?"
 }
 
