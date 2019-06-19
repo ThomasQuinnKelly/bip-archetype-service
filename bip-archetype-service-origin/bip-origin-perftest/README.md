@@ -80,4 +80,4 @@ An example for executing the test in performance test environment:
 
 ## How to set up JMeter and Create Test Plan (JMX)
 For and example from the BIP Reference
- app, see [BIP Reference - Performance Testing Guide](https://github.com/department-of-veterans-affairs/bip-reference/tree/master/bip-reference-perftest)
+ app, see [BIP Reference - Performance Testing Guide](https://github.com/department-of-veterans-affairs/bip-reference-person/tree/master/bip-reference-perftest)
