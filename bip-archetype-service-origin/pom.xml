@@ -1,8 +1,7 @@
 <project
 	xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
->
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -27,46 +26,10 @@
 
 	<repositories>
 		<repository>
-			<id>central</id>
-			<name>Central Repository</name>
-			<url>http://repo.maven.apache.org/maven2</url>
-			<layout>default</layout>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-		<!--
-		<repository>
-			<id>vets</id>
-			<name>Vets.gov Nexus Repository</name>
-			<url>http://csraciapp1.evss.srarad.com:8081/nexus/content/groups/public</url>
-		</repository>
- 		-->
-		<!-- 
-			<repository>
 			<id>nexus3</id>
 			<name>BIP Nexus Repository</name>
 			<url>https://nexus.dev.bip.va.gov/repository/maven-public</url>
-			</repository>
- 		-->
-		<!-- 
-			<repository>
-			<id>github</id>
-			<name>GitHub Repository</name>
-			<url>https://raw.github.com/department-of-veterans-affairs/ocp-framework/mvn-repo</url>
-			</repository>
- 		-->
+	  	</repository>
 	</repositories>
-	<pluginRepositories>
-		<pluginRepository>
-			<id>central</id>
-			<url>http://central</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
+	
 </project>

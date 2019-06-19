@@ -6,7 +6,7 @@ This Origin project should never be deployed to any server. It is a tool to ease
 
 ## What is in (and not in) this project?
 
-Some capabilities that are provided in [bip-reference-person](https://github.com/department-of-veterans-affairs/bip-reference-person) for instructional purposes are omitted from the Origin project. Also, beyond the necessary, this project does not attempt to anticipate the needs of projects that will be built on the BIP Platform. It provides the base code and config for core functionality, and provides starting points for unit tests, integration tests, and performance tests.
+Some capabilities that are provided in [bip-reference-person](https://github.ec.va.gov/EPMO/bip-reference-person) for instructional purposes are omitted from the Origin project. Also, beyond the necessary, this project does not attempt to anticipate the needs of projects that will be built on the BIP Platform. It provides the base code and config for core functionality, and provides starting points for unit tests, integration tests, and performance tests.
 
 Included capabilities:
 

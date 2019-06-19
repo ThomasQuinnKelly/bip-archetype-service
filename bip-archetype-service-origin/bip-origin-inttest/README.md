@@ -54,5 +54,5 @@ To execute the functional test in local bip-origin service needs to be up and ru
 
 
 ## More Details For Functional Test
-For examples from the BIP Reference service, see [Integration Testing Guide](https://github.com/department-of-veterans-affairs/bip-reference/tree/master/bip-reference-inttest)
+For examples from the BIP Reference service, see [Integration Testing Guide](https://github.ec.va.gov/EPMO/bip-reference-person/tree/master/bip-reference-inttest)
 

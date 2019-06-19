@@ -20,7 +20,7 @@ The root project directory hosts the `bip-archetype-service-origin` project. Thi
 1. Clone the project:
 
   - `$ cd ~/git`
-  - `$ git clone https://github.com/department-of-veterans-affairs/bip-archetype-service`
+  - `$ git clone https://github.ec.va.gov/EPMO/bip-archetype-service`
 
 2. Import into an appropriate IDE workspace.
 
@@ -30,7 +30,7 @@ The root project directory hosts the `bip-archetype-service-origin` project. Thi
 
 ## About The Origin Project
 
-The `bip-archetype-service-origin` project contains the origin (or "source") project from which the new project can be created. This project is based on the [bip-reference -person](https://github.com/department-of-veterans-affairs/bip-reference-person) project, with some sample features removed, and necessary naming genericized.
+The `bip-archetype-service-origin` project contains the origin (or "source") project from which the new project can be created. This project is based on the [bip-reference -person](https://github.ec.va.gov/EPMO/bip-reference-person) project, with some sample features removed, and necessary naming genericized.
 
 This project need only be modified when there are new features or capabilities to be included in a new generation of BIP Service projects.
 
@@ -63,3 +63,7 @@ Script help can be displayed by executing `./gen.sh -h`
 4. Make any desired changes, for example remove the sample objects, add real data objects, add skeleton API, add skeleton service methods/classes, etc.
 
 5. Make an initial commit to publish to a GitHub branch. For an example of how to do this, see [git_newrepo](https://gist.github.com/c0ldlimit/4089101) - the only difference is that you may want to commit into some branch other than _master_.
+
+# Getting Started With Your New Service Application
+
+The [reference application](https://github.ec.va.gov/EPMO/bip-reference-person) is a real functioning app  with concrete implementations of recommended code patterns. It provides examples for the fundamental capabilities that must exist in any BIP service application.

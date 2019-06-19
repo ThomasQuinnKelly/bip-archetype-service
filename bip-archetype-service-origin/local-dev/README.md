@@ -4,8 +4,8 @@ This local development environment is strickly for demonstration and local testi
 
 For examples and documentation about how projects are structured, configured, and developed on the BIP Platform:
 
-- [BIP Framework](https://github.com/department-of-veterans-affairs/bip-framework)
-- [BIP Reference - Person service](https://github.com/department-of-veterans-affairs/bip-reference-person)
+- [BIP Framework](https://github.ec.va.gov/EPMO/bip-framework)
+- [BIP Reference - Person service](https://github.ec.va.gov/EPMO/bip-reference-person)
 
 ## Starting the Environment
 
