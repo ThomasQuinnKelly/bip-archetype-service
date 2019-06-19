@@ -63,3 +63,7 @@ Script help can be displayed by executing `./gen.sh -h`
 4. Make any desired changes, for example remove the sample objects, add real data objects, add skeleton API, add skeleton service methods/classes, etc.
 
 5. Make an initial commit to publish to a GitHub branch. For an example of how to do this, see [git_newrepo](https://gist.github.com/c0ldlimit/4089101) - the only difference is that you may want to commit into some branch other than _master_.
+
+# Getting Started With Your New Service Application
+
+The [reference application](https://github.com/department-of-veterans-affairs/bip-reference-person) is a real functioning app  with concrete implementations of recommended code patterns. It provides examples for the fundamental capabilities that must exist in any BIP service application.
