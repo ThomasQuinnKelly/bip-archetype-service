@@ -203,7 +203,7 @@ function framework_exists() {
 	frameworkVersion=`grep -m 1 "<version>" bip-archetype-service-origin/pom.xml | cut -d "<" -f2 | cut -d ">" -f2`
 	echo "+>> Checking for existence of bip-framework $frameworkVersion" 2>&1 | tee -a "$genLog"
 
-	mvn dependency:get -Dartifact=gov.va.bip.framework:bip-framework-parentpom:$frameworkVersion:pom 2>&1 >> "$genLog"
+	mvn dependency:get -Dartifact=gov.va.bip.framework:bip-framework-parentpom:$frameworkVersion:pom -DremoteRepositories=https://nexus.dev.bip.va.gov/repository/maven-public 2>&1 >> "$genLog"
 	if [ "$?" -eq "0" ]; then
 		echo "[OK]" 2>&1 | tee -a "$genLog"
 	else
