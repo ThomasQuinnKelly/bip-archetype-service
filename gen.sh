@@ -31,6 +31,8 @@ artifactNameLowerCase=""
 artifactNameUpperCase=""
 servicePort=""
 projectNameSpacePrefix=""
+nexusRepoUrl=""
+frameworkVersion=""
 
 ################################################################################
 #########################                              #########################
@@ -86,6 +88,13 @@ function exit_now() {
 			# One or more properties not set
 			echo " ERROR: Directory \"$artifactId\" already exists. Delete the directory " 2>&1 | tee -a "$genLog"
 			echo "        or execute this generate script and properties in another directory. " 2>&1 | tee -a "$genLog"
+		elif [ "$exit_code" -eq "11" ]; then
+			# One or more properties not set
+			echo " ERROR: Could not find bip-framework version '$frameworkVersion'" 2>&1 | tee -a "$genLog"
+			echo "        To make bip-framework available, provide one of the following:" 2>&1 | tee -a "$genLog"
+			echo "        1. Access to BIP Nexus Repository at '$nexusRepoUrl'" 2>&1 | tee -a "$genLog"
+			echo "        2. Clone framework from 'https://github.com/department-of-veterans-affairs/bip-framework'" 2>&1 | tee -a "$genLog"
+			echo "           and build it with 'mvn clean install -U'" 2>&1 | tee -a "$genLog"
 		else
 			# some unexpected error
 			echo " Unexpected error code: $exit_code ... aborting immediately" 2>&1 | tee -a "$genLog"
@@ -182,6 +191,26 @@ function get_args() {
 ########################   BUSINESS UTILITY FUNCTIONS   ########################
 ########################                                ########################
 ################################################################################
+
+function framework_exists() {
+	echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" 2>&1 | tee -a "$genLog"
+	echo "cd $cwd" 2>&1 | tee -a "$genLog"
+	# tee does not play well with some bash commands, so just redirect output to the log
+	cd "$cwd" 2>&1 >> "$genLog"
+	echo "+>> pwd = `pwd`" 2>&1 | tee -a "$genLog"
+
+	nexusRepoUrl=`grep -m 1 "<url>" bip-archetype-service-origin/pom.xml | cut -d "<" -f2 | cut -d ">" -f2`
+	frameworkVersion=`grep -m 1 "<version>" bip-archetype-service-origin/pom.xml | cut -d "<" -f2 | cut -d ">" -f2`
+	echo "+>> Checking for existence of bip-framework $frameworkVersion" 2>&1 | tee -a "$genLog"
+
+	mvn dependency:get -Dartifact=gov.va.bip.framework:bip-framework-parentpom:$frameworkVersion:pom -DremoteRepositories=https://nexus.dev.bip.va.gov/repository/maven-public 2>&1 >> "$genLog"
+	if [ "$?" -eq "0" ]; then
+		echo "[OK]" 2>&1 | tee -a "$genLog"
+	else
+		exit_now "11"
+	fi
+
+}
 
 ## function to populate property vars from $propertiesFile ##
 ## arg: none                                               ##
@@ -503,6 +532,7 @@ echo "" 2>&1 | tee -a "$genLog"
 get_args $args
 read_properties
 validate_properties
+framework_exists
 build_origin
 copy_origin_project
 prepare_files
