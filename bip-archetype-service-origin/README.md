@@ -20,6 +20,10 @@ Omitted capabilities:
   - The Feign Client code (REST client) and config have been removed.
   - The `bip-reference-partner-person` SOAP service project has been removed. It is worth noting that the service Helper class remains in the project as a template for SOAP client calls.
 
+# Creating a New Project from Origin
+
+See the [root README](../README.md).
+
 # Updating the Origin Project
 
 ## Before starting modifications

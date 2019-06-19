@@ -38,9 +38,53 @@ See the [bip-archetype-service-origin README.md](./bip-archetype-service-origin/
 
 ## Generating a New Project
 
+> To generate a new project, your local environment must have access to `bip-framework`. Provide one of:
+> 1. Access to BIP Nexus Repository at the URL specified in [`bip-archetype-service-origin/pom.xml`]()
+> 2. Local artifact in `~/.m2/repository` by cloning [`bip-framework`](https://github.com/department-of-veterans-affairs/bip-framework), and building with `mvn clean install -U`
+
 The `gen.sh` script is central to generating a new project skeleton.
 
-Script help can be displayed by executing `./gen.sh -h`
+Help for the script can be displayed by executing `./gen.sh -h`
+<details><summary>Script Help Output</summary>
+
+```asciidoc
+=========================================================================
+Generate a BIP Service project
+=========================================================================
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++>> Processing command-line arguments
+
+./gen.sh : Generate a new skeleton project from the origin project.
+  To generate your new project skeleton:
+  1. Update gen.properties with values for your new project.
+  2. Run ./gen.sh (with relevant options) to create the new project.
+  3. Move the project folder to your git directory and git initialize it.
+Examples:
+  ./gen.sh -h  show this help
+  ./gen.sh     generate project using gen.properties file
+  ./gen.sh -s  skip (re)building the Origin source project
+  ./gen.sh -o  over-write new project if it already exists
+  ./gen.sh -d  build docker image (docker must be running)
+  ./gen.sh -so both skip build, and overwrite
+
+Notes:
+* Full instructions available in development branch at:
+  https://github.com/department-of-veterans-affairs/bip-archetype-service/
+* A valid "gen.properties" file must exist in the same directory
+  as this script.
+* It is recommended that a git credential helper be utilized to
+  eliminate authentication requests while executing. For more info see
+  https://help.github.com/articles/caching-your-github-password-in-git/
+
+
+
+ Help: "./gen.sh -h"
+ Logs: "/Users/aburkholder/git/bip-archetype-service/gen.log"
+       search: "+>> " (script); "sed: " (sed); "FAIL" (mvn & cmd)
+------------------------------------------------------------------------
+```
+</details>
 
 ### Steps to generate a new skeleton project
 
@@ -66,4 +110,4 @@ Script help can be displayed by executing `./gen.sh -h`
 
 # Getting Started With Your New Service Application
 
-The [reference application](https://github.com/department-of-veterans-affairs/bip-reference-person) is a real functioning app  with concrete implementations of recommended code patterns. It provides examples for the fundamental capabilities that must exist in any BIP service application.
+The [reference application](https://github.com/department-of-veterans-affairs/bip-reference-person) is a real functioning app  with concrete implementations of recommended code patterns. It provides examples for the fundamental capabilities that must exist in any BIP service application. Use this application as a guide for patterns and potential solutions.
