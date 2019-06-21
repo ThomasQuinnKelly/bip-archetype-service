@@ -92,8 +92,8 @@ public class OriginServiceImpl implements OriginService {
 		SampleDomainResponse response = null;
 		try {
 			Cache cache = null;
-			if (cacheManager != null && (cache = cacheManager.getCache(CacheConstants.CACHENAME_ORIGIN_SERVICE)) != null
-					&& cache.get(cacheKey) != null) {
+			if ((cacheManager != null) && ((cache = cacheManager.getCache(CacheConstants.CACHENAME_ORIGIN_SERVICE)) != null)
+					&& (cache.get(cacheKey) != null)) {
 				LOGGER.debug("sampleFindByParticipantID returning cached data");
 				response = cache.get(cacheKey, SampleDomainResponse.class);
 				return response;
@@ -158,7 +158,7 @@ public class OriginServiceImpl implements OriginService {
 					throwable.getClass().getSimpleName(), throwable.getLocalizedMessage());
 		} else {
 			LOGGER.error(
-					"smapleFindByParticipantIDFallBack No Throwable Exception. Just Raise Runtime Exception {}",
+					"sampleFindByParticipantIDFallBack No Throwable Exception. Just Raise Runtime Exception {}",
 					sampleDomainRequest);
 			response.addMessage(MessageSeverity.WARN, HttpStatus.OK, MessageKeys.WARN_KEY,
 					"There was a problem processing your request.");
