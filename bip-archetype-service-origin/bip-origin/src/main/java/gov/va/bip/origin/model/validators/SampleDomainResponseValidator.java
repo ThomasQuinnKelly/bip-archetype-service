@@ -44,13 +44,13 @@ public class SampleDomainResponseValidator extends AbstractStandardValidator<Sam
 				supplemental == null ? new SampleDomainRequest() : (SampleDomainRequest) supplemental;
 
 		// if response has errors, fatals or warnings skip validations
-		if (toValidate.hasErrors()
+		if (toValidate != null && (toValidate.hasErrors()
 				|| toValidate.hasFatals()
-				|| toValidate.hasWarnings()) {
+				|| toValidate.hasWarnings())) {
 			return;
 		}
 		// check if empty response, or errors / fatals
-		if (toValidate == null || toValidate.getSampleInfo() == null) {
+		if ((toValidate == null) || (toValidate.getSampleInfo() == null)) {
 			OriginMessageKeys key = OriginMessageKeys.BIP_SAMPLE_REQUEST_NOTNULL;
 			LOGGER.info(key.getKey() + " " + key.getMessage());
 			throw new OriginServiceException(key, MessageSeverity.FATAL, HttpStatus.INTERNAL_SERVER_ERROR);
