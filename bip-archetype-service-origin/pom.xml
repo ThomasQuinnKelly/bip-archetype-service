@@ -31,31 +31,6 @@
 			<name>BIP Nexus Repository</name>
 			<url>https://nexus.dev.bip.va.gov/repository/maven-public</url>
 	  	</repository>
-	  	<!-- TODO SYNC remove below repos -->
-		<repository>
-			<id>spring-milestones</id>
-			<name>Spring Milestones</name>
-			<url>http://repo.spring.io/milestone</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>spring-cloud</id>
-			<name>Spring Cloud</name>
-			<url>https://github.com/spring-cloud</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>maven-central</id>
-			<name>Maven Central</name>
-			<url>https://github.com/spring-cloud</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
 	</repositories>
 	
 </project>
