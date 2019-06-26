@@ -95,25 +95,22 @@ public class OriginServiceImpl implements OriginService {
 			if ((cacheManager != null) && ((cache = cacheManager.getCache(CacheConstants.CACHENAME_ORIGIN_SERVICE)) != null)
 					&& (cache.get(cacheKey) != null)) {
 				LOGGER.debug("sampleFindByParticipantID returning cached data");
-				response = cache.get(cacheKey, SampleDomainResponse.class);
-				return response;
+				return cache.get(cacheKey, SampleDomainResponse.class);
 			}
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage(), e);
 		}
 
 		// try from partner
-		if (response == null) {
-			LOGGER.debug("sampleFindByParticipantID no cached data found");
-			try {
-				response = partnerHelper.sampleFindByPid(sampleDomainRequest);
-			} catch (BipException | BipRuntimeException bipException) {
-				SampleDomainResponse domainResponse = new SampleDomainResponse();
-				// check exception..create domain model response
-				domainResponse.addMessage(bipException.getExceptionData().getSeverity(), bipException.getExceptionData().getStatus(), 
-						bipException.getExceptionData().getMessageKey(), bipException.getExceptionData().getParams());
-				return domainResponse;
-			}
+		LOGGER.debug("sampleFindByParticipantID no cached data found");
+		try {
+			response = partnerHelper.sampleFindByPid(sampleDomainRequest);
+		} catch (BipException | BipRuntimeException bipException) {
+			SampleDomainResponse domainResponse = new SampleDomainResponse();
+			// check exception..create domain model response
+			domainResponse.addMessage(bipException.getExceptionData().getSeverity(), bipException.getExceptionData().getStatus(), 
+					bipException.getExceptionData().getMessageKey(), bipException.getExceptionData().getParams());
+			return domainResponse;
 		}
 
 		return response;
