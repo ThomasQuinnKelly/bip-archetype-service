@@ -1,7 +1,6 @@
 package gov.va.bip.origin.model;
 
 import gov.va.bip.framework.service.DomainRequest;
-import io.swagger.annotations.ApiModelProperty;
 
 /**
  * This domain model represents a request for SampleInfoDomain by participant ID.
@@ -15,8 +14,6 @@ public class SampleDomainRequest extends DomainRequest {
 	private static final long serialVersionUID = 1593666859950183199L;
 
 	/** A String representing a participant ID. */
-	@ApiModelProperty(value = "The Participant ID for whom to retrieve data", required = true,
-			example = "6666345")
 	private Long participantID;
 
 	/**
