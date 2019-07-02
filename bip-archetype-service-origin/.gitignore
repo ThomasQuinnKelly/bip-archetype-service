@@ -40,3 +40,6 @@ nbdist/
 
 ### Ignore int test log file ###
 **/rest*.log
+
+### Ignore mvn log
+mvn.log

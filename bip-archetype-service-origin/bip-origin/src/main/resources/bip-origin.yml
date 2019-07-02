@@ -206,7 +206,7 @@ bip.framework:
         - /**
   swagger:
     title: BIP Origin Spring Boot Service v1 API Documentation
-    description: 
+    description: Origin API
     groupName: "@project.name@-@project.version@"
     version: ${info.build.version}
     securePaths: /api/v?.*/origin/.*
@@ -250,4 +250,4 @@ spring.sleuth.rxjava.schedulers.ignoredthreads: HystixMetricPoller,^RxComputatio
 # 
 # SERVICE CLIENT PROPERTIES
 #########################################################################
-# See examples of partner configuration in [bip-reference-person.yml](https://github.com/department-of-veterans-affairs/bip-reference-person/blob/master/bip-reference-person/src/main/resources/bip-reference-person.yml)
+# See examples of partner configuration in bip-reference-person.yml https://github.com/department-of-veterans-affairs/bip-reference-person/blob/master/bip-reference-person/src/main/resources/bip-reference-person.yml

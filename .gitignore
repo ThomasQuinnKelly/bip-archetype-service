@@ -46,3 +46,5 @@ nbdist/
 
 ### .log ###
 /.log
+
+/bin

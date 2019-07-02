@@ -2,10 +2,7 @@
 
 This local development environment is strickly for demonstration and local testing of the BIP Platform.
 
-For examples and documentation about how projects are structured, configured, and developed on the BIP Platform:
-
-- [BIP Framework](https://github.ec.va.gov/EPMO/bip-framework)
-- [BIP Reference - Person service](https://github.ec.va.gov/EPMO/bip-reference-person)
+For information about the BIP Framework and Reference Application, see this [README](https://github.ec.va.gov/EPMO/bip-reference-person).
 
 ## Starting the Environment
 
@@ -29,14 +26,13 @@ As a developer, there may be instances when you need to make calls that do not r
 
 There are 3 ways you can clear the cache:
 
-### 1\. In any Spring Profile:
+#### 1. In any Spring Profile:
 
 The cache auto-configuration registers `BipCacheOpsMBean` and its implementation as a spring JMX management bean (enabled by the `@EnableMBeanExport` annotation). This bean allows developers to clear the cache on the fly when testing code that must bypass the cache, and can be enhanced to provide other cache management activities. Usage of this bean is:
 
 1. Start the spring boot service app (in STS or from command line)
 2. Open `$JAVA_HOME/bin/jconsole` (JAVA_HOME must point to a full JDK, not SE, as jconsole is only available in the full JDK)
 3. When jconsole opens:
-
   - In the _New Connection_ dialog, select _Local Process > gov.va.bip.person.OriginApplication_ and click the _Connect_ button
   - If asked, allow _Insecure connection_
   - When the console comes up, select the _MBeans_ tab
@@ -44,16 +40,16 @@ The cache auto-configuration registers `BipCacheOpsMBean` and its implementation
   - In the right pane under _Operation Invocation_, click the _clearAllCaches()_ button
   - After a moment, a "Method successfully invoked" message should pop up, indicating that all cache entries have been cleared
 
-### 2\. Default Profile:
+#### 2. Default Profile:
 
 If you run the app in default profile, it uses emebedded redis server for caching. To clear cache, follow the below steps.
 
-- Download Redis from <https://redis.io/download>
+- Download [Redis](https://redis.io/download)
 - Go to src folder and run `redis-cli`
 - To see the cache entries - `KEYS *`
 - To clear cache entries - `FLUSHALL`
 
-### 3\. local-int profile:
+#### 3. local-int profile:
 
 If you run the app in local-int profile, follow the below steps.
 

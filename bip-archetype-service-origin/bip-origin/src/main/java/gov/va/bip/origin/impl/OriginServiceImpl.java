@@ -108,7 +108,7 @@ public class OriginServiceImpl implements OriginService {
 		} catch (BipException | BipRuntimeException bipException) {
 			SampleDomainResponse domainResponse = new SampleDomainResponse();
 			// check exception..create domain model response
-			domainResponse.addMessage(bipException.getExceptionData().getSeverity(), bipException.getExceptionData().getStatus(), 
+			domainResponse.addMessage(bipException.getExceptionData().getSeverity(), bipException.getExceptionData().getStatus(),
 					bipException.getExceptionData().getMessageKey(), bipException.getExceptionData().getParams());
 			return domainResponse;
 		}

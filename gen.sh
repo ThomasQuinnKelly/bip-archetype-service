@@ -9,11 +9,11 @@
 cwd=`pwd`
 thisScript="$0"
 thisFileName=$(basename -- "$0" | cut -d'.' -f1)
-#$(echo "$thisScript" | rev | cut -d'/' -f1 | rev | cut -d'.' -f1)
 args="$@"
 returnStatus=0
 # script variables
 propertiesFile="$thisFileName.properties"
+removeOnly=-1
 overwriteExisting=-1
 skipBuild=-1
 doDockerBuild="-Ddockerfile.skip=true"
@@ -65,7 +65,7 @@ function exit_now() {
 		echo "" 2>&1 | tee -a "$genLog"
 	else
 		echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" 2>&1 | tee -a "$genLog"
-		echo " ***   BUILD FAILED (exit code $exit_code)   ***" 2>&1 | tee -a "$genLog"
+		echo " ***   FAILURE (exit code $exit_code)   ***" 2>&1 | tee -a "$genLog"
 		echo "" 2>&1 | tee -a "$genLog"
 		# check exit codes
 		if [ "$exit_code" -eq "1" ]; then
@@ -81,9 +81,12 @@ function exit_now() {
 			echo " ERROR: \"$propertiesFile\" does not provide values for the following properties:" 2>&1 | tee -a "$genLog"
 			echo "        $missingProperties" 2>&1 | tee -a "$genLog"
 		elif [ "$exit_code" -eq "7" ]; then
-			# One or more properties not set
+			# Project already exists, no over-write arg
 			echo " ERROR: \"$artifactId\" project already exists ... aborting immediately" 2>&1 | tee -a "$genLog"
 			echo "        Delete/move the project, or start this script with the -o option" 2>&1 | tee -a "$genLog"
+		elif [ "$exit_code" -eq "8" ]; then
+			# No project to remove
+			echo " ERROR: Could not remove \"$artifactId\". Does not exist." 2>&1 | tee -a "$genLog"
 		elif [ "$exit_code" -eq "10" ]; then
 			# One or more properties not set
 			echo " ERROR: Directory \"$artifactId\" already exists. Delete the directory " 2>&1 | tee -a "$genLog"
@@ -121,6 +124,7 @@ function show_help() {
 	echo "  3. Move the project folder to your git directory and git initialize it." 2>&1 | tee -a "$genLog"
 	echo "Examples:" 2>&1 | tee -a "$genLog"
 	echo "  $thisScript -h  show this help" 2>&1 | tee -a "$genLog"
+	echo "  $thisScript -r  remove generated new project from disk, then exit script" 2>&1 | tee -a "$genLog"
 	echo "  $thisScript     generate project using $thisFileName.properties file" 2>&1 | tee -a "$genLog"
 	echo "  $thisScript -s  skip (re)building the Origin source project" 2>&1 | tee -a "$genLog"
 	echo "  $thisScript -o  over-write new project if it already exists" 2>&1 | tee -a "$genLog"
@@ -153,10 +157,14 @@ function get_args() {
 	if [[ "$@" == "" ]]; then
 		echo "+>> Using properties file \"$propertiesFile\"" 2>&1 | tee -a "$genLog"
 	fi
-	while getopts ":hsod" opt; do
+	while getopts ":hrsod" opt; do
 		case "$opt" in
 			h)
 				show_help
+				;;
+			r)
+				removeOnly=0
+				echo "+>> - Removing generated new project only" 2>&1 | tee -a "$genLog"
 				;;
 			s)
 				skipBuild=0
@@ -312,6 +320,25 @@ function cd_to() {
 ############################   BUSINESS FUNCTIONS   ############################
 ############################                        ############################
 ################################################################################
+
+function remove_only() {
+	if [ "$removeOnly" -eq "0" ]; then
+		cd_to "$cwd"
+		echo "" 2>&1 | tee -a "$genLog"
+
+		if [ -d "$artifactId" ]; then
+			echo "+>> Removing '$artifactId'" 2>&1 | tee -a "$genLog"
+			echo "rm -rf $artifactId" 2>&1 | tee -a "$genLog"
+			rm -rf "$artifactId" 2>&1 >> "$genLog"
+			check_exit_status "$?"
+		else
+			exit_now 8
+		fi
+		# do not continue any further processing of any kind
+		echo "" 2>&1 | tee -a "$genLog"
+		exit 0
+	fi
+}
 
 ## function to (re)build the Origin project ##
 ## arg: none                                ##
@@ -532,6 +559,7 @@ echo "" 2>&1 | tee -a "$genLog"
 get_args $args
 read_properties
 validate_properties
+remove_only
 framework_exists
 build_origin
 copy_origin_project
