@@ -39,7 +39,7 @@ See the [bip-archetype-service-origin README.md](./bip-archetype-service-origin/
 ## Generating a New Project
 
 > To generate a new project, your local environment must have access to `bip-framework`. Provide one of:
-> 1. Access to BIP Nexus Repository at the URL specified in [`bip-archetype-service-origin/pom.xml`]()
+> 1. Access to BIP Nexus Repository at the URL specified in [`bip-archetype-service-origin/pom.xml`](bip-archetype-service-origin/pom.xml)
 > 2. Local artifact in `~/.m2/repository` by cloning [`bip-framework`](https://github.ec.va.gov/EPMO/bip-framework), and building with `mvn clean install -U`
 
 The `gen.sh` script is central to generating a new project skeleton.
