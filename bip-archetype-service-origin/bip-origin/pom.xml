@@ -19,7 +19,7 @@
     <description>Origin Service Implementation for BIP Project</description>
     
     <properties>
-    	<bip-framework.version>1.0.4-SNAPSHOT</bip-framework.version>
+    	<bip-framework.version>2.0.0</bip-framework.version>
     </properties>
     
     <dependencies>
