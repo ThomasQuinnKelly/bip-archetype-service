@@ -34,7 +34,7 @@ public class OriginServiceExceptionTest {
 	 * @throws Exception
 	 */
 	@Test
-	public void testGetSeverity() throws Exception {
+	public void testGetSeverity() {
 		System.out.println("getSeverity");
 		MessageSeverity expResult = MessageSeverity.ERROR;
 		MessageSeverity result = instance.getExceptionData().getSeverity();
@@ -51,10 +51,6 @@ public class OriginServiceExceptionTest {
 		String result = instance.getExceptionData().getKey();
 		assertEquals(expResult, result);
 	}
-
-	/**
-	 * Test of setKey method, of class OriginServiceException.
-	 */
 
 	/**
 	 * Test of getMessage method, of class OriginServiceException.

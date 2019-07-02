@@ -14,13 +14,13 @@ import gov.va.bip.framework.messages.MessageKey;
 public enum OriginMessageKeys implements MessageKey {
 
 	/** Minimum allowed value validation for PID; no args */
-	BIP_SAMPLE_REQUEST_PID_MIN("bip.origin.sample.request.pid.Min",
+	BIP_SAMPLE_REQUEST_PID_MIN("Min.sampleRequest.participantID",
 			"SampleRequest.participantID cannot be zero"),
 	/** PID cannot be null validation; no args */
-	BIP_SAMPLE_REQUEST_PID_NOTNULL("bip.origin.sample.request.pid.NotNull",
+	BIP_SAMPLE_REQUEST_PID_NOTNULL("NotNull.sampleRequest.participantID",
 			"SampleRequest.participantID cannot be null"),
 	/** Payload cannot be null validation; no args */
-	BIP_SAMPLE_REQUEST_NOTNULL("bip.origin.sample.request.NotNull",
+	BIP_SAMPLE_REQUEST_NOTNULL("NotNull.sampleRequest",
 			"SampleRequest Payload cannot be null"),
 
 	/** Response has different PID than the request; no args */

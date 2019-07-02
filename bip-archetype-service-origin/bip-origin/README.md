@@ -7,14 +7,14 @@ The service application consists of:
 - Exposure of an API with request validation and exception management.
 - Service capabilities to process requests and acquire data from external partners.
 
-The responsibilities and capabilities of the service application are <span color="red">add information here</span>.
+The responsibilities and capabilities of the service application are ![#f03c15](https://placehold.it/15/f03c15/000000?text=+) _add information here_ ![#f03c15](https://placehold.it/15/f03c15/000000?text=+).
 
 ## Diagrams
 
 #### Class Diagram
-<span color="red">add class diagrams to /docs/images, and add html img tags to refer to them</span>
+![#f03c15](https://placehold.it/15/f03c15/000000?text=+) _add class diagrams to /docs/images, and add html img tags to refer to them_ ![#f03c15](https://placehold.it/15/f03c15/000000?text=+)
 
 #### Sequence Diagrams
 
-<span color="red">add sequence diagrams to /docs/images, and add html img tags to refer to them</span>
+![#f03c15](https://placehold.it/15/f03c15/000000?text=+) _add sequence diagrams to /docs/images, and add html img tags to refer to them_ ![#f03c15](https://placehold.it/15/f03c15/000000?text=+)
 

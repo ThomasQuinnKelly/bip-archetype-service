@@ -1,14 +1,10 @@
 # What is this repository for?
 
-This is a suite of BIP projects for
-
-<span color="red">add project purpose here</span>
-
-.
+This is a suite of BIP projects for ![#f03c15](https://placehold.it/15/f03c15/000000?text=+) _add project purpose here_ ![#f03c15](https://placehold.it/15/f03c15/000000?text=+)
 
 # Project Breakdown
 
-1. <span color="red">add github URLs to any partner projects, and brief description here</span>
+1. ![#f03c15](https://placehold.it/15/f03c15/000000?text=+) _add github URLs to any partner projects, and brief description here_ ![#f03c15](https://placehold.it/15/f03c15/000000?text=+)
 
 2. [bip-origin](https://github.com/department-of-veterans-affairs/__artifactId__/tree/master/__artifactId__): Service implementation project. This project demonstrates the recommended design patterns, configuration pointers, and coding examples. It shows how to produce a documented endpoint, how to register the app with Consul, how to use secrets from Vault, how to implement a Hystrix circuit breaker, how to get and use loggers, etc. The design consists of three layers:
 
