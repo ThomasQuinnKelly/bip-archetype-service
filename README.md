@@ -36,6 +36,15 @@ This project need only be modified when there are new features or capabilities t
 
 See the [bip-archetype-service-origin README.md](./bip-archetype-service-origin/README.md) for details on modifying the Origin project.
 
+The origin project is dependent on the libraries from BIP framework a.k.a Blue for auto configuration, common shared libraries, parent pom maven configuration and functional testing library. These framework artifacts are included in the pom.xml files of the origin project modules.
+
+The versions for the configured BIP Framework can be reviewed in the following file locations:
+
+- [Service Reactor POM](bip-archetype-service-origin/pom.xml)
+- [Service POM](bip-archetype-service-origin/bip-origin/pom.xml). Review `<bip-framework.version>` property value
+- [Integration Test POM](bip-archetype-service-origin/bip-origin-inttest/pom.xml). Review `<bip-framework.version>` property value
+
+
 ## Generating a New Project
 
 > To generate a new project, your local environment must have access to `bip-framework`. Provide one of:

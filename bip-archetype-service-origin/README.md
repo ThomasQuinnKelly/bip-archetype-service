@@ -2,11 +2,20 @@
 
 This project is the origin (or "source") project from which a new BIP Service project can be created.
 
-This Origin project should never be deployed to any server. It is a tool to ease the creation of a new service project.
+This Origin project should never be deployed to any server. It is a tool to ease the creation of a new service project. 
+
+This project is dependent on the libraries from BIP framework a.k.a Blue for auto configuration, common shared libraries, parent pom maven configuration and functional testing library. These framework artifacts are included in the pom.xml files of the origin project modules.
+
+The versions for the configured BIP Framework can be reviewed in the following file locations:
+
+- [Service Reactor POM](pom.xml)
+- [Service POM](bip-origin/pom.xml). Review `<bip-framework.version>` property value
+- [Integration Test POM](bip-origin-inttest/pom.xml). Review `<bip-framework.version>` property value
+
 
 ## What is in (and not in) this project?
 
-Some capabilities that are provided in [bip-reference-person](https://github.com/department-of-veterans-affairs/bip-reference-person) for instructional purposes are omitted from the Origin project. Also, beyond the necessary, this project does not attempt to anticipate the needs of projects that will be built on the BIP Platform. It provides the base code and config for core functionality, and provides starting points for unit tests, integration tests, and performance tests.
+Some capabilities that are provided in [bip-reference-person](https://github.com/department-of-veterans-affairs/bip-reference-person) for instructional purposes are omitted from the Origin project. Also, beyond the necessary, this project does not attempt to anticipate the needs of projects that will be built on the BIP Platform. It provides the base code and configuration for core functionality, and provides starting points for unit tests, integration tests, and performance tests.
 
 Included capabilities:
 

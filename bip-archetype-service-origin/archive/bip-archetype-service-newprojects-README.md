@@ -4,7 +4,6 @@ This is a suite of BIP projects for
 
 <span color="red">add project purpose here</span>
 
-.
 
 # Project Breakdown
 
@@ -24,6 +23,15 @@ For examples and documentation about how projects are structured, configured, an
 
 - [BIP Framework](https://github.com/department-of-veterans-affairs/bip-framework)
 - [BIP Reference - Person service](https://github.com/department-of-veterans-affairs/bip-reference-person)
+
+This project is dependent on the libraries from BIP framework a.k.a Blue for auto configuration, common shared libraries, parent pom maven configuration and functional testing library. These framework artifacts are included in the pom.xml files of the origin project modules.
+
+The versions for the configured BIP Framework can be reviewed in the following file locations:
+
+- [Service Reactor POM](pom.xml)
+- [Service POM](bip-origin/pom.xml). Review `<bip-framework.version>` property value
+- [Integration Test POM](bip-origin-inttest/pom.xml). Review `<bip-framework.version>` property value
+
 
 # How to build and test?
 

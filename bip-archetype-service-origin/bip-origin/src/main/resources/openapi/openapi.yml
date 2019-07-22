@@ -1,13 +1,10 @@
 # https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.1.md
 openapi: 3.0.1
 info:
-   version: 1.0.1-SNAPSHOT
+   version: 0.0.1-SNAPSHOT
    title: BIP Origin Service v1 API Documentation
    description: An OpenAPI 3.0 specification for Origin Service
    termsOfService: https://developer.va.gov/terms-of-service
-   license:
-    name: Apache 2.0
-    url: https://www.apache.org/licenses/LICENSE-2.0
 servers:
   - url: http://localhost:8080
     description: Local server
