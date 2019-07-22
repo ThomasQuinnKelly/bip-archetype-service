@@ -4,14 +4,13 @@ This project is the origin (or "source") project from which a new BIP Service pr
 
 This Origin project should never be deployed to any server. It is a tool to ease the creation of a new service project. 
 
-This project is dependent on the libraries from BIP framework a.k.a Blue for auto configuration, common shared libraries, parent pom maven configuration and functional testing library. These framework artifacts are included in the pom.xml files of the origin project modules.
+This project is dependent on the libraries from **BIP framework a.k.a Blue** for auto configuration, common shared libraries, parent pom maven configuration and functional testing library. These framework artifacts are included in the pom.xml files of the origin project modules.
 
-The versions for the configured BIP Framework can be reviewed in the following file locations:
+For the most current version of BIP Framework configured in the project, reviewed the following files:
 
-- [Service Reactor POM](pom.xml)
-- [Service POM](bip-origin/pom.xml). Review `<bip-framework.version>` property value
-- [Integration Test POM](bip-origin-inttest/pom.xml). Review `<bip-framework.version>` property value
-
+- [Service Reactor POM](bip-archetype-service-origin/pom.xml)
+- [Service POM](bip-archetype-service-origin/bip-origin/pom.xml). Review `<bip-framework.version>` property value
+- [Integration Test POM](bip-archetype-service-origin/bip-origin-inttest/pom.xml). Review `<bip-framework.version>` property value
 
 ## What is in (and not in) this project?
 
