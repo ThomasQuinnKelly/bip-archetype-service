@@ -8,9 +8,9 @@ This project is dependent on the libraries from **BIP framework a.k.a Blue** for
 
 For the most current version of BIP Framework configured in the project, reviewed the following files:
 
-- [Service Reactor POM](bip-archetype-service-origin/pom.xml)
-- [Service POM](bip-archetype-service-origin/bip-origin/pom.xml). Review `<bip-framework.version>` property value
-- [Integration Test POM](bip-archetype-service-origin/bip-origin-inttest/pom.xml). Review `<bip-framework.version>` property value
+- [Service Reactor POM](pom.xml)
+- [Service POM](bip-origin/pom.xml). Review `<bip-framework.version>` property value
+- [Integration Test POM](bip-origin-inttest/pom.xml). Review `<bip-framework.version>` property value
 
 ## What is in (and not in) this project?
 
