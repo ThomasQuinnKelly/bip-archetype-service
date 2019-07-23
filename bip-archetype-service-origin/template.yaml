@@ -53,7 +53,7 @@ parameters:
   - name: ROUTE_HOST
     displayName: Route Host
     description: Route host used as the fully qualified domain name for the app
-    required: false  
+    required: false
 objects:
   - apiVersion: v1
     kind: DeploymentConfig
@@ -272,4 +272,4 @@ objects:
       spring.cloud.vault.kv.application-name: "bip-project-namespace-prefix/bip-origin"
       spring.profiles.active: ${SPRING_PROFILES}
       spring.cloud.consul.config.prefix: "config/bip-project-namespace-prefix/${CONFIG_BRANCH}"
- 
+      
