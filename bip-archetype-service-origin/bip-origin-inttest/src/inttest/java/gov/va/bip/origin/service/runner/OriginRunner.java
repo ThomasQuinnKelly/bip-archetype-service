@@ -17,7 +17,7 @@ import cucumber.api.testng.AbstractTestNGCucumberTests;
 @RunWith(Cucumber.class)
 @CucumberOptions(strict = false, plugin = { "pretty",
 		"html:target/site/cucumber-pretty", "json:target/site/cucumber.json" },
-		features = { "src/inttest/resources/gov/va/bip/vetservices/origin/feature" },
+		features = { "src/inttest/resources/gov/va/bip/origin/feature" },
 		glue = { "gov.va.bip.origin.service.steps" })
 public class OriginRunner extends AbstractTestNGCucumberTests {
 
