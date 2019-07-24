@@ -495,6 +495,11 @@ function change_text() {
 		## ^^^^
 		## Do not include .project in the above exclusions
 
+		# replace archetype package/groupId for slash
+		oldVal="gov\/va\/bip\/origin"
+		newVal="${groupId//./\/}"
+		echo "sed -i \"\" -e \'s/\'\"$oldVal\"\'/\'\"$newVal\"\'/g\' \"$tmpFile\"" 2>&1 | tee -a "$genLog"
+		sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' "$tmpFile" 2>&1 >> "$genLog"
 		# replace archetype package/groupId
 		oldVal="gov.va.bip.origin"
 		newVal="$groupId"
