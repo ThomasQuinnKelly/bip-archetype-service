@@ -488,6 +488,7 @@ function change_text() {
 
 	find "$PWD" -type f -maxdepth 20 \
 		! -iwholename '*.DS_Store' \
+		! -iname 'swa\-prep.sh' \
 		! -iname '*.jks' \
 		! -iname '*.classpath' \
 		! -ipath '*.settings*' \
