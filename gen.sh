@@ -499,12 +499,12 @@ function change_text() {
 		# replace archetype package/groupId for slash
 		oldVal="gov\/va\/bip\/origin"
 		newVal="${groupId//./\\/}"
-		echo "LC_ALL=C sed -i \"\" -e \'s/\'\"$oldVal\"\'/\'\"$newVal\"\'/g\' \"$tmpFile\"" 2>&1 | tee -a "$genLog"
+		echo "LC_ALL=C sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' \"$tmpFile\"" 2>&1 | tee -a "$genLog"
 		LC_ALL=C sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' "$tmpFile" 2>&1 >> "$genLog"
 		# replace archetype package/groupId
 		oldVal="gov.va.bip.origin"
 		newVal="$groupId"
-		echo "LC_ALL=C sed -i \"\" -e \'s/\'\"$oldVal\"\'/\'\"$newVal\"\'/g\' \"$tmpFile\"" 2>&1 | tee -a "$genLog"
+		echo "LC_ALL=C sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' \"$tmpFile\"" 2>&1 | tee -a "$genLog"	
 		LC_ALL=C sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' "$tmpFile" 2>&1 >> "$genLog"
 		# artifactId replacement
 		oldVal="bip-origin"
