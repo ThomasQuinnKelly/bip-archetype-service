@@ -492,6 +492,7 @@ function change_text() {
 		! -iname '*.jks' \
 		! -iname '*.classpath' \
 		! -ipath '*.settings*' \
+		! -iname '*.pdf' \
 		| while read tmpFile; do
 		## ^^^^
 		## Do not include .project in the above exclusions

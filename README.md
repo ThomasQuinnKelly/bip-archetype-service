@@ -20,7 +20,7 @@ The root project directory hosts the `bip-archetype-service-origin` project. Thi
 1. Clone the project:
 
   - `$ cd ~/git`
-  - `$ git clone https://github.ec.gov/EPMO/bip-archetype-service`
+  - `$ git clone https://github.ec.va.gov/EPMO/bip-archetype-service`
 
 2. Import into an appropriate IDE workspace.
 
@@ -30,7 +30,7 @@ The root project directory hosts the `bip-archetype-service-origin` project. Thi
 
 ## About The Origin Project
 
-The `bip-archetype-service-origin` project contains the origin (or "source") project from which the new project can be created. This project is based on the [bip-reference -person](https://github.ec.gov/EPMO/bip-reference-person) project, with some sample features removed, and necessary naming genericized.
+The `bip-archetype-service-origin` project contains the origin (or "source") project from which the new project can be created. This project is based on the [bip-reference -person](https://github.ec.va.gov/EPMO/bip-reference-person) project, with some sample features removed, and necessary naming genericized.
 
 This project need only be modified when there are new features or capabilities to be included in a new generation of BIP Service projects.
 
@@ -49,7 +49,7 @@ For the most current version of BIP Framework configured in the project, reviewe
 
 > To generate a new project, your local environment must have access to `bip-framework`. Provide one of:
 > 1. Access to BIP Nexus Repository at the URL specified in [`bip-archetype-service-origin/pom.xml`](bip-archetype-service-origin/pom.xml)
-> 2. Local artifact in `~/.m2/repository` by cloning [`bip-framework`](https://github.ec.gov/EPMO/bip-framework), and building with `mvn clean install -U`
+> 2. Local artifact in `~/.m2/repository` by cloning [`bip-framework`](https://github.ec.va.gov/EPMO/bip-framework), and building with `mvn clean install -U`
 
 The `gen.sh` script is central to generating a new project skeleton.
 
@@ -79,7 +79,7 @@ Examples:
 
 Notes:
 * Full instructions available in development branch at:
-  https://github.ec.gov/EPMO/bip-archetype-service/
+  https://github.ec.va.gov/EPMO/bip-archetype-service/
 * A valid "gen.properties" file must exist in the same directory
   as this script.
 * It is recommended that a git credential helper be utilized to
@@ -119,4 +119,4 @@ Notes:
 
 # Getting Started With Your New Service Application
 
-The [reference application](https://github.ec.gov/EPMO/bip-reference-person) is a real functioning app  with concrete implementations of recommended code patterns. It provides examples for the fundamental capabilities that must exist in any BIP service application. Use this application as a guide for patterns and potential solutions.
+The [reference application](https://github.ec.va.gov/EPMO/bip-reference-person) is a real functioning app  with concrete implementations of recommended code patterns. It provides examples for the fundamental capabilities that must exist in any BIP service application. Use this application as a guide for patterns and potential solutions.
