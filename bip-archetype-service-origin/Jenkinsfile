@@ -29,6 +29,9 @@ mavenGitflowPipeline {
     /*************************************************************************
     * Functional Testing Configuration
     *************************************************************************/
+    
+    //Directory that will contain the generated cucumber reports
+    cucumberReportDirectory = "bip-origin-inttest/target/site"
 
     //Additional Mavn options to use when running functional test cases
     cucumberOpts = "--tags @DEV"
