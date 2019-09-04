@@ -273,4 +273,3 @@ objects:
       spring.profiles.active: ${SPRING_PROFILES}
       spring.cloud.consul.config.prefix: "config/bip-project-namespace-prefix/${CONFIG_BRANCH}"
  
-      
