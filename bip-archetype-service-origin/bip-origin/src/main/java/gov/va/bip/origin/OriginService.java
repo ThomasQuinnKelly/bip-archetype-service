@@ -16,4 +16,5 @@ public interface OriginService {
 	 * @return A SampleDomainResponse instance
 	 */
 	SampleDomainResponse sampleFindByParticipantID(SampleDomainRequest sampleDomainRequest);
+
 }

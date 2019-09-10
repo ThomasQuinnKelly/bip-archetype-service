@@ -129,16 +129,10 @@ components:
       title: SampleInfo
       description: Model for sample data contained in the response from the Service
       properties:
-        name:
+        sampleDatafield:
           type: string
-          example: JANE M DOE
-          description: The persons name
-        participantId:
-          type: integer
-          format: int64
-          example: 6666345
-          minimum: 1
-          description: The persons participant ID
+          example: sample data value
+          description: A field in the sample data table
     SampleRequest:
       title: SampleRequest
       description: Model for data to request sample information from the Service

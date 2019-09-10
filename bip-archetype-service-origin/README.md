@@ -19,7 +19,7 @@ Some capabilities that are provided in [bip-reference-person](https://github.com
 Included capabilities:
 
 - Files for Jenkins, Helm, docker config of vault, consul, etc.
-- Core code for basic application configuration, spring Application class, REST API provider, service impl, model transformation, validation, logging (including auditing), and exception handling.
+- Core code for basic application configuration, spring Application class, REST API provider, service impl, model transformation, validation, logging, file uploads and downloads, database reads and writes (including auditing), and exception handling.
 
 Omitted capabilities:
 

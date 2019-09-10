@@ -17,7 +17,7 @@ public class SampleByPid_ProviderToDomain extends AbstractProviderToDomain<Sampl
 	 * {@inheritDoc AbstractProviderToDomain}
 	 */
 	@Override
-	public SampleDomainRequest convert(SampleRequest domainObject) {
+	public SampleDomainRequest convert(final SampleRequest domainObject) {
 		SampleDomainRequest providerObject = new SampleDomainRequest();
 		if (domainObject != null) {
 			providerObject.setParticipantID(domainObject.getParticipantID());

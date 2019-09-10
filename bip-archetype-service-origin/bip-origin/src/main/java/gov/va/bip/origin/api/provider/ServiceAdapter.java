@@ -1,7 +1,6 @@
 package gov.va.bip.origin.api.provider;
 
 import javax.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -14,8 +13,8 @@ import gov.va.bip.origin.api.model.v1.SampleRequest;
 import gov.va.bip.origin.api.model.v1.SampleResponse;
 import gov.va.bip.origin.model.SampleDomainRequest;
 import gov.va.bip.origin.model.SampleDomainResponse;
-import gov.va.bip.origin.transform.impl.SampleByPid_DomainToProvider;
 import gov.va.bip.origin.transform.impl.SampleByPid_ProviderToDomain;
+import gov.va.bip.origin.transform.impl.SampleData_DomainToProvider;
 
 /**
  * An adapter between the provider layer api/model, and the services layer interface/model.
@@ -30,8 +29,7 @@ public class ServiceAdapter {
 	/** Transform Provider (REST) request to Domain (service) request */
 	private SampleByPid_ProviderToDomain sampleByPidProvider2Domain = new SampleByPid_ProviderToDomain();
 	/** Transform Domain (service) response to Provider (REST) response */
-	private SampleByPid_DomainToProvider sampleByPidDomain2Provider = new SampleByPid_DomainToProvider();
-
+	private SampleData_DomainToProvider sampleByPidDomain2Provider = new SampleData_DomainToProvider();
 	/** The service layer API contract for processing sampleByPid() requests */
 	@Autowired
 	@Qualifier("ORIGIN_SERVICE_IMPL")
@@ -68,4 +66,5 @@ public class ServiceAdapter {
 
 		return providerResponse;
 	}
+
 }
