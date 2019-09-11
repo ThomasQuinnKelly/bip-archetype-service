@@ -92,7 +92,7 @@ public class PartnerHelper {
 		// For example purposes only (real response comes from the partner client)
 		SampleInfoDomain sampleInfoDomain = new SampleInfoDomain();
 		sampleInfoDomain.setName("JANE DOE");
-		sampleInfoDomain.setParticipantId(6666345l);
+		sampleInfoDomain.setParticipantId(request.getParticipantID());
 		domainResponse = new SampleDomainResponse();
 		domainResponse.setSampleInfo(sampleInfoDomain);
 

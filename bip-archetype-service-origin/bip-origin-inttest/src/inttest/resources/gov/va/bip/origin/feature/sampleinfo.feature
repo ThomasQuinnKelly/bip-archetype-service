@@ -51,9 +51,9 @@ Feature: PID based SampleInfo derived from the partner service.
     @DEV
     Examples: 
       | Veteran     | tokenrequestfile         | ServiceURL          | RequestFile               | Severity | participantID |
-      | dev-janedoe | dev/janedoetoken.request | /api/v1/origin/pid | dev/norecordfound.request | WARN    | 6666345 |
+      | dev-janedoe | dev/janedoetoken.request | /api/v1/origin/pid | dev/norecordfound.request | WARN    | 6666355 |
 
     @VA
     Examples: 
       | Veteran    | tokenrequestfile        | ServiceURL          | RequestFile              | Severity | participantID |
-      | va-janedoe | va/janedoetoken.request | /api/v1/origin/pid | va/norecordfound.request | WARN    | 13364995 |
+      | va-janedoe | va/janedoetoken.request | /api/v1/origin/pid | va/norecordfound.request | WARN    | 6666355 |
