@@ -42,7 +42,7 @@ public class SampleInfo {
 		handler.invokeAPIUsingPost(baseUrl + strURL);
 	}
 
-	@And("^the Origin service returns ParticipantID PID based on participantId (\\d+)$")
+	@And("^the service returns ParticipantID PID based on participantId (\\d+)$")
 	public void validatepartcipantId(final int participantId) throws Throwable {
 		Integer partcipantValue = JsonUtil.getInt(handler.getStrResponse(), "sampleInfo.participantId");
 		assertThat(partcipantValue, equalTo(participantId));
