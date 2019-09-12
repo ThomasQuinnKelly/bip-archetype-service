@@ -23,7 +23,9 @@ import gov.va.bip.framework.log.BipLogger;
 import gov.va.bip.framework.log.BipLoggerFactory;
 import gov.va.bip.framework.messages.MessageKeys;
 import gov.va.bip.framework.messages.MessageSeverity;
+import gov.va.bip.framework.validation.Defense;
 import gov.va.bip.origin.OriginService;
+import gov.va.bip.origin.client.ws.PartnerHelper;
 import gov.va.bip.origin.messages.OriginMessageKeys;
 import gov.va.bip.origin.model.SampleDomainRequest;
 import gov.va.bip.origin.model.SampleDomainResponse;
@@ -50,6 +52,10 @@ public class OriginServiceImpl implements OriginService {
 	/** Bean name constant */
 	public static final String BEAN_NAME = "originServiceImpl";
 
+	/** The web service client helper. */
+	@Autowired
+	private PartnerHelper partnerHelper;
+
 	@Autowired
 	private CacheManager cacheManager;
 
@@ -58,6 +64,9 @@ public class OriginServiceImpl implements OriginService {
 	 */
 	@PostConstruct
 	void postConstruct() {
+		// Check for WS Client ref. Note that cacheManager is allowed to be null.
+		Defense.notNull(partnerHelper,
+				"Unable to proceed with partner service request. The partnerHelper must not be null.");
 	}
 
 	/**
@@ -95,6 +104,16 @@ public class OriginServiceImpl implements OriginService {
 		}
 
 		LOGGER.debug("sampleFindByParticipantID no cached data found");
+		// try from partner
+		try {
+			response = partnerHelper.sampleFindByPid(sampleDomainRequest);
+			response.addMessage(MessageSeverity.INFO, HttpStatus.OK, OriginMessageKeys.BIP_SAMPLE_SERVICE_IMPL_RESPONDED_WITH_MOCK_DATA,
+					"");
+		} catch (BipException | BipRuntimeException bipException) {
+			// check exception..create domain model response
+			response.addMessage(bipException.getExceptionData().getSeverity(), bipException.getExceptionData().getStatus(),
+					bipException.getExceptionData().getMessageKey(), bipException.getExceptionData().getParams());
+		}
 
 		// send hard coded data
 		SampleInfoDomain sampleInfoDomain = new SampleInfoDomain();
