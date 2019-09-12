@@ -24,6 +24,7 @@ import gov.va.bip.framework.log.BipLoggerFactory;
 import gov.va.bip.framework.messages.MessageKeys;
 import gov.va.bip.framework.messages.MessageSeverity;
 import gov.va.bip.origin.OriginService;
+import gov.va.bip.origin.messages.OriginMessageKeys;
 import gov.va.bip.origin.model.SampleDomainRequest;
 import gov.va.bip.origin.model.SampleDomainResponse;
 import gov.va.bip.origin.model.SampleInfoDomain;
@@ -81,7 +82,7 @@ public class OriginServiceImpl implements OriginService {
 		String cacheKey = "sampleFindByParticipantID" + BipCacheUtil.createKey(sampleDomainRequest.getParticipantID());
 
 		// try from cache
-		SampleDomainResponse response = null;
+		SampleDomainResponse response = new SampleDomainResponse();
 		try {
 			Cache cache = null;
 			if ((cacheManager != null) && ((cache = cacheManager.getCache(CacheConstants.CACHENAME_ORIGIN_SERVICE)) != null)
@@ -97,8 +98,8 @@ public class OriginServiceImpl implements OriginService {
 		SampleInfoDomain sampleInfoDomain = new SampleInfoDomain();
 		sampleInfoDomain.setName("JANE DOE");
 		sampleInfoDomain.setParticipantId(sampleDomainRequest.getParticipantID());
-		response = new SampleDomainResponse();
 		response.setSampleInfo(sampleInfoDomain);
+		response.addMessage(MessageSeverity.INFO, HttpStatus.OK, OriginMessageKeys.BIP_SAMPLE_SERVICE_IMPL_RESPONDED, "");
 		return response;
 	}
 
