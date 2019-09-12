@@ -94,12 +94,15 @@ public class OriginServiceImpl implements OriginService {
 			LOGGER.error(e.getMessage(), e);
 		}
 
+		LOGGER.debug("sampleFindByParticipantID no cached data found");
+
 		// send hard coded data
 		SampleInfoDomain sampleInfoDomain = new SampleInfoDomain();
 		sampleInfoDomain.setName("JANE DOE");
 		sampleInfoDomain.setParticipantId(sampleDomainRequest.getParticipantID());
 		response.setSampleInfo(sampleInfoDomain);
-		response.addMessage(MessageSeverity.INFO, HttpStatus.OK, OriginMessageKeys.BIP_SAMPLE_SERVICE_IMPL_RESPONDED, "");
+		response.addMessage(MessageSeverity.INFO, HttpStatus.OK, OriginMessageKeys.BIP_SAMPLE_SERVICE_IMPL_RESPONDED_WITH_MOCK_DATA,
+				"");
 		return response;
 	}
 
