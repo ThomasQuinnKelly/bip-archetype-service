@@ -2,7 +2,6 @@ package gov.va.bip.origin.impl;
 
 import javax.annotation.PostConstruct;
 
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.Cache;
@@ -18,18 +17,21 @@ import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 
 import gov.va.bip.framework.cache.BipCacheUtil;
 import gov.va.bip.framework.exception.BipException;
-import gov.va.bip.framework.exception.BipRuntimeException;
 import gov.va.bip.framework.log.BipLogger;
 import gov.va.bip.framework.log.BipLoggerFactory;
 import gov.va.bip.framework.messages.MessageKeys;
 import gov.va.bip.framework.messages.MessageSeverity;
+import gov.va.bip.framework.validation.Defense;
 import gov.va.bip.origin.OriginService;
+import gov.va.bip.origin.data.SampleDataHelper;
+import gov.va.bip.origin.data.entities.SampleData;
 import gov.va.bip.origin.messages.OriginMessageKeys;
 import gov.va.bip.origin.model.SampleDomainRequest;
 import gov.va.bip.origin.model.SampleDomainResponse;
 import gov.va.bip.origin.model.SampleInfoDomain;
 import gov.va.bip.origin.utils.CacheConstants;
 import gov.va.bip.origin.utils.HystrixCommandConstants;
+import net.logstash.logback.encoder.org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 /**
  * Implementation class for the Origin Service.
@@ -50,6 +52,10 @@ public class OriginServiceImpl implements OriginService {
 	/** Bean name constant */
 	public static final String BEAN_NAME = "originServiceImpl";
 
+	/** The origin web service database operations helper. */
+	@Autowired
+	private SampleDataHelper sampleDataHelper;
+
 	@Autowired
 	private CacheManager cacheManager;
 
@@ -58,6 +64,8 @@ public class OriginServiceImpl implements OriginService {
 	 */
 	@PostConstruct
 	void postConstruct() {
+		// Check for WS Client ref. Note that cacheManager is allowed to be null.
+		Defense.notNull(sampleDataHelper, "Unable to proceed with database request. The sampleDataHelper must not be null.");
 	}
 
 	/**
@@ -95,6 +103,18 @@ public class OriginServiceImpl implements OriginService {
 		}
 
 		LOGGER.debug("sampleFindByParticipantID no cached data found");
+
+		// try from database helper
+		SampleData data = null;
+		data = sampleDataHelper.getDataForPid(sampleDomainRequest.getParticipantID());
+		if (data == null) {
+			response.addMessage(MessageSeverity.INFO, HttpStatus.OK,
+					OriginMessageKeys.BIP_SAMPLE_SERVICE_DATABASE_CALL_RETURNED_NULL, "");
+			return null;
+		} else {
+			response.addMessage(MessageSeverity.INFO, HttpStatus.OK,
+					OriginMessageKeys.BIP_SAMPLE_SERVICE_DATABASE_CALL_PERFORMED, "");
+		}
 
 		// send hard coded data
 		SampleInfoDomain sampleInfoDomain = new SampleInfoDomain();

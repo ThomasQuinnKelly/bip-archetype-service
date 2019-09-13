@@ -16,12 +16,16 @@ public enum OriginMessageKeys implements MessageKey {
 	/** Minimum allowed value validation for PID; no args */
 	BIP_SAMPLE_REQUEST_PID_MIN("Min.sampleRequest.participantID",
 			"SampleRequest.participantID cannot be zero"),
+	/** Minimum allowed value validation for PID; no args */
+	BIP_SAMPLE_DATA_REQUEST_PID_MIN("Min.sampleDataRequest.participantID", "SampleDataRequest.participantID cannot be zero"),
 	/** PID cannot be null validation; no args */
 	BIP_SAMPLE_REQUEST_PID_NOTNULL("NotNull.sampleRequest.participantID",
 			"SampleRequest.participantID cannot be null"),
 	/** Payload cannot be null validation; no args */
 	BIP_SAMPLE_REQUEST_NOTNULL("NotNull.sampleRequest",
 			"SampleRequest Payload cannot be null"),
+	/** Payload cannot be null validation; no args */
+	BIP_SAMPLE_DATA_NOTNULL("NotNull.sampleData", "SampleData Payload cannot be null"),
 
 	/** Response has different PID than the request; no args */
 	BIP_SAMPLE_REQUEST_PID_INCONSISTENT("bip.origin.sample.request.pid.inconsistent",
@@ -29,8 +33,14 @@ public enum OriginMessageKeys implements MessageKey {
 	/** Response has different PID than the logged in user; no args */
 	BIP_SAMPLE_REQUEST_PID_INVALID("bip.origin.sample.request.pid.invalid",
 			"Response has different PID than the logged in user."),
+	/** Pid value could not be found; no args */
+	BIP_SAMPLE_DATA_REQUEST_PID_NOT_FOUND("bip.origin.pid.not.found",
+			"Pid value could not be found."),
 	BIP_SAMPLE_SERVICE_IMPL_RESPONDED_WITH_MOCK_DATA("bip.origin.sample.service.impl.responded.with.mock.data",
-			"Response sent from service impl with mock data.");
+			"Response sent from service impl with mock data."),
+	BIP_SAMPLE_SERVICE_DATABASE_CALL_PERFORMED("bip.origin.sample.service.impl.database.call.performed", "Call to database was made."),
+	BIP_SAMPLE_SERVICE_DATABASE_CALL_RETURNED_NULL("bip.origin.sample.service.impl.database.call.returned.null",
+			"Call to database returned null.");
 
 	/** The filename "name" part of the properties file to get from the classpath */
 	private static final String propertiesFile = "messages";
