@@ -23,11 +23,11 @@ import gov.va.bip.framework.log.BipLogger;
 import gov.va.bip.framework.log.BipLoggerFactory;
 import gov.va.bip.framework.messages.MessageKeys;
 import gov.va.bip.framework.messages.MessageSeverity;
-import gov.va.bip.framework.validation.Defense;
 import gov.va.bip.origin.OriginService;
-import gov.va.bip.origin.client.ws.PartnerHelper;
+import gov.va.bip.origin.messages.OriginMessageKeys;
 import gov.va.bip.origin.model.SampleDomainRequest;
 import gov.va.bip.origin.model.SampleDomainResponse;
+import gov.va.bip.origin.model.SampleInfoDomain;
 import gov.va.bip.origin.utils.CacheConstants;
 import gov.va.bip.origin.utils.HystrixCommandConstants;
 
@@ -50,10 +50,6 @@ public class OriginServiceImpl implements OriginService {
 	/** Bean name constant */
 	public static final String BEAN_NAME = "originServiceImpl";
 
-	/** The web service client helper. */
-	@Autowired
-	private PartnerHelper partnerHelper;
-
 	@Autowired
 	private CacheManager cacheManager;
 
@@ -62,9 +58,6 @@ public class OriginServiceImpl implements OriginService {
 	 */
 	@PostConstruct
 	void postConstruct() {
-		// Check for WS Client ref. Note that cacheManager is allowed to be null.
-		Defense.notNull(partnerHelper,
-				"Unable to proceed with partner service request. The partnerHelper must not be null.");
 	}
 
 	/**
@@ -89,7 +82,7 @@ public class OriginServiceImpl implements OriginService {
 		String cacheKey = "sampleFindByParticipantID" + BipCacheUtil.createKey(sampleDomainRequest.getParticipantID());
 
 		// try from cache
-		SampleDomainResponse response = null;
+		SampleDomainResponse response = new SampleDomainResponse();
 		try {
 			Cache cache = null;
 			if ((cacheManager != null) && ((cache = cacheManager.getCache(CacheConstants.CACHENAME_ORIGIN_SERVICE)) != null)
@@ -101,18 +94,15 @@ public class OriginServiceImpl implements OriginService {
 			LOGGER.error(e.getMessage(), e);
 		}
 
-		// try from partner
 		LOGGER.debug("sampleFindByParticipantID no cached data found");
-		try {
-			response = partnerHelper.sampleFindByPid(sampleDomainRequest);
-		} catch (BipException | BipRuntimeException bipException) {
-			SampleDomainResponse domainResponse = new SampleDomainResponse();
-			// check exception..create domain model response
-			domainResponse.addMessage(bipException.getExceptionData().getSeverity(), bipException.getExceptionData().getStatus(),
-					bipException.getExceptionData().getMessageKey(), bipException.getExceptionData().getParams());
-			return domainResponse;
-		}
 
+		// send hard coded data
+		SampleInfoDomain sampleInfoDomain = new SampleInfoDomain();
+		sampleInfoDomain.setName("JANE DOE");
+		sampleInfoDomain.setParticipantId(sampleDomainRequest.getParticipantID());
+		response.setSampleInfo(sampleInfoDomain);
+		response.addMessage(MessageSeverity.INFO, HttpStatus.OK, OriginMessageKeys.BIP_SAMPLE_SERVICE_IMPL_RESPONDED_WITH_MOCK_DATA,
+				"");
 		return response;
 	}
 
