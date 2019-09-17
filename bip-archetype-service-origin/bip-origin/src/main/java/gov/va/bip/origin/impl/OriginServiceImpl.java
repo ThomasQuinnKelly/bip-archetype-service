@@ -82,13 +82,14 @@ public class OriginServiceImpl implements OriginService {
 		String cacheKey = "sampleFindByParticipantID" + BipCacheUtil.createKey(sampleDomainRequest.getParticipantID());
 
 		// try from cache
-		SampleDomainResponse response = new SampleDomainResponse();
+		SampleDomainResponse response = null;
 		try {
 			Cache cache = null;
 			if ((cacheManager != null) && ((cache = cacheManager.getCache(CacheConstants.CACHENAME_ORIGIN_SERVICE)) != null)
 					&& (cache.get(cacheKey) != null)) {
 				LOGGER.debug("sampleFindByParticipantID returning cached data");
-				return cache.get(cacheKey, SampleDomainResponse.class);
+				response = cache.get(cacheKey, SampleDomainResponse.class);
+				return response;
 			}
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage(), e);
@@ -96,7 +97,7 @@ public class OriginServiceImpl implements OriginService {
 
 		LOGGER.debug("sampleFindByParticipantID no cached data found");
 
-		// send hard coded data
+		// send hard coded data ... normally would get from db or partner
 		SampleInfoDomain sampleInfoDomain = new SampleInfoDomain();
 		sampleInfoDomain.setName("JANE DOE");
 		sampleInfoDomain.setParticipantId(sampleDomainRequest.getParticipantID());
@@ -136,6 +137,14 @@ public class OriginServiceImpl implements OriginService {
 			final Throwable throwable) {
 		LOGGER.info("sampleFindByParticipantIDFallBack has been activated");
 
+		/*
+		 * Fallback Method for Demonstration Purpose. In this use case, there is no static / mock data
+		 * that can be sent back to the consumers. Hence the method isn't configured as fallback.
+		 *
+		 * If needed to be configured, add annotation to the implementation method "findPersonByParticipantID" as below
+		 *
+		 * @HystrixCommand(fallbackMethod = "findPersonByParticipantIDFallBack")
+		 */
 		final SampleDomainResponse response = new SampleDomainResponse();
 		response.setDoNotCacheResponse(true);
 

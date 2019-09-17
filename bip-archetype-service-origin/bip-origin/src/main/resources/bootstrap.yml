@@ -38,7 +38,7 @@ spring.cloud.vault:
     backend: secret
     profile-separator: '/'
     default-context: application
-    application-name: "bip-project-namespace-prefix/@project.name@"
+    application-name: "blue/@project.name@"
   consul: 
     enabled: false  
     role: os-svc
