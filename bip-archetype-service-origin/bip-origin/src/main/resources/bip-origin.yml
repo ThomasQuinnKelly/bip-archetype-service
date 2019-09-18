@@ -96,7 +96,6 @@ management:
       enabled: false
 #Application Custom Properties          
 bip-origin:
-  env: default
   propSource: internal
   password: secret
   sampleProperty: >
@@ -204,12 +203,9 @@ bip.framework:
         - /api/v2/origin/**
       excludeUrls:
         - /**
+  # enable/disable the swagger/openapi UI ...
   swagger:
-    title: BIP Origin Spring Boot Service v1 API Documentation
-    description: Origin API
-    groupName: "@project.name@-@project.version@"
-    version: ${info.build.version}
-    securePaths: /api/v?.*/origin/.*
+  	enabled: true
 ##################################################
 # Feign or REST client connection timeout
 # when making inter-service or external REST calls

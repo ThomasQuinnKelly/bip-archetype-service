@@ -33,7 +33,7 @@ servicePort=""
 projectNameSpacePrefix=""
 nexusRepoUrl=""
 frameworkVersion=""
-features=()
+components=()
 prepBranch=""
 
 ################################################################################
@@ -101,8 +101,13 @@ function exit_now() {
 			echo "        2. Clone framework from 'https://github.com/department-of-veterans-affairs/bip-framework'" 2>&1 | tee -a "$genLog"
 			echo "           and build it with 'mvn clean install -U'" 2>&1 | tee -a "$genLog"
 		elif [ "$exit_code" -eq "12" ]; then
-			# prep branch already present
-			echo " ERROR: $prepBranch branch already present, delete the branch and try again'" 2>&1 | tee -a "$genLog"
+			# prep branch could not be deleted
+			echo " ERROR: $prepBranch branch could not be deleted, Please makse sure the $prepBranch branch can be deleted using : " 2>&1 | tee -a "$genLog"
+			echo "     git  branch -D $prepBranch" 2>&1 | tee -a "$genLog"
+		elif [ "$exit_code" -eq "13" ]; then
+			# master branch checkout failed
+			echo " ERROR: master branch could not be checked out... Please makse sure master branch can be checkout out using : " 2>&1 | tee -a "$genLog"
+			echo "     git  checkout master" 2>&1 | tee -a "$genLog"
 		else
 			# some unexpected error
 			echo " Unexpected error code: $exit_code ... aborting immediately" 2>&1 | tee -a "$genLog"
@@ -190,7 +195,7 @@ function get_args() {
 					exit_now 2
 				fi
 				;;
-		 \?)
+			\?)
 				exit_now 5
 				;;
 		esac
@@ -204,26 +209,75 @@ function check_for_master_branch() {
 	then
 		echo "+>> - verified that master branch is checked out...." 2>&1 | tee -a "$genLog"
 	else
-		echo "+>> - master branch not checked out.... aborting" 2>&1 | tee -a "$genLog"
-		exit_now 1
+		echo "+>> - bip-archetype-service master branch not checked out.... " 2>&1 | tee -a "$genLog"
+		read -r -p "Proceed to checkout bip-archetype-service master branch? [y/n] " input
+		case $input in
+			[yY][eE][sS]|[yY])
+				echo "Yes"
+				echo "Checking out master branch"
+				git checkout master 2>&1 | tee -a "$genLog"
+				if [ ${PIPESTATUS[0]} -eq "0" ]; then
+					echo "[OK]" 2>&1 | tee -a "$genLog"
+				else
+					exit_now 13
+				fi
+				;;
+			[nN][oO]|[nN])
+				echo "No"
+				echo "gen.sh script exiting..."
+				exit_now 0
+				;;
+			*)
+				echo "Invalid input..."
+				exit 1
+				;;
+		esac
 	fi
 }
 
 
 function create_origin_prep_branch() {
-	echo "+>> - creating a new branch to prepare the origin project with required features..." 2>&1 >> "$genLog"
 	prepBranch="originPrep-$artifactName"
-	git checkout -b $prepBranch 2>&1 | tee -a "$genLog"
-	if [ ${PIPESTATUS[0]} -eq "0" ]; then
-g		echo "[OK]" 2>&1 | tee -a "$genLog"
+	echo "+>> - creating a new branch with name $prepBranch, to prepare the origin project with required components..." 2>&1 >> "$genLog"
+	if [[ "$prepBranch" == $(git branch|grep $prepBranch) ]];
+	then
+		echo "+>> WARNING: branch with name $prepBranch ALREADY exits and needs to be deleted and recreated from master...." 2>&1 | tee -a "$genLog"
+		read -r -p "Proceed to delete $prepBranch branch? [y/n] " input
+		case $input in
+			[yY][eE][sS]|[yY])
+				echo "Yes"
+				echo "Deleting $prepBranch branch .... "
+				git branch -D $prepBranch 2>&1 | tee -a "$genLog"
+				if [ ${PIPESTATUS[0]} -eq "0" ]; then
+					echo "[OK]" 2>&1 | tee -a "$genLog"
+				else
+					exit_now 12
+				fi
+				;;
+			[nN][oO]|[nN])
+				echo "No"
+				echo "gen.sh script exiting..."
+				exit_now 0
+				;;
+			*)
+				echo "Invalid input..."
+				exit 1
+				;;
+		esac
 	else
-		exit_now 12
+		git checkout -b $prepBranch 2>&1 | tee -a "$genLog"
+		if [ ${PIPESTATUS[0]} -eq "0" ]; then
+			echo "[OK]" 2>&1 | tee -a "$genLog"
+		else
+
+			exit_now 12
+		fi
 	fi
 }
 
 
-function merge_branch_for_feature() {
-	echo "+>> - trying to checked out.... branch with $1 features" 2>&1 | tee -a "$genLog"
+function merge_branch_for_component() {
+	echo "+>> - trying to check out branch with $1 components" 2>&1 | tee -a "$genLog"
 	git merge master-$1 2>&1 | tee -a "$genLog"
 	if [ ${PIPESTATUS[0]} -eq "0" ]; then
 		echo "[OK]" 2>&1 | tee -a "$genLog"
@@ -318,10 +372,10 @@ function read_properties() {
 				if [[ "$theKey" == "artifactNameUpperCase" ]]; then artifactNameUpperCase=$theVal; fi
 				if [[ "$theKey" == "servicePort" ]]; then servicePort=$theVal; fi
 				if [[ "$theKey" == "projectNameSpacePrefix" ]]; then projectNameSpacePrefix=$theVal; fi
-				if [[ "$theKey" == "features" ]]; then
+				if [[ "$theKey" == "components" ]]; then
 					tempIFS=$IFS
 					IFS=', '
-					read -r -a features <<< "$theVal";
+					read -r -a components <<< "$theVal";
 					IFS=$tempIFS
 				fi
 
@@ -451,12 +505,12 @@ function copy_origin_project() {
 function prepare_origin_project() {
 	check_for_master_branch
 	create_origin_prep_branch
-#add check to makesure features is not empty
-	for feature in  $features
+	#add check to makesure components is not empty
+	for component in  $components
 	do
-		merge_branch_for_feature $feature
+		merge_branch_for_component $component
 	done
-  copy_origin_project
+	copy_origin_project
 	build_origin
 }
 
