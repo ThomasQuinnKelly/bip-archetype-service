@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @EnableConfigurationProperties
 @ConfigurationProperties(prefix = "bip-origin")
-@RefreshScope // refresh properties after app running
+@RefreshScope // refreshes properties after app is running
 public class OriginProperties {
 
 	@NotNull

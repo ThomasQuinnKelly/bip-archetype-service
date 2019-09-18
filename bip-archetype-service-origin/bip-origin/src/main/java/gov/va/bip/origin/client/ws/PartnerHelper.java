@@ -1,14 +1,28 @@
 package gov.va.bip.origin.client.ws;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
+
 import gov.va.bip.framework.exception.BipException;
 import gov.va.bip.framework.log.BipLogger;
 import gov.va.bip.framework.log.BipLoggerFactory;
+import gov.va.bip.framework.messages.MessageSeverity;
+import gov.va.bip.origin.messages.OriginMessageKeys;
 import gov.va.bip.origin.model.SampleDomainRequest;
 import gov.va.bip.origin.model.SampleDomainResponse;
 import gov.va.bip.origin.model.SampleInfoDomain;
-import gov.va.bip.origin.transform.impl.SampleByPid_DomainToPartner;
-import gov.va.bip.origin.transform.impl.SampleByPid_PartnerToDomain;
+import gov.va.bip.origin.transform.impl.SampleByPidDomainToPartner;
+import gov.va.bip.origin.transform.impl.SampleByPidPartnerToDomain;
 
+/**
+ * Make external calls to the partner using the partner client.
+ * <p>
+ * This Helper isolates references to partner clients. There should not be
+ * references to partner client classes outside of this package.
+ *
+ * @author aburkholder
+ */
+@Component(PartnerHelper.BEAN_NAME)
 public class PartnerHelper {
 	public static final String BEAN_NAME = "partnerHelper";
 
@@ -23,10 +37,10 @@ public class PartnerHelper {
 	// private SomeWsClient someWsClient;
 
 	/** Transformer for domain-to-partner model transformation */
-	private SampleByPid_DomainToPartner sampleByPidD2P = new SampleByPid_DomainToPartner();
+	private SampleByPidDomainToPartner sampleByPidD2P = new SampleByPidDomainToPartner();
 
 	/** Transformer for partner-to-domain model transformation */
-	private SampleByPid_PartnerToDomain sampleByPidP2D = new SampleByPid_PartnerToDomain();
+	private SampleByPidPartnerToDomain sampleByPidP2D = new SampleByPidPartnerToDomain();
 
 	/**
 	 * Make the partner call to find information by participant id.
@@ -40,11 +54,13 @@ public class PartnerHelper {
 		// transform from domain model request to partner model request
 		// SomePartnerRequest partnerRequest = sampleByPidD2P.convert(request);
 
+		// make a variable for the response from the partner
 		// SomePartnerResponse partnerResponse = null;
+		// make a variable for the response to send back to the service code
 		SampleDomainResponse domainResponse = null;
 		// // call the partner
 		// try {
-		// partnerResponse = someWsClient.callClientMethod(partnerRequest);
+		// partnerResponse = someWsClient.getSomeClientMethod(partnerRequest);
 		//
 		// // transform from partner model response to domain model response
 		// domainResponse = sampleByPidP2D.convert(partnerResponse);
@@ -78,13 +94,14 @@ public class PartnerHelper {
 		// LOGGER.debug("Domain response: SampleDomainResponse: {}",
 		// domainResponse == null ? "null" : ToStringBuilder.reflectionToString(domainResponse));
 
-		// For example purposes only (real response comes from the partner client)
+		// For example purposes only (real response comes from the partner client as shown in commented code above)
 		SampleInfoDomain sampleInfoDomain = new SampleInfoDomain();
 		sampleInfoDomain.setName("JANE DOE");
 		sampleInfoDomain.setParticipantId(request.getParticipantID());
 		domainResponse = new SampleDomainResponse();
 		domainResponse.setSampleInfo(sampleInfoDomain);
-
+		domainResponse.addMessage(MessageSeverity.INFO, HttpStatus.OK,
+				OriginMessageKeys.BIP_SAMPLE_SERVICE_IMPL_RESPONDED_WITH_MOCK_DATA, "");
 		return domainResponse;
 	}
 }

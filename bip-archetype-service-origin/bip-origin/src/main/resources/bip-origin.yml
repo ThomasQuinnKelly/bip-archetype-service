@@ -108,22 +108,21 @@ logging:
   level:
     com.ecwid.consul: WARN
     feign: WARN
+    # Add partner logging here, example:
+    #gov.va.bip.origin.[partner-name].client: INFO
 #    gov.va.bip: DEBUG
-    gov.va.bip.framework.client.ws: INFO
-    gov.va.bip.framework.rest.provider: INFO
-    gov.va.bip.origin.client: INFO
+    # Change Value to DEBUG to log all application logs
     gov.va.bip.origin: INFO
+    # Change Value to DEBUG to log all BIP framework logs
     gov.va.bip.framework: INFO
 #    org.apache.http: DEBUG
     org.apache.http.impl.client: WARN
 #    org.springframework: DEBUG
     org.springframework.cache: WARN 
-    org.springframework.cloud.consul.config: WARN
-    org.springframework.cloud.consul: WARN
     org.springframework.client.discovery: WARN
+    org.springframework.cloud.consul: WARN
     org.springframework.cloud.openfeign: WARN
     org.springframework.cloud.sleuth: WARN 
-    org.springframework.cloud.sleuth.log: WARN
     org.springframework.core.convert: WARN
     org.springframework.format: WARN
     org.springframework.retry: WARN
@@ -247,3 +246,4 @@ spring.sleuth.rxjava.schedulers.ignoredthreads: HystixMetricPoller,^RxComputatio
 # SERVICE CLIENT PROPERTIES
 #########################################################################
 # See examples of partner configuration in bip-reference-person.yml https://github.com/department-of-veterans-affairs/bip-reference-person/blob/master/bip-reference-person/src/main/resources/bip-reference-person.yml
+# Recommend separating host properties from specific client properties

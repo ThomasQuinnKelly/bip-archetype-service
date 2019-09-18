@@ -56,6 +56,7 @@ public class OriginServiceImpl implements OriginService {
 	@Autowired
 	private PartnerHelper partnerHelper;
 
+	/** The cache manager (redis implementation) */
 	@Autowired
 	private CacheManager cacheManager;
 
@@ -64,7 +65,7 @@ public class OriginServiceImpl implements OriginService {
 	 */
 	@PostConstruct
 	void postConstruct() {
-		// Check for WS Client ref. Note that cacheManager is allowed to be null.
+		// Check for WS Client reference. Note that cacheManager is allowed to be null.
 		Defense.notNull(partnerHelper,
 				"Unable to proceed with partner service request. The partnerHelper must not be null.");
 	}
@@ -107,22 +108,20 @@ public class OriginServiceImpl implements OriginService {
 		LOGGER.debug("sampleFindByParticipantID no cached data found");
 		// try from partner
 		try {
+			// for this sample code, partnerHelper returns hard coded data
 			response = partnerHelper.sampleFindByPid(sampleDomainRequest);
 			response.addMessage(MessageSeverity.INFO, HttpStatus.OK, OriginMessageKeys.BIP_SAMPLE_SERVICE_IMPL_RESPONDED_WITH_MOCK_DATA,
 					"");
 		} catch (BipException | BipRuntimeException bipException) {
 			// check exception..create domain model response
-			response.addMessage(bipException.getExceptionData().getSeverity(), bipException.getExceptionData().getStatus(),
-					bipException.getExceptionData().getMessageKey(), bipException.getExceptionData().getParams());
+			SampleDomainResponse domainResponse = new SampleDomainResponse();
+			// check exception..create domain model response
+			domainResponse.addMessage(bipException.getExceptionData().getSeverity(), bipException.getExceptionData().getStatus(),
+					bipException.getExceptionData().getMessageKey(),
+					bipException.getExceptionData().getParams());
+			return domainResponse;
 		}
 
-		// send hard coded data ... normally would get from db or partner
-		SampleInfoDomain sampleInfoDomain = new SampleInfoDomain();
-		sampleInfoDomain.setName("JANE DOE");
-		sampleInfoDomain.setParticipantId(sampleDomainRequest.getParticipantID());
-		response.setSampleInfo(sampleInfoDomain);
-		response.addMessage(MessageSeverity.INFO, HttpStatus.OK, OriginMessageKeys.BIP_SAMPLE_SERVICE_IMPL_RESPONDED_WITH_MOCK_DATA,
-				"");
 		return response;
 	}
 
