@@ -195,7 +195,7 @@ function get_args() {
 					exit_now 2
 				fi
 				;;
-		 \?)
+			\?)
 				exit_now 5
 				;;
 		esac
@@ -209,28 +209,28 @@ function check_for_master_branch() {
 	then
 		echo "+>> - verified that master branch is checked out...." 2>&1 | tee -a "$genLog"
 	else
-		echo "+>> - master branch not checked out.... " 2>&1 | tee -a "$genLog"
-		read -r -p "Proceed to checkout master branch? [y/n] " input
+		echo "+>> - bip-archetype-service master branch not checked out.... " 2>&1 | tee -a "$genLog"
+		read -r -p "Proceed to checkout bip-archetype-service master branch? [y/n] " input
 		case $input in
-		    [yY][eE][sS]|[yY])
-					 echo "Yes"
-					 echo "Checking out master branch"
-					 git checkout master 2>&1 | tee -a "$genLog"
-				 	 if [ ${PIPESTATUS[0]} -eq "0" ]; then
-				 		 echo "[OK]" 2>&1 | tee -a "$genLog"
-				 	 else
-				 		 exit_now 13
-				 	 fi
-					 ;;
-		    [nN][oO]|[nN])
-					 echo "No"
-					 echo "gen.sh script exiting..."
-					 exit_now 0
-		       ;;
-		    *)
-					 echo "Invalid input..."
-					 exit 1
-					 ;;
+			[yY][eE][sS]|[yY])
+				echo "Yes"
+				echo "Checking out master branch"
+				git checkout master 2>&1 | tee -a "$genLog"
+				if [ ${PIPESTATUS[0]} -eq "0" ]; then
+					echo "[OK]" 2>&1 | tee -a "$genLog"
+				else
+					exit_now 13
+				fi
+				;;
+			[nN][oO]|[nN])
+				echo "No"
+				echo "gen.sh script exiting..."
+				exit_now 0
+				;;
+			*)
+				echo "Invalid input..."
+				exit 1
+				;;
 		esac
 	fi
 }
@@ -244,25 +244,25 @@ function create_origin_prep_branch() {
 		echo "+>> WARNING: branch with name $prepBranch ALREADY exits and needs to be deleted and recreated from master...." 2>&1 | tee -a "$genLog"
 		read -r -p "Proceed to delete $prepBranch branch? [y/n] " input
 		case $input in
-		    [yY][eE][sS]|[yY])
-				   echo "Yes"
-					 echo "Deleting $prepBranch branch .... "
-					 git branch -D $prepBranch 2>&1 | tee -a "$genLog"
-				 	 if [ ${PIPESTATUS[0]} -eq "0" ]; then
-				 		 echo "[OK]" 2>&1 | tee -a "$genLog"
-				 	 else
-				 		 exit_now 12
-				 	 fi
-					 ;;
-		    [nN][oO]|[nN])
-					 echo "No"
-					 echo "gen.sh script exiting..."
-					 exit_now 0
-		       ;;
-		    *)
-					 echo "Invalid input..."
-					 exit 1
-					 ;;
+			[yY][eE][sS]|[yY])
+				echo "Yes"
+				echo "Deleting $prepBranch branch .... "
+				git branch -D $prepBranch 2>&1 | tee -a "$genLog"
+				if [ ${PIPESTATUS[0]} -eq "0" ]; then
+					echo "[OK]" 2>&1 | tee -a "$genLog"
+				else
+					exit_now 12
+				fi
+				;;
+			[nN][oO]|[nN])
+				echo "No"
+				echo "gen.sh script exiting..."
+				exit_now 0
+				;;
+			*)
+				echo "Invalid input..."
+				exit 1
+				;;
 		esac
 	else
 		git checkout -b $prepBranch 2>&1 | tee -a "$genLog"
@@ -503,14 +503,15 @@ function copy_origin_project() {
 ## arg: none                                ##
 ## scope: private (internal calls only)     ##
 function prepare_origin_project() {
-	check_for_master_branch
+	### TODO: RESTORE NEXT LINE...
+	#	check_for_master_branch
 	create_origin_prep_branch
-#add check to makesure components is not empty
+	#add check to makesure components is not empty
 	for component in  $components
 	do
 		merge_branch_for_component $component
 	done
-  copy_origin_project
+	copy_origin_project
 	build_origin
 }
 
