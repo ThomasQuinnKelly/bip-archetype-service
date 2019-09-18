@@ -2,6 +2,7 @@ package gov.va.bip.origin.impl;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.Cache;
@@ -17,6 +18,7 @@ import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 
 import gov.va.bip.framework.cache.BipCacheUtil;
 import gov.va.bip.framework.exception.BipException;
+import gov.va.bip.framework.exception.BipRuntimeException;
 import gov.va.bip.framework.log.BipLogger;
 import gov.va.bip.framework.log.BipLoggerFactory;
 import gov.va.bip.framework.messages.MessageKeys;
@@ -31,7 +33,6 @@ import gov.va.bip.origin.model.SampleDomainResponse;
 import gov.va.bip.origin.model.SampleInfoDomain;
 import gov.va.bip.origin.utils.CacheConstants;
 import gov.va.bip.origin.utils.HystrixCommandConstants;
-import net.logstash.logback.encoder.org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 /**
  * Implementation class for the Origin Service.
@@ -56,6 +57,7 @@ public class OriginServiceImpl implements OriginService {
 	@Autowired
 	private SampleDataHelper sampleDataHelper;
 
+	/** The cache manager */
 	@Autowired
 	private CacheManager cacheManager;
 
@@ -84,19 +86,20 @@ public class OriginServiceImpl implements OriginService {
 	unless = "T(gov.va.bip.framework.cache.BipCacheUtil).checkResultConditions(#result)")
 	/* If a fallback position is possible, add attribute to @HystrixCommand: fallback="fallbackMethodName" */
 	@HystrixCommand(commandKey = "SampleFindByParticipantIDCommand",
-	ignoreExceptions = { IllegalArgumentException.class, BipException.class })
+			ignoreExceptions = { IllegalArgumentException.class, BipException.class, BipRuntimeException.class })
 	public SampleDomainResponse sampleFindByParticipantID(final SampleDomainRequest sampleDomainRequest) {
 
 		String cacheKey = "sampleFindByParticipantID" + BipCacheUtil.createKey(sampleDomainRequest.getParticipantID());
 
 		// try from cache
-		SampleDomainResponse response = new SampleDomainResponse();
+		SampleDomainResponse response = null;
 		try {
 			Cache cache = null;
 			if ((cacheManager != null) && ((cache = cacheManager.getCache(CacheConstants.CACHENAME_ORIGIN_SERVICE)) != null)
 					&& (cache.get(cacheKey) != null)) {
 				LOGGER.debug("sampleFindByParticipantID returning cached data");
-				return cache.get(cacheKey, SampleDomainResponse.class);
+				response = cache.get(cacheKey, SampleDomainResponse.class);
+				return response;
 			}
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage(), e);
@@ -110,19 +113,12 @@ public class OriginServiceImpl implements OriginService {
 		if (data == null) {
 			response.addMessage(MessageSeverity.INFO, HttpStatus.OK,
 					OriginMessageKeys.BIP_SAMPLE_SERVICE_DATABASE_CALL_RETURNED_NULL, "");
-			return null;
 		} else {
 			response.addMessage(MessageSeverity.INFO, HttpStatus.OK,
 					OriginMessageKeys.BIP_SAMPLE_SERVICE_DATABASE_CALL_PERFORMED, "");
 		}
 
-		// send hard coded data
-		SampleInfoDomain sampleInfoDomain = new SampleInfoDomain();
-		sampleInfoDomain.setName("JANE DOE");
-		sampleInfoDomain.setParticipantId(sampleDomainRequest.getParticipantID());
-		response.setSampleInfo(sampleInfoDomain);
-		response.addMessage(MessageSeverity.INFO, HttpStatus.OK, OriginMessageKeys.BIP_SAMPLE_SERVICE_IMPL_RESPONDED_WITH_MOCK_DATA,
-				"");
+		// return results of database call
 		return response;
 	}
 
@@ -156,6 +152,14 @@ public class OriginServiceImpl implements OriginService {
 			final Throwable throwable) {
 		LOGGER.info("sampleFindByParticipantIDFallBack has been activated");
 
+		/*
+		 * Fallback Method for Demonstration Purpose. In this use case, there is no static / mock data
+		 * that can be sent back to the consumers. Hence the method isn't configured as fallback.
+		 *
+		 * If needed to be configured, add annotation to the implementation method "findPersonByParticipantID" as below
+		 *
+		 * @HystrixCommand(fallbackMethod = "findPersonByParticipantIDFallBack")
+		 */
 		final SampleDomainResponse response = new SampleDomainResponse();
 		response.setDoNotCacheResponse(true);
 

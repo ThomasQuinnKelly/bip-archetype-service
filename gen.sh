@@ -50,6 +50,10 @@ function exit_now() {
 	#  5 = invalid command line argument
 	#  6 = property not allocated a value
 	# 10 = project directory already exists
+	# 11 = One or more properties not set
+	# 12 = prep branch could not be deleted
+	# 13 = master branch checkout failed
+	# other exit code = some unexpected error
 
 	exit_code=$1
 	if [ -z $exit_code ]; then
@@ -212,8 +216,8 @@ function check_for_master_branch() {
 	then
 		echo "+>> - verified that master branch is checked out...." 2>&1 | tee -a "$genLog"
 	else
-		echo "+>> - master branch not checked out.... " 2>&1 | tee -a "$genLog"
-		read -r -p "Proceed to checkout master branch? [y/n] " input
+		echo "+>> - bip-archetype-service master branch not checked out.... " 2>&1 | tee -a "$genLog"
+		read -r -p "Proceed to checkout bip-archetype-service master branch? [y/n] " input
 		case $input in
 		    [yY][eE][sS]|[yY])
 					 echo "Yes"
@@ -521,6 +525,7 @@ function copy_origin_project() {
 function prepare_origin_project() {
 	check_for_master_branch
 	create_origin_prep_branch
+	# check to make sure components is not empty
 	if [ ${#errors[@]} -eq 0 ]; then
 	    echo "No components selected, proceeding with default origin project"
 	else
