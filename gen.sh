@@ -43,7 +43,7 @@ prepBranch=""
 ################################################################################
 
 ## function to exit the script immediately ##
-## arg1 (optional): exit code to use        ##
+## arg1 (optional): exit code to use       ##
 ## scope: private (internal calls only)    ##
 function exit_now() {
 	#  1 = error from a bash command
@@ -204,6 +204,9 @@ function get_args() {
 	# shift $((OPTIND -1))
 }
 
+## function to check if the master branch is checkout out in the git repo ##
+## arg: none                                               								##
+## scope: private (internal calls only)                                   ##
 function check_for_master_branch() {
 	if [[ "master" == $(git rev-parse --abbrev-ref HEAD) ]];
 	then
@@ -235,7 +238,9 @@ function check_for_master_branch() {
 	fi
 }
 
-
+## function to create a new branch from master in order to prepare the origin project with requried components ##
+## arg: none                                               ##
+## scope: private (internal calls only)                    ##
 function create_origin_prep_branch() {
 	prepBranch="originPrep-$artifactName"
 	echo "+>> - creating a new branch with name $prepBranch, to prepare the origin project with required components..." 2>&1 >> "$genLog"
@@ -275,9 +280,18 @@ function create_origin_prep_branch() {
 	fi
 }
 
-
+## function to merge code related to requried components     ##
+## required parameter: name of component to be added/merged  ##
+## scope: private (internal calls only)                      ##
 function merge_branch_for_component() {
-	echo "+>> - trying to checked out.... branch with $1 components" 2>&1 | tee -a "$genLog"
+	if [[ "$@" == "" ]]; then
+		echo "+>> No component mentioned .. nothing to merge" 2>&1 | tee -a "$genLog"
+		return
+	fi
+	echo "+>> - trying to checked out branch with $1 components" 2>&1 | tee -a "$genLog"
+	git fetch && \
+	git checkout master-$1 && \
+	git pull && \
 	git merge master-$1 2>&1 | tee -a "$genLog"
 	if [ ${PIPESTATUS[0]} -eq "0" ]; then
 		echo "[OK]" 2>&1 | tee -a "$genLog"
@@ -287,22 +301,24 @@ function merge_branch_for_component() {
 	fi
 }
 
+## function to delete the origin prep branch (created to prepare the origin project with required components ) ##
+## arg: none                                               ##
+## scope: private (internal calls only)                    ##
 function delete_originPrep_branch() {
 	echo "+>> - checking out to master and then deleting originPrep branch" 2>&1 | tee -a "$genLog"
 	git checkout master 2>&1 | tee -a "$genLog"
 	if [ ${PIPESTATUS[0]} -eq "0" ]; then
 		echo "master branch checkout out : [OK]" 2>&1 | tee -a "$genLog"
 	else
-		exit_now 1
+		exit_now 13
 	fi
 	git branch -D $(git branch | grep Prep) 2>&1 | tee -a "$genLog"
 	if [ ${PIPESTATUS[0]} -eq "0" ]; then
 		echo "originPrep branch deleted : [OK]" 2>&1 | tee -a "$genLog"
 	else
-		exit_now 1
+		exit_now 12
 	fi
 }
-
 
 
 ################################################################################
@@ -505,11 +521,14 @@ function copy_origin_project() {
 function prepare_origin_project() {
 	check_for_master_branch
 	create_origin_prep_branch
-#add check to makesure components is not empty
-	for component in  $components
-	do
-		merge_branch_for_component $component
-	done
+	if [ ${#errors[@]} -eq 0 ]; then
+	    echo "No components selected, proceeding with default origin project"
+	else
+		for component in  $components
+		do
+			merge_branch_for_component $component
+		done
+	fi
   copy_origin_project
 	build_origin
 }
