@@ -83,7 +83,7 @@ public class SampleDomainResponseValidator extends AbstractStandardValidator<Sam
 				&& toValidate.getSampleInfo().getParticipantId() != null;
 
 		if (hasTraits && canValidate
-				&& !personTraits.getPid().equals(toValidate.getPersonInfo().getParticipantId().toString())) {
+				&& !personTraits.getPid().equals(toValidate.getSampleInfo().getParticipantId().toString())) {
 
 			OriginMessageKeys key = OriginMessageKeys.BIP_SAMPLE_REQUEST_PID_INVALID;
 			LOGGER.info(key.getKey() + " " + key.getMessage());
