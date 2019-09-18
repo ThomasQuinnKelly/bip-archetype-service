@@ -503,8 +503,7 @@ function copy_origin_project() {
 ## arg: none                                ##
 ## scope: private (internal calls only)     ##
 function prepare_origin_project() {
-	### TODO: RESTORE NEXT LINE...
-	#	check_for_master_branch
+	check_for_master_branch
 	create_origin_prep_branch
 	#add check to makesure components is not empty
 	for component in  $components
