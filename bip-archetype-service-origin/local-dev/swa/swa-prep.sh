@@ -251,7 +251,7 @@ function print_vars() {
 ############################                        ############################
 ################################################################################
 
-## function to fork and PR reference changes ##
+## function to fork and PR origin changes ##
 ## arg: none                                 ##
 ## scope: private (internal calls only)      ##
 function prep_app() {
