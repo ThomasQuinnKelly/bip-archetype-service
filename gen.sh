@@ -361,7 +361,7 @@ function git_has_remote() {
 	tmpRemoteCt=$(git remote | wc -l)
 	if [ $tmpRemoteCt -gt 1 ]; then
 		exit_now "22"
-	elif [ $tmpRemoteCt -lt 1]; then
+	elif [ $tmpRemoteCt -lt 1 ]; then
 		exit_now "23"
 	fi
 
