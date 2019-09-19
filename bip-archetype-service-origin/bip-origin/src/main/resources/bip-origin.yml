@@ -26,36 +26,24 @@ spring:
     ssl: false
     host: localhost
     port: 6379
-    # If host takes a password
-    # password:
-    # URL overrides host/port/password
-    # url:
-    # The database index to use
-    # database: 0
-    # Connection timeout (millis)
-    # timeout:
+    # password:    # If host takes a password
+    # url:         # URL overrides host/port/password
+    # database: 0  # The database index to use
+    # timeout:     # Connection timeout (millis)
     # Jedis is activated by being on the classpath
     jedis:
       # At least one variable *must* be set in order to enable the pool
       pool:
-        # Max number of idle connections in the pool
-        # max-idle: 8
-        # Min number of idle connections to maintain
-        # min-idle: 0
-        # Max number of allocated connections (-1 for unlimited)
-        # max-active: 8
-        # Max wait millis when pool is exhausted (-1 for unlimited)
-        max-wait: -1
+        # max-idle: 8   # Max number of idle connections in the pool
+        # min-idle: 0   # Min number of idle connections to maintain
+        # max-active: 8 # Max number of allocated connections (-1 for unlimited)
+        max-wait: -1    # Max wait millis when pool is exhausted (-1 for unlimited)
     # cluster:
-      # Maximum number of redirects to follow when executing commands across the cluster
-      # max-redirects:
-      # Comma-separated list of "host:port" pairs to bootstrap from
-      # nodes:
+      # max-redirects: # Maximum number of redirects to follow when executing commands across the cluster
+      # nodes:         # Comma-separated list of "host:port" pairs to bootstrap from
     # sentinel:
-      # Name of the Redis server
-      # master:
-      # Comma-separated list of "host:port" pairs
-      # nodes:
+      # master:  # Name of the Redis server
+      # nodes:   # Comma-separated list of "host:port" pairs
   sleuth:
     stream:
       enabled: false
@@ -110,7 +98,7 @@ logging:
     feign: WARN
     # Add partner logging here, example:
     #gov.va.bip.origin.[partner-name].client: INFO
-#    gov.va.bip: DEBUG
+#     gov.va.bip: DEBUG
     # Change Value to DEBUG to log all application logs
     gov.va.bip.origin: INFO
     # Change Value to DEBUG to log all BIP framework logs
@@ -202,9 +190,10 @@ bip.framework:
         - /api/v2/origin/**
       excludeUrls:
         - /**
-  # enable/disable the swagger/openapi UI ...
   swagger:
-  	enabled: true
+    # enable/disable the swagger/openapi UI ...
+    enabled: true
+
 ##################################################
 # Feign or REST client connection timeout
 # when making inter-service or external REST calls
