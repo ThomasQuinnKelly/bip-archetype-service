@@ -28,16 +28,18 @@ public enum OriginMessageKeys implements MessageKey {
 			"Response returned an invalid Participant ID."),
 	/** Response has different PID than the logged in user; no args */
 	BIP_SAMPLE_REQUEST_PID_INVALID("bip.origin.sample.request.pid.invalid",
-			"Response has different PID than the logged in user.");
+			"Response has different PID than the logged in user."),
+	BIP_SAMPLE_SERVICE_IMPL_RESPONDED_WITH_MOCK_DATA("bip.origin.sample.service.impl.responded.with.mock.data",
+			"Response sent from service impl with mock data.");
 
 	/** The filename "name" part of the properties file to get from the classpath */
-	private static final String propertiesFile = "messages";
+	private static final String PROPERTIES_FILE = "messages";
 	/** The message source containing properties for this enum */
 	private static ReloadableResourceBundleMessageSource messageSource;
 	/* Populate the message source from the properties file */
 	static {
 		messageSource = new ReloadableResourceBundleMessageSource();
-		messageSource.setBasename("classpath:" + propertiesFile);
+		messageSource.setBasename("classpath:" + PROPERTIES_FILE);
 		messageSource.setDefaultEncoding("UTF-8");
 	}
 

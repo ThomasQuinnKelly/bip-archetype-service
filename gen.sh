@@ -220,6 +220,107 @@ function get_args() {
 	# shift $((OPTIND -1))
 }
 
+function check_for_master_branch() {
+	if [[ "master" == $(git rev-parse --abbrev-ref HEAD) ]];
+	then
+		echo "+>> - verified that master branch is checked out...." 2>&1 | tee -a "$genLog"
+	else
+		echo "+>> - bip-archetype-service master branch not checked out.... " 2>&1 | tee -a "$genLog"
+		read -r -p "Proceed to checkout bip-archetype-service master branch? [y/n] " input
+		case $input in
+			[yY][eE][sS]|[yY])
+				echo "Yes"
+				echo "Checking out master branch"
+				git checkout master 2>&1 | tee -a "$genLog"
+				if [ ${PIPESTATUS[0]} -eq "0" ]; then
+					echo "[OK]" 2>&1 | tee -a "$genLog"
+				else
+					exit_now 13
+				fi
+				;;
+			[nN][oO]|[nN])
+				echo "No"
+				echo "gen.sh script exiting..."
+				exit_now 0
+				;;
+			*)
+				echo "Invalid input..."
+				exit 1
+				;;
+		esac
+	fi
+}
+
+
+function create_origin_prep_branch() {
+	prepBranch="originPrep-$artifactName"
+	echo "+>> - creating a new branch with name $prepBranch, to prepare the origin project with required components..." 2>&1 >> "$genLog"
+	if [[ "$prepBranch" == $(git branch|grep $prepBranch) ]];
+	then
+		echo "+>> WARNING: branch with name $prepBranch ALREADY exits and needs to be deleted and recreated from master...." 2>&1 | tee -a "$genLog"
+		read -r -p "Proceed to delete $prepBranch branch? [y/n] " input
+		case $input in
+			[yY][eE][sS]|[yY])
+				echo "Yes"
+				echo "Deleting $prepBranch branch .... "
+				git branch -D $prepBranch 2>&1 | tee -a "$genLog"
+				if [ ${PIPESTATUS[0]} -eq "0" ]; then
+					echo "[OK]" 2>&1 | tee -a "$genLog"
+				else
+					exit_now 12
+				fi
+				;;
+			[nN][oO]|[nN])
+				echo "No"
+				echo "gen.sh script exiting..."
+				exit_now 0
+				;;
+			*)
+				echo "Invalid input..."
+				exit 1
+				;;
+		esac
+	else
+		git checkout -b $prepBranch 2>&1 | tee -a "$genLog"
+		if [ ${PIPESTATUS[0]} -eq "0" ]; then
+			echo "[OK]" 2>&1 | tee -a "$genLog"
+		else
+
+			exit_now 12
+		fi
+	fi
+}
+
+
+function merge_branch_for_component() {
+	echo "+>> - trying to checked out.... branch with $1 components" 2>&1 | tee -a "$genLog"
+	git merge master-$1 2>&1 | tee -a "$genLog"
+	if [ ${PIPESTATUS[0]} -eq "0" ]; then
+		echo "[OK]" 2>&1 | tee -a "$genLog"
+	else
+		echo "+>> - merge from db branch not successful, contact framework team .... aborting" 2>&1 | tee -a "$genLog"
+		exit_now 1
+	fi
+}
+
+function delete_originPrep_branch() {
+	echo "+>> - checking out to master and then deleting originPrep branch" 2>&1 | tee -a "$genLog"
+	git checkout master 2>&1 | tee -a "$genLog"
+	if [ ${PIPESTATUS[0]} -eq "0" ]; then
+		echo "master branch checkout out : [OK]" 2>&1 | tee -a "$genLog"
+	else
+		exit_now 1
+	fi
+	git branch -D $(git branch | grep Prep) 2>&1 | tee -a "$genLog"
+	if [ ${PIPESTATUS[0]} -eq "0" ]; then
+		echo "originPrep branch deleted : [OK]" 2>&1 | tee -a "$genLog"
+	else
+		exit_now 1
+	fi
+}
+
+
+
 ################################################################################
 ########################                                ########################
 ########################   BUSINESS UTILITY FUNCTIONS   ########################
