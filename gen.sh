@@ -33,6 +33,8 @@ servicePort=""
 projectNameSpacePrefix=""
 nexusRepoUrl=""
 frameworkVersion=""
+components=()
+prepBranch=""
 
 ################################################################################
 #########################                              #########################
@@ -98,6 +100,14 @@ function exit_now() {
 			echo "        1. Access to BIP Nexus Repository at '$nexusRepoUrl'" 2>&1 | tee -a "$genLog"
 			echo "        2. Clone framework from 'https://github.com/department-of-veterans-affairs/bip-framework'" 2>&1 | tee -a "$genLog"
 			echo "           and build it with 'mvn clean install -U'" 2>&1 | tee -a "$genLog"
+		elif [ "$exit_code" -eq "12" ]; then
+			# prep branch could not be deleted
+			echo " ERROR: $prepBranch branch could not be deleted, Please makse sure the $prepBranch branch can be deleted using : " 2>&1 | tee -a "$genLog"
+			echo "     git  branch -D $prepBranch" 2>&1 | tee -a "$genLog"
+		elif [ "$exit_code" -eq "13" ]; then
+			# master branch checkout failed
+			echo " ERROR: master branch could not be checked out... Please makse sure master branch can be checkout out using : " 2>&1 | tee -a "$genLog"
+			echo "     git  checkout master" 2>&1 | tee -a "$genLog"
 		else
 			# some unexpected error
 			echo " Unexpected error code: $exit_code ... aborting immediately" 2>&1 | tee -a "$genLog"
@@ -194,6 +204,107 @@ function get_args() {
 	# shift $((OPTIND -1))
 }
 
+function check_for_master_branch() {
+	if [[ "master" == $(git rev-parse --abbrev-ref HEAD) ]];
+	then
+		echo "+>> - verified that master branch is checked out...." 2>&1 | tee -a "$genLog"
+	else
+		echo "+>> - bip-archetype-service master branch not checked out.... " 2>&1 | tee -a "$genLog"
+		read -r -p "Proceed to checkout bip-archetype-service master branch? [y/n] " input
+		case $input in
+			[yY][eE][sS]|[yY])
+				echo "Yes"
+				echo "Checking out master branch"
+				git checkout master 2>&1 | tee -a "$genLog"
+				if [ ${PIPESTATUS[0]} -eq "0" ]; then
+					echo "[OK]" 2>&1 | tee -a "$genLog"
+				else
+					exit_now 13
+				fi
+				;;
+			[nN][oO]|[nN])
+				echo "No"
+				echo "gen.sh script exiting..."
+				exit_now 0
+				;;
+			*)
+				echo "Invalid input..."
+				exit 1
+				;;
+		esac
+	fi
+}
+
+
+function create_origin_prep_branch() {
+	prepBranch="originPrep-$artifactName"
+	echo "+>> - creating a new branch with name $prepBranch, to prepare the origin project with required components..." 2>&1 >> "$genLog"
+	if [[ "$prepBranch" == $(git branch|grep $prepBranch) ]];
+	then
+		echo "+>> WARNING: branch with name $prepBranch ALREADY exits and needs to be deleted and recreated from master...." 2>&1 | tee -a "$genLog"
+		read -r -p "Proceed to delete $prepBranch branch? [y/n] " input
+		case $input in
+			[yY][eE][sS]|[yY])
+				echo "Yes"
+				echo "Deleting $prepBranch branch .... "
+				git branch -D $prepBranch 2>&1 | tee -a "$genLog"
+				if [ ${PIPESTATUS[0]} -eq "0" ]; then
+					echo "[OK]" 2>&1 | tee -a "$genLog"
+				else
+					exit_now 12
+				fi
+				;;
+			[nN][oO]|[nN])
+				echo "No"
+				echo "gen.sh script exiting..."
+				exit_now 0
+				;;
+			*)
+				echo "Invalid input..."
+				exit 1
+				;;
+		esac
+	else
+		git checkout -b $prepBranch 2>&1 | tee -a "$genLog"
+		if [ ${PIPESTATUS[0]} -eq "0" ]; then
+			echo "[OK]" 2>&1 | tee -a "$genLog"
+		else
+
+			exit_now 12
+		fi
+	fi
+}
+
+
+function merge_branch_for_component() {
+	echo "+>> - trying to checked out.... branch with $1 components" 2>&1 | tee -a "$genLog"
+	git merge master-$1 2>&1 | tee -a "$genLog"
+	if [ ${PIPESTATUS[0]} -eq "0" ]; then
+		echo "[OK]" 2>&1 | tee -a "$genLog"
+	else
+		echo "+>> - merge from db branch not successful, contact framework team .... aborting" 2>&1 | tee -a "$genLog"
+		exit_now 1
+	fi
+}
+
+function delete_originPrep_branch() {
+	echo "+>> - checking out to master and then deleting originPrep branch" 2>&1 | tee -a "$genLog"
+	git checkout master 2>&1 | tee -a "$genLog"
+	if [ ${PIPESTATUS[0]} -eq "0" ]; then
+		echo "master branch checkout out : [OK]" 2>&1 | tee -a "$genLog"
+	else
+		exit_now 1
+	fi
+	git branch -D $(git branch | grep Prep) 2>&1 | tee -a "$genLog"
+	if [ ${PIPESTATUS[0]} -eq "0" ]; then
+		echo "originPrep branch deleted : [OK]" 2>&1 | tee -a "$genLog"
+	else
+		exit_now 1
+	fi
+}
+
+
+
 ################################################################################
 ########################                                ########################
 ########################   BUSINESS UTILITY FUNCTIONS   ########################
@@ -261,6 +372,13 @@ function read_properties() {
 				if [[ "$theKey" == "artifactNameUpperCase" ]]; then artifactNameUpperCase=$theVal; fi
 				if [[ "$theKey" == "servicePort" ]]; then servicePort=$theVal; fi
 				if [[ "$theKey" == "projectNameSpacePrefix" ]]; then projectNameSpacePrefix=$theVal; fi
+				if [[ "$theKey" == "components" ]]; then
+					tempIFS=$IFS
+					IFS=', '
+					read -r -a components <<< "$theVal";
+					IFS=$tempIFS
+				fi
+
 			fi
 		done < "$cwd/$propertiesFile"
 		IFS=$OIFS
@@ -379,6 +497,21 @@ function copy_origin_project() {
 	# tee does not play well with some bash commands, so just redirect output to the log
 	cp -R -f "./$originDirName/" "./$artifactId/" 2>&1 >> "$genLog"
 	check_exit_status "$?"
+}
+
+## function to prepare the desired Origin project based on which the archetype project needs to be generated ##
+## arg: none                                ##
+## scope: private (internal calls only)     ##
+function prepare_origin_project() {
+	check_for_master_branch
+	create_origin_prep_branch
+	#add check to makesure components is not empty
+	for component in  $components
+	do
+		merge_branch_for_component $component
+	done
+	copy_origin_project
+	build_origin
 }
 
 ## function to clean up and prepare files for new project ##
@@ -505,7 +638,7 @@ function change_text() {
 		# replace archetype package/groupId
 		oldVal="gov.va.bip.origin"
 		newVal="$groupId"
-		echo "LC_ALL=C sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' \"$tmpFile\"" 2>&1 | tee -a "$genLog"	
+		echo "LC_ALL=C sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' \"$tmpFile\"" 2>&1 | tee -a "$genLog"
 		LC_ALL=C sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' "$tmpFile" 2>&1 >> "$genLog"
 		# artifactId replacement
 		oldVal="bip-origin"
@@ -568,12 +701,11 @@ read_properties
 validate_properties
 remove_only
 framework_exists
-build_origin
-copy_origin_project
+prepare_origin_project
 prepare_files
 rename_directories
 rename_files
 change_text
 build_new_project
-
+delete_originPrep_branch
 exit_now 0
