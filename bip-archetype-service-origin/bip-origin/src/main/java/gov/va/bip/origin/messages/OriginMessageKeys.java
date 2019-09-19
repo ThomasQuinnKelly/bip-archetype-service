@@ -25,7 +25,7 @@ public enum OriginMessageKeys implements MessageKey {
 	BIP_SAMPLE_REQUEST_NOTNULL("NotNull.sampleRequest",
 			"SampleRequest Payload cannot be null"),
 	/** Payload cannot be null validation; no args */
-	BIP_SAMPLE_DATA_NOTNULL("NotNull.sampleData", "SampleData Payload cannot be null"),
+	BIP_SAMPLE_DATA_NOTNULL("NotNull.sampleData1", "SampleData1 Payload cannot be null"),
 
 	/** Response has different PID than the request; no args */
 	BIP_SAMPLE_REQUEST_PID_INCONSISTENT("bip.origin.sample.request.pid.inconsistent",

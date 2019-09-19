@@ -1,4 +1,4 @@
-package gov.va.bip.origin.data.entities;
+package gov.va.bip.origin.data.sampledatasource2.entities;
 
 import java.io.Serializable;
 import javax.persistence.Entity;
@@ -8,12 +8,12 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 
 /**
- * SampleData POJO mapped to the records in the SAMPLE_DATA table in database
+ * SampleData2 POJO mapped to the records in the SAMPLE_DATA_2 table in database
  *
  */
 @Entity
 @SequenceGenerator(name = "seq", initialValue = 10, allocationSize = 100)
-public class SampleData implements Serializable {
+public class SampleData2 implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

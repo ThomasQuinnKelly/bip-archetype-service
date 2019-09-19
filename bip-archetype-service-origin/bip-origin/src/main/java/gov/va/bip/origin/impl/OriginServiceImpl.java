@@ -26,11 +26,10 @@ import gov.va.bip.framework.messages.MessageSeverity;
 import gov.va.bip.framework.validation.Defense;
 import gov.va.bip.origin.OriginService;
 import gov.va.bip.origin.data.SampleDataHelper;
-import gov.va.bip.origin.data.entities.SampleData;
+import gov.va.bip.origin.data.sampledatasource2.entities.SampleData2;
 import gov.va.bip.origin.messages.OriginMessageKeys;
 import gov.va.bip.origin.model.SampleDomainRequest;
 import gov.va.bip.origin.model.SampleDomainResponse;
-import gov.va.bip.origin.model.SampleInfoDomain;
 import gov.va.bip.origin.utils.CacheConstants;
 import gov.va.bip.origin.utils.HystrixCommandConstants;
 
@@ -108,8 +107,8 @@ public class OriginServiceImpl implements OriginService {
 		LOGGER.debug("sampleFindByParticipantID no cached data found");
 
 		// try from database helper
-		SampleData data = null;
-		data = sampleDataHelper.getDataForPid(sampleDomainRequest.getParticipantID());
+		SampleData2 data = null;
+		data = sampleDataHelper.getSampleDataForPid(sampleDomainRequest.getParticipantID());
 		if (data == null) {
 			response.addMessage(MessageSeverity.INFO, HttpStatus.OK,
 					OriginMessageKeys.BIP_SAMPLE_SERVICE_DATABASE_CALL_RETURNED_NULL, "");

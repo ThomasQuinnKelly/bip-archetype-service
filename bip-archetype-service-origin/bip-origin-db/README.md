@@ -24,7 +24,7 @@ For detailed information about database configuration in BIP projects, see [Data
 
 The database project is one of the sub-project `<modules>` in a reactor project.  Add the the database project to the reactor POM.
 ```xml
-	<module>bip-reference-person-db</module>
+	<module>bip-origin-db</module>
 ```
 
 ## Diagrams

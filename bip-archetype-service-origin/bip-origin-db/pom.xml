@@ -20,7 +20,7 @@
 		!! THE CONFIGURATION IN THIS POM IS AN EXAMPLE !!
 		
 		Modify the database and maven-liquibase-plugin as needed.
-		- search for "person", modify or add maven profiles as needed
+		- search for "sample", modify or add maven profiles as needed
 		- modify existing directories/ files (or create new directories and files)
 		  as necessary under "src/main/resources/db.changelog"
 	-->
@@ -32,7 +32,7 @@
 			Liquibase controls
 		-->
 		<!-- default database to operate on -->
-		<db.name>persondocs</db.name>
+		<db.name>sampledata1</db.name>
 		<!-- root path (no file name) for changelog directories -->
 		<liquibase.changelog.path>${project.basedir}/src/main/resources/db/changelog/${db.name}</liquibase.changelog.path>
 		<!-- default context -->
@@ -133,7 +133,7 @@
 						<dependencies>
 							<!-- required by liquibase/hibernate to reverse engineer entities in the project -->
 							<dependency>
-								<groupId>gov.va.bip.origin.person</groupId>
+								<groupId>gov.va.bip.origin</groupId>
 								<artifactId>bip-origin</artifactId>
 								<version>${project.parent.version}</version>
 							</dependency>
