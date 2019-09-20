@@ -57,22 +57,3 @@ Feature: PID based SampleInfo derived from the partner service.
       | Veteran          | tokenrequestfile              | ServiceURL          | RequestFile        | Text                                           | Type                     |
       | va-janedoe       | va/janedoetoken.request       | /api/v1/origin/pid | va/invalid.request | Participant ID must be greater than zero.       | application/problem+json |
       | va-russellwatson | va/russellwatsontoken.request | /api/v1/origin/pid | va/null.request    | SampleInfoRequest.participantID cannot be null. | application/problem+json |
-
-  @sampleinfo
-  Scenario Outline: PID based SampleInfo derived from the partner service for no record found.
-    Given the claimant is a "<Veteran>"
-    And invoke token API by passing header from "<tokenrequestfile>" and sets the authorization in the header
-    When client request SampleInfo "<ServiceURL>" with PID data "<RequestFile>"
-    Then the service returns status code = 200
-    And the service returns ParticipantID PID based on participantId <participantID>
-    And the service returns message "<Severity>" and "<Text>"
-
-    @DEV
-    Examples: 
-      | Veteran     | tokenrequestfile         | ServiceURL          | RequestFile              | participantID | Severity | Text                                                                                                                                                                                                             |
-      | dev-janedoe | dev/janedoetoken.request | /api/v1/origin/pid | dev/norecordfound.request | 6666355       | WARN     | Could not read mock XML file test/mocks/person.getSampleInfoByPtcpntId.6666355.xml using key person.getSampleInfoByPtcpntId.6666355. Please make sure this response file exists in the main/resources directory. |
-
-    @VA
-    Examples: 
-      | Veteran    | tokenrequestfile        | ServiceURL          | RequestFile             | participantID | Severity | Text                                                                                                                                                                                                             |
-      | va-janedoe | va/janedoetoken.request | /api/v1/origin/pid | va/norecordfound.request | 6666355       | WARN     | Could not read mock XML file test/mocks/person.getSampleInfoByPtcpntId.6666355.xml using key person.getSampleInfoByPtcpntId.6666355. Please make sure this response file exists in the main/resources directory. |
