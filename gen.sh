@@ -590,8 +590,8 @@ function build_origin() {
 		echo "+>> Not building $originDirName" 2>&1 | tee -a "$genLog"
 	else
 		echo "+>> Building the $originDirName project" 2>&1 | tee -a "$genLog"
-		echo "mvn clean install $doDockerBuild -e -X" 2>&1 | tee -a "$genLog"
-		mvn clean install $doDockerBuild -e -X  2>&1 >> "$genLog"
+		echo "mvn clean install $doDockerBuild" 2>&1 | tee -a "$genLog"
+		mvn clean install $doDockerBuild  2>&1 >> "$genLog"
 		check_exit_status "$?"
 	fi
 }
@@ -634,7 +634,8 @@ function prepare_origin_project() {
 	if [ ${#components[@]} -eq 0 ]; then
 		echo "+>> No components selected, proceeding with baseline Origin project" 2>&1 | tee -a "$genLog"
 	else
-		for component in $components
+		echo "+>> Merging components \"${components[*]}\" into branch \"$prepBranch\"." 2>&1 | tee -a "$genLog"
+		for component in "${components[@]}"
 		do
 			git_merge_component_branch "$component"
 		done
@@ -806,8 +807,8 @@ function build_new_project() {
 	cd_to "$cwd/$artifactId"
 
 	echo "+>> Building the $artifactId project" 2>&1 | tee -a "$genLog"
-	echo "mvn clean package $doDockerBuild -e -X" 2>&1 | tee -a "$genLog"
-	mvn clean package $doDockerBuild -e -X  2>&1 >> "$genLog"
+	echo "mvn clean package $doDockerBuild" 2>&1 | tee -a "$genLog"
+	mvn clean package $doDockerBuild  2>&1 >> "$genLog"
 	check_exit_status "$?"
 }
 
