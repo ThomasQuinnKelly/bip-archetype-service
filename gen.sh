@@ -215,7 +215,7 @@ function get_args() {
 					exit_now 2
 				fi
 				;;
-		 \?)
+			\?)
 				exit_now 5
 				;;
 		esac
@@ -564,20 +564,17 @@ function git_merge_component_branch() {
 			for conflictFile in "${conflictFiles[@]}"
 			do
 				# merge marker for head
-				oldVal="<<<<<<< HEAD
-"
+				oldVal="<<<<<<< HEAD\n"
 				newVal=""
 				echo "LC_ALL=C sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' \"$conflictFile\"" 2>&1 | tee -a "$genLog"
 				LC_ALL=C sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' "$conflictFile" 2>&1 >> "$genLog"
 				# merge marker for merged branch
-				oldVal=">>>>>>> $tmpBranchName
-"
+				oldVal=">>>>>>> $tmpBranchName\n"
 				newVal=""
 				echo "LC_ALL=C sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' \"$conflictFile\"" 2>&1 | tee -a "$genLog"
 				LC_ALL=C sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' "$conflictFile" 2>&1 >> "$genLog"
 				# merge marker between diffs
-				oldVal="=======
-"
+				oldVal="=======\n"
 				newVal=""
 				echo "LC_ALL=C sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' \"$conflictFile\"" 2>&1 | tee -a "$genLog"
 				LC_ALL=C sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' "$conflictFile" 2>&1 >> "$genLog"
