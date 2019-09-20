@@ -9,17 +9,15 @@ info:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
 tags:
-  - name: origin
+  - name: Origin
     description: Origin Resource
-  - name: origin-rest-client-tester
-    description: Origin Rest Client Tester
   - name: token-resource
     description: Token Resource
 paths:
   "/api/v1/origin/pid":
     post:
       tags:
-      - origin
+      - Origin
       summary: Retrieve Origin information by PID from mocked partner sample service.
       description: Will return a sample info object based on search by PID.
       operationId: sampleByPid
