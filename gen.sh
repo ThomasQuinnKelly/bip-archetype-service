@@ -21,6 +21,13 @@ originDirName="bip-archetype-service-origin"
 originGroupId="gov.va.bip.origin"
 genLog="$cwd/$thisFileName.log"
 
+# git variables
+cgb=$(git rev-parse --abbrev-ref HEAD)
+gitRemote=""
+gitBranchBaseline="master"
+gitBranchDb="master-db"
+bitBranchPartner="master-partner"
+
 ###   properties   ###
 # required in properties file
 groupId=""
@@ -43,7 +50,7 @@ prepBranch=""
 ################################################################################
 
 ## function to exit the script immediately ##
-## arg1 (optional): exit code to use        ##
+## arg1 (optional): exit code to use       ##
 ## scope: private (internal calls only)    ##
 function exit_now() {
 	#  1 = error from a bash command
@@ -74,43 +81,52 @@ function exit_now() {
 			echo "Command error. See output at end of $genLog"
 		elif [ "$exit_code" -eq "2" ]; then
 			# Invalie command line argument
-			echo " ERROR: Docker must be running for command-line argument \"-$OPTARG\" (use \"$thisScript -h\" for help) ... aborting immediately" 2>&1 | tee -a "$genLog"
+			echo "ERROR: Docker must be running for command-line argument \"-$OPTARG\" (use \"$thisScript -h\" for help) ... aborting immediately" 2>&1 | tee -a "$genLog"
 		elif [ "$exit_code" -eq "5" ]; then
 			# Invalie command line argument
-			echo " ERROR: Invalid command-line argument \"-$OPTARG\" (use \"$thisScript -h\" for help) ... aborting immediately" 2>&1 | tee -a "$genLog"
+			echo "ERROR: Invalid command-line argument \"-$OPTARG\" (use \"$thisScript -h\" for help) ... aborting immediately" 2>&1 | tee -a "$genLog"
 		elif [ "$exit_code" -eq "6" ]; then
 			# One or more properties not set
-			echo " ERROR: \"$propertiesFile\" does not provide values for the following properties:" 2>&1 | tee -a "$genLog"
+			echo "ERROR: \"$propertiesFile\" does not provide values for the following properties:" 2>&1 | tee -a "$genLog"
 			echo "        $missingProperties" 2>&1 | tee -a "$genLog"
 		elif [ "$exit_code" -eq "7" ]; then
 			# Project already exists, no over-write arg
-			echo " ERROR: \"$artifactId\" project already exists ... aborting immediately" 2>&1 | tee -a "$genLog"
+			echo "ERROR: \"$artifactId\" project already exists ... aborting immediately" 2>&1 | tee -a "$genLog"
 			echo "        Delete/move the project, or start this script with the -o option" 2>&1 | tee -a "$genLog"
 		elif [ "$exit_code" -eq "8" ]; then
 			# No project to remove
-			echo " ERROR: Could not remove \"$artifactId\". Does not exist." 2>&1 | tee -a "$genLog"
+			echo "ERROR: Could not remove \"$artifactId\". Does not exist." 2>&1 | tee -a "$genLog"
 		elif [ "$exit_code" -eq "10" ]; then
 			# One or more properties not set
-			echo " ERROR: Directory \"$artifactId\" already exists. Delete the directory " 2>&1 | tee -a "$genLog"
+			echo "ERROR: Directory \"$artifactId\" already exists. Delete the directory " 2>&1 | tee -a "$genLog"
 			echo "        or execute this generate script and properties in another directory. " 2>&1 | tee -a "$genLog"
 		elif [ "$exit_code" -eq "11" ]; then
 			# One or more properties not set
-			echo " ERROR: Could not find bip-framework version '$frameworkVersion'" 2>&1 | tee -a "$genLog"
+			echo "ERROR: Could not find bip-framework version '$frameworkVersion'" 2>&1 | tee -a "$genLog"
 			echo "        To make bip-framework available, provide one of the following:" 2>&1 | tee -a "$genLog"
 			echo "        1. Access to BIP Nexus Repository at '$nexusRepoUrl'" 2>&1 | tee -a "$genLog"
 			echo "        2. Clone framework from 'https://github.com/department-of-veterans-affairs/bip-framework'" 2>&1 | tee -a "$genLog"
 			echo "           and build it with 'mvn clean install -U'" 2>&1 | tee -a "$genLog"
-		elif [ "$exit_code" -eq "12" ]; then
-			# prep branch could not be deleted
-			echo " ERROR: $prepBranch branch could not be deleted, Please makse sure the $prepBranch branch can be deleted using : " 2>&1 | tee -a "$genLog"
-			echo "     git  branch -D $prepBranch" 2>&1 | tee -a "$genLog"
-		elif [ "$exit_code" -eq "13" ]; then
-			# master branch checkout failed
-			echo " ERROR: master branch could not be checked out... Please makse sure master branch can be checkout out using : " 2>&1 | tee -a "$genLog"
-			echo "     git  checkout master" 2>&1 | tee -a "$genLog"
+		elif [ "$exit_code" -eq "20" ]; then
+			# prep branch could not be deleted - DON'T TRY TO DELETE IT AGAIN! Will create endless loop
+			echo "ERROR: Branch \"$prepBranch\" could not be deleted, Please makse sure the $prepBranch branch can be deleted using: " 2>&1 | tee -a "$genLog"
+			echo "        git  branch -D $prepBranch" 2>&1 | tee -a "$genLog"
+		elif [ "$exit_code" -eq "21" ]; then
+			# branch checkout failed
+			echo "ERROR: A required branch could not be checked out. Check logs for details." 2>&1 | tee -a "$genLog"
+		elif [ "$exit_code" -eq "22" ]; then
+			# too many git remotes
+			echo "ERROR: More than one git remote detected. Script currently requires that only one r/w remote be available." 2>&1 | tee -a "$genLog"
+			echo "         Existing remotes:" 2>&1 | tee -a "$genLog"
+			git remote  2>&1 | tee -a "$genLog"
+			echo "        Please 'git remote remove <name>' all but your primary read/write remote (usually 'origin')." 2>&1 | tee -a "$genLog"
+		elif [ "$exit_code" -eq "23" ]; then
+			# missing git remote
+			echo "ERROR: Your local archetype repo does not have a remote defined. Please add a remote read/write repo (usually 'origin')." 2>&1 | tee -a "$genLog"
+			echo "        Example: git remote add <repo-name> <url>" 2>&1 | tee -a "$genLog"
 		else
 			# some unexpected error
-			echo " Unexpected error code: $exit_code ... aborting immediately" 2>&1 | tee -a "$genLog"
+			echo "ERROR: Unexpected error code: $exit_code ... aborting immediately. Check logs." 2>&1 | tee -a "$genLog"
 		fi
 	fi
 	echo "" 2>&1 | tee -a "$genLog"
@@ -204,106 +220,6 @@ function get_args() {
 	# shift $((OPTIND -1))
 }
 
-function check_for_master_branch() {
-	if [[ "master" == $(git rev-parse --abbrev-ref HEAD) ]];
-	then
-		echo "+>> - verified that master branch is checked out...." 2>&1 | tee -a "$genLog"
-	else
-		echo "+>> - bip-archetype-service master branch not checked out.... " 2>&1 | tee -a "$genLog"
-		read -r -p "Proceed to checkout bip-archetype-service master branch? [y/n] " input
-		case $input in
-			[yY][eE][sS]|[yY])
-				echo "Yes"
-				echo "Checking out master branch"
-				git checkout master 2>&1 | tee -a "$genLog"
-				if [ ${PIPESTATUS[0]} -eq "0" ]; then
-					echo "[OK]" 2>&1 | tee -a "$genLog"
-				else
-					exit_now 13
-				fi
-				;;
-			[nN][oO]|[nN])
-				echo "No"
-				echo "gen.sh script exiting..."
-				exit_now 0
-				;;
-			*)
-				echo "Invalid input..."
-				exit 1
-				;;
-		esac
-	fi
-}
-
-
-function create_origin_prep_branch() {
-	prepBranch="originPrep-$artifactName"
-	echo "+>> - creating a new branch with name $prepBranch, to prepare the origin project with required components..." 2>&1 >> "$genLog"
-	if [[ "$prepBranch" == $(git branch|grep $prepBranch) ]];
-	then
-		echo "+>> WARNING: branch with name $prepBranch ALREADY exits and needs to be deleted and recreated from master...." 2>&1 | tee -a "$genLog"
-		read -r -p "Proceed to delete $prepBranch branch? [y/n] " input
-		case $input in
-			[yY][eE][sS]|[yY])
-				echo "Yes"
-				echo "Deleting $prepBranch branch .... "
-				git branch -D $prepBranch 2>&1 | tee -a "$genLog"
-				if [ ${PIPESTATUS[0]} -eq "0" ]; then
-					echo "[OK]" 2>&1 | tee -a "$genLog"
-				else
-					exit_now 12
-				fi
-				;;
-			[nN][oO]|[nN])
-				echo "No"
-				echo "gen.sh script exiting..."
-				exit_now 0
-				;;
-			*)
-				echo "Invalid input..."
-				exit 1
-				;;
-		esac
-	else
-		git checkout -b $prepBranch 2>&1 | tee -a "$genLog"
-		if [ ${PIPESTATUS[0]} -eq "0" ]; then
-			echo "[OK]" 2>&1 | tee -a "$genLog"
-		else
-
-			exit_now 12
-		fi
-	fi
-}
-
-
-function merge_branch_for_component() {
-	echo "+>> - trying to checked out.... branch with $1 components" 2>&1 | tee -a "$genLog"
-	git merge master-$1 2>&1 | tee -a "$genLog"
-	if [ ${PIPESTATUS[0]} -eq "0" ]; then
-		echo "[OK]" 2>&1 | tee -a "$genLog"
-	else
-		echo "+>> - merge from db branch not successful, contact framework team .... aborting" 2>&1 | tee -a "$genLog"
-		exit_now 1
-	fi
-}
-
-function delete_originPrep_branch() {
-	echo "+>> - checking out to master and then deleting originPrep branch" 2>&1 | tee -a "$genLog"
-	git checkout master 2>&1 | tee -a "$genLog"
-	if [ ${PIPESTATUS[0]} -eq "0" ]; then
-		echo "master branch checkout out : [OK]" 2>&1 | tee -a "$genLog"
-	else
-		exit_now 1
-	fi
-	git branch -D $(git branch | grep Prep) 2>&1 | tee -a "$genLog"
-	if [ ${PIPESTATUS[0]} -eq "0" ]; then
-		echo "originPrep branch deleted : [OK]" 2>&1 | tee -a "$genLog"
-	else
-		exit_now 1
-	fi
-}
-
-
 
 ################################################################################
 ########################                                ########################
@@ -323,12 +239,10 @@ function framework_exists() {
 	echo "+>> Checking for existence of bip-framework $frameworkVersion" 2>&1 | tee -a "$genLog"
 
 	mvn dependency:get -Dartifact=gov.va.bip.framework:bip-framework-parentpom:$frameworkVersion:pom -DremoteRepositories=https://nexus.dev.bip.va.gov/repository/maven-public 2>&1 >> "$genLog"
-	if [ "$?" -eq "0" ]; then
-		echo "[OK]" 2>&1 | tee -a "$genLog"
-	else
+	if [ "$?" -ne "0" ]; then
 		exit_now "11"
 	fi
-
+	echo "[OK]" 2>&1 | tee -a "$genLog"
 }
 
 ## function to populate property vars from $propertiesFile ##
@@ -415,6 +329,7 @@ function check_exit_status() {
 	if [ "$returnStatus" -eq "0" ]; then
 		echo "[OK]" 2>&1 | tee -a "$genLog"
 	else
+		git_delete_prep_branch
 		exit_now "$1"
 	fi
 }
@@ -424,14 +339,211 @@ function check_exit_status() {
 ## scope: private (internal calls only)        ##
 function cd_to() {
 	cd_dir="$1"
-	echo "" 2>&1 | tee -a "$genLog"
-	echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" 2>&1 | tee -a "$genLog"
 	echo "cd $cd_dir" 2>&1 | tee -a "$genLog"
 	# tee does not play well with some bash commands, so just redirect output to the log
 	cd "$cd_dir" 2>&1 >> "$genLog"
 	check_exit_status "$?"
 	echo "+>> pwd = `pwd`" 2>&1 | tee -a "$genLog"
 }
+
+##################################################################################
+############################                          ############################
+############################  GIT UTILITY FUNCTIONS   ############################
+############################                          ############################
+##################################################################################
+
+## function to test that local repo has 1 remote ##
+## and put the remote name into $gitRemote       ##
+## arg: none                                     ##
+## scope: private (internal calls only)          ##
+function git_has_remote() {
+	echo "+>> Checking git remote" 2>&1 | tee -a "$genLog"
+	tmpRemoteCt=$(git remote | wc -l)
+	if [ $tmpRemoteCt -gt 1 ]; then
+		exit_now "22"
+	elif [ $tmpRemoteCt -lt 1 ]; then
+		exit_now "23"
+	fi
+
+	gitRemote="$(git remote)"
+}
+
+## function to get the current branch into $gcb ##
+## arg: none                                    ##
+## scope: private (internal calls only)         ##
+function git_current_branch() {
+	# tee does not play well with some bash commands, so just redirect output to the log
+	gcb=$(git rev-parse --abbrev-ref HEAD) 2>&1 >> "$genLog"
+}
+
+## function to see if LOCAL repo has a branch ##
+## arg: $1 = branch name                      ##
+## returns 0 if branch exists, otherwise 1    ##
+## scope: private (internal calls only)       ##
+function git_has_local_branch() {
+	tmp="$1"
+	if [ "$tmp" == "" ]; then
+		echo "*** ERROR The git_has_local_branch() function requires an argument"
+		echo exit_now 1
+	fi
+
+	# NOTE: return value can only be seen in "$?"
+	tmp="$(git rev-parse --verify $tmp)"
+	if [ "$tmp" == "" ]; then
+		# local branch does NOT exist
+		return 1
+	fi
+	# local branch DOES exist
+	return 0
+}
+
+## function to delete the origin prep branch (created to prepare the origin project with required components ) ##
+## arg: none                                               ##
+## scope: private (internal calls only)                    ##
+function git_delete_prep_branch() {
+	if [ "$prepBranch" == "" ]; then
+		echo  "+>> WARN Function git_delete_prep_branch() was called but \$prepBranch variable is empty." 2>&1 | tee -a "$genLog"
+	else
+		git_has_local_branch $prepBranch
+		if [ "$?" == "0" ]; then
+			# put current branch into $gcb
+			git_current_branch
+			if [ "$gcb" == "$prepBranch" ]; then
+				git_checkout_branch $gitBranchBaseline
+			fi
+			echo "+>> Deleting branch \"$prepBranch\"" 2>&1 | tee -a "$genLog"
+			echo "git branch -D $prepBranch" 2>&1 | tee -a "$genLog"
+			git branch -D $prepBranch 2>&1 >> "$genLog"
+			if [ "$?" -ne "0" ]; then
+				exit_now 20
+			fi
+			echo "[OK]" 2>&1 | tee -a "$genLog"
+		else
+			echo  "+>> WARN Function git_delete_prep_branch() was called, but \"$prepBranch\" does not exist." 2>&1 | tee -a "$genLog"
+		fi
+	fi
+}
+
+## function to check if the master branch is checkout out in the git repo ##
+## arg: $1 = branch name to check out                                     ##
+## scope: private (internal calls only)                                   ##
+function git_checkout_branch() {
+	tmpGitBranchname="$1"
+	if [ "$tmpGitBranchname" == "" ]; then
+		echo "*** ERROR function git_checkout_branch() requires 1 argument: <branch-name>" 2>&1 | tee -a "$genLog"
+		echo exit_now 1
+	fi
+	echo "+>> Attempting to check out branch \"$tmpGitBranchname\"" 2>&1 | tee -a "$genLog"
+
+	# put git's current branch into $gcb
+	git_current_branch
+
+	if [ "$tmpGitBranchname" == "$gcb" ]; then
+		echo "+>> Already on branch \"$tmpGitBranchname\"" 2>&1 | tee -a "$genLog"
+		echo "+>> Pulling to ensure up to date"
+	else
+		echo "git checkout $tmpGitBranchname" 2>&1 | tee -a "$genLog"
+		git checkout $tmpGitBranchname 2>&1 >> "$genLog"
+		if [ "$?" -ne "0" ]; then
+			check_exit_status "21"
+		fi
+		echo "[OK]" 2>&1 | tee -a "$genLog"
+	fi
+}
+
+## function to create a new branch from current branch to           ##
+## prepare the origin project with requried components              ##
+## NOTE: after execution, current git branch will be the method arg ##
+## arg: #1 = branch-name                                            ##
+## scope: private (internal calls only)                             ##
+function git_create_prep_branch() {
+	tmpGitBranchname="$1"
+	if [ "$tmpGitBranchname" == "" ]; then
+		echo "*** ERROR function git_create_prep_branch() requires 1 argument: <branch-name>" 2>&1 | tee -a "$genLog"
+		echo exit_now 1
+	fi
+	echo "+>> Preparing to create branch \"$prepBranch\", to prepare the origin project with required components." 2>&1 | tee -a "$genLog"
+
+	# put git's current branch into $gcb
+	git_current_branch
+	# must currently be in the baseline branch
+	if ! [ "$gcb" == "$gitBranchBaseline" ]; then
+		echo "*** ERROR current git branch is \"$gcb\" but must be \"$gitBranchBaseline\"" 2>&1 | tee -a "$genLog"
+		exit_now 1
+	fi
+
+	# set the global prep branch name
+	prepBranch="$tmpGitBranchname"
+
+	git_has_local_branch $prepBranch
+	if [ "$?" == "0" ]; then
+		git_delete_prep_branch $prepBranch
+	fi
+
+	echo "+>> Creating branch \"$prepBranch\"" 2>&1 | tee -a "$genLog"
+	echo "git checkout -b $prepBranch" 2>&1 | tee -a "$genLog"
+	git checkout -b $prepBranch 2>&1 >> "$genLog"
+	if [ "$?" -ne "0" ]; then
+		echo "*** ERROR Could not create branch \"$prepBranch\""
+		exit_now "20"
+	fi
+	echo "[OK]" 2>&1 | tee -a "$genLog"
+	### Returning with git currrent branch on the branch provided in arg 1
+}
+
+## function to merge code related to requried components          ##
+## required parameter: $1 = name of component to be added/merged  ##
+## scope: private (internal calls only)                           ##
+function git_merge_component_branch() {
+	if [ "$1" == "" ]; then
+		echo "+>> No component, nothing to merge" 2>&1 | tee -a "$genLog"
+	else
+		tmpBranchName="master-$1"
+
+		echo "+>> Attempting to check out component branch with \"$tmpBranchName\"" 2>&1 | tee -a "$genLog"
+
+		echo "git checkout $tmpBranchName" 2>&1 | tee -a "$genLog"
+		git checkout $tmpBranchName 2>&1 >> "$genLog"
+		if [ "$?" -ne "0" ]; then
+			echo "*** ERROR: could not check out branch \"$tmpBranchName\""
+			check_exit_status "22"
+		fi
+
+		# pull in case branch was already on local
+		echo "git pull" 2>&1 | tee -a "$genLog"
+		git pull 2>&1 >> "$genLog"
+		check_exit_status "$?"
+
+		echo "+>> Attempting to merge component \"$tmpBranchName\" into \"$prepBranch\"" 2>&1 | tee -a "$genLog"
+
+		# switch back to the prep branch
+		echo "git checkout $prepBranch" 2>&1 | tee -a "$genLog"
+		git checkout $prepBranch 2>&1 >> "$genLog"
+		if [ "$?" -ne "0" ]; then
+			echo "*** ERROR: could not check out branch \"$tmpBranchName\""
+			check_exit_status "22"
+		fi
+
+		# finally do the merge
+		echo "git merge $tmpBranchName" 2>&1 | tee -a "$genLog"
+		git merge $tmpBranchName 2>&1 >> "$genLog"
+		if [ "$?" -eq "0" ]; then
+			echo "[OK]" 2>&1 | tee -a "$genLog"
+		else
+			echo "*** ERROR Merge from db branch not successful, contact framework team." 2>&1 | tee -a "$genLog"
+			echo "+>> Resetting changes - checking out master and deleting $prepBranch" 2>&1 | tee -a "$genLog"
+
+			echo "git reset --hard" 2>&1 | tee -a "$genLog"
+			git reset --hard 2>&1 >> "$genLog"
+			check_exit_status "$?"
+
+			git_checkout_branch $gitBranchBaseline
+
+			exit_now 1
+		fi
+	fi
+}
+
 
 ################################################################################
 ############################                        ############################
@@ -503,13 +615,19 @@ function copy_origin_project() {
 ## arg: none                                ##
 ## scope: private (internal calls only)     ##
 function prepare_origin_project() {
-	check_for_master_branch
-	create_origin_prep_branch
-	#add check to makesure components is not empty
-	for component in  $components
-	do
-		merge_branch_for_component $component
-	done
+	# check out the baseline branch
+	git_checkout_branch "$gitBranchBaseline"
+	# create the prep branch, put branch name in $prepBranch
+	git_create_prep_branch "originPrep-$artifactName"
+	# git current branch is now the prep branch
+	if [ "$components" == "" ]; then
+		echo "+>> No components selected, proceeding with baseline Origin project" 2>&1 | tee -a "$genLog"
+	else
+		for component in $components
+		do
+			git_merge_component_branch "$component"
+		done
+	fi
 	copy_origin_project
 	build_origin
 }
@@ -701,11 +819,14 @@ read_properties
 validate_properties
 remove_only
 framework_exists
+git_has_remote
+# multiple steps carried out in prepare_origin_project...
 prepare_origin_project
+
 prepare_files
 rename_directories
 rename_files
 change_text
 build_new_project
-delete_originPrep_branch
+git_delete_prep_branch
 exit_now 0
