@@ -373,6 +373,7 @@ function git_has_remote() {
 ## scope: private (internal calls only)         ##
 function git_current_branch() {
 	# tee does not play well with some bash commands, so just redirect output to the log
+	echo "+>> git rev-parse --abbrev-ref HEAD" 2>&1 | tee -a "$genLog"
 	gcb=$(git rev-parse --abbrev-ref HEAD) 2>&1 >> "$genLog"
 }
 
@@ -383,17 +384,20 @@ function git_current_branch() {
 function git_has_local_branch() {
 	tmp="$1"
 	if [ "$tmp" == "" ]; then
-		echo "*** ERROR The git_has_local_branch() function requires an argument"
+		echo "*** ERROR The git_has_local_branch() function requires an argument" 2>&1 | tee -a "$genLog"
 		echo exit_now 1
 	fi
 
 	# NOTE: return value can only be seen in "$?"
+	echo "+>> git rev-parse --verify $tmp" 2>&1 | tee -a "$genLog"
 	tmp="$(git rev-parse --verify $tmp)"
 	if [ "$tmp" == "" ]; then
 		# local branch does NOT exist
+		echo "1"
 		return 1
 	fi
 	# local branch DOES exist
+	echo "0"
 	return 0
 }
 
@@ -445,6 +449,7 @@ function git_checkout_branch() {
 		echo "git checkout $tmpGitBranchname" 2>&1 | tee -a "$genLog"
 		git checkout $tmpGitBranchname 2>&1 >> "$genLog"
 		if [ "$?" -ne "0" ]; then
+			echo "ERROR Could not check out branch \"tmpGitBranchname\"" 2>&1 | tee -a "$genLog"
 			check_exit_status "21"
 		fi
 		echo "[OK]" 2>&1 | tee -a "$genLog"
@@ -484,7 +489,7 @@ function git_create_prep_branch() {
 	echo "git checkout -b $prepBranch" 2>&1 | tee -a "$genLog"
 	git checkout -b $prepBranch 2>&1 >> "$genLog"
 	if [ "$?" -ne "0" ]; then
-		echo "*** ERROR Could not create branch \"$prepBranch\""
+		echo "*** ERROR Could not create branch \"$prepBranch\"" 2>&1 | tee -a "$genLog"
 		exit_now "20"
 	fi
 	echo "[OK]" 2>&1 | tee -a "$genLog"
@@ -505,8 +510,8 @@ function git_merge_component_branch() {
 		echo "git checkout $tmpBranchName" 2>&1 | tee -a "$genLog"
 		git checkout $tmpBranchName 2>&1 >> "$genLog"
 		if [ "$?" -ne "0" ]; then
-			echo "*** ERROR: could not check out branch \"$tmpBranchName\""
-			check_exit_status "22"
+			echo "*** ERROR: could not check out branch \"$tmpBranchName\"" 2>&1 | tee -a "$genLog"
+			check_exit_status "21"
 		fi
 
 		# pull in case branch was already on local
@@ -520,8 +525,8 @@ function git_merge_component_branch() {
 		echo "git checkout $prepBranch" 2>&1 | tee -a "$genLog"
 		git checkout $prepBranch 2>&1 >> "$genLog"
 		if [ "$?" -ne "0" ]; then
-			echo "*** ERROR: could not check out branch \"$tmpBranchName\""
-			check_exit_status "22"
+			echo "*** ERROR: could not check out branch \"$prepBranch\"" 2>&1 | tee -a "$genLog"
+			check_exit_status "21"
 		fi
 
 		# finally do the merge
