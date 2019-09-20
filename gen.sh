@@ -631,6 +631,7 @@ function prepare_origin_project() {
 	if [ ${#components[@]} -eq 0 ]; then
 		echo "+>> No components selected, proceeding with baseline Origin project" 2>&1 | tee -a "$genLog"
 	else
+		echo "+>> Merging components \"${components[*]}\" into branch \"$prepBranch\"." 2>&1 | tee -a "$genLog"
 		for component in $components
 		do
 			git_merge_component_branch "$component"
