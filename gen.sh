@@ -215,7 +215,7 @@ function get_args() {
 					exit_now 2
 				fi
 				;;
-			\?)
+		 \?)
 				exit_now 5
 				;;
 		esac
