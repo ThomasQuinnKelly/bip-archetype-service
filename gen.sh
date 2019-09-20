@@ -290,10 +290,12 @@ function read_properties() {
 				if [[ "$theKey" == "servicePort" ]]; then servicePort=$theVal; fi
 				if [[ "$theKey" == "projectNameSpacePrefix" ]]; then projectNameSpacePrefix=$theVal; fi
 				if [[ "$theKey" == "components" ]]; then
-					tempIFS=$IFS
-					IFS=', '
-					read -r -a components <<< "$theVal";
-					IFS=$tempIFS
+					if ! [[ "$theVal" == "" || "$theKey" == "$theVal" ]]; then
+						tempIFS=$IFS
+						IFS=','
+						read -r -a components <<< "$theVal";
+						IFS=$tempIFS
+					fi
 				fi
 
 			fi
@@ -628,7 +630,7 @@ function prepare_origin_project() {
 	# create the prep branch, put branch name in $prepBranch
 	git_create_prep_branch "originPrep-$artifactName"
 	# git current branch is now the prep branch
-	#	if [ "$components" == "" ]; then
+
 	if [ ${#components[@]} -eq 0 ]; then
 		echo "+>> No components selected, proceeding with baseline Origin project" 2>&1 | tee -a "$genLog"
 	else
