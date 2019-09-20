@@ -57,6 +57,10 @@ function exit_now() {
 	#  5 = invalid command line argument
 	#  6 = property not allocated a value
 	# 10 = project directory already exists
+	# 11 = One or more properties not set
+	# 12 = prep branch could not be deleted
+	# 13 = master branch checkout failed
+	# other exit code = some unexpected error
 
 	exit_code=$1
 	if [ -z $exit_code ]; then
@@ -211,7 +215,7 @@ function get_args() {
 					exit_now 2
 				fi
 				;;
-			\?)
+		 \?)
 				exit_now 5
 				;;
 		esac
@@ -219,7 +223,6 @@ function get_args() {
 	done
 	# shift $((OPTIND -1))
 }
-
 
 ################################################################################
 ########################                                ########################
