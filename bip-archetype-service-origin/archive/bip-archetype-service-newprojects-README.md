@@ -37,7 +37,7 @@ For examples and documentation about how projects are structured, configured, an
 
 The projects in this repository are dependent on the libraries from [BIP framework](https://github.com/department-of-veterans-affairs/bip-framework) and [BIP framework test library](https://github.com/department-of-veterans-affairs/bip-framework/tree/master/bip-framework-test-lib) for  auto configuration, common shared libraries, parent pom maven configuration and test libary.
 
-1. `bip-framework-parentpom` is the parent of your application's parent POM
+1. `bip-framework-parentpom` is the parent of your application's parent (e.g. reactor) POM
 
 2. The POM hierarchy for the application modules must resolve to the parent POM
 
