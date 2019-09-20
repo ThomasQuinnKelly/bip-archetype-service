@@ -57,6 +57,10 @@ function exit_now() {
 	#  5 = invalid command line argument
 	#  6 = property not allocated a value
 	# 10 = project directory already exists
+	# 11 = One or more properties not set
+	# 12 = prep branch could not be deleted
+	# 13 = master branch checkout failed
+	# other exit code = some unexpected error
 
 	exit_code=$1
 	if [ -z $exit_code ]; then
@@ -220,7 +224,6 @@ function get_args() {
 	# shift $((OPTIND -1))
 }
 
-
 ################################################################################
 ########################                                ########################
 ########################   BUSINESS UTILITY FUNCTIONS   ########################
@@ -287,10 +290,12 @@ function read_properties() {
 				if [[ "$theKey" == "servicePort" ]]; then servicePort=$theVal; fi
 				if [[ "$theKey" == "projectNameSpacePrefix" ]]; then projectNameSpacePrefix=$theVal; fi
 				if [[ "$theKey" == "components" ]]; then
-					tempIFS=$IFS
-					IFS=', '
-					read -r -a components <<< "$theVal";
-					IFS=$tempIFS
+					if ! [[ "$theVal" == "" || "$theKey" == "$theVal" ]]; then
+						tempIFS=$IFS
+						IFS=','
+						read -r -a components <<< "$theVal";
+						IFS=$tempIFS
+					fi
 				fi
 
 			fi
@@ -585,8 +590,8 @@ function build_origin() {
 		echo "+>> Not building $originDirName" 2>&1 | tee -a "$genLog"
 	else
 		echo "+>> Building the $originDirName project" 2>&1 | tee -a "$genLog"
-		echo "mvn clean install $doDockerBuild -e -X" 2>&1 | tee -a "$genLog"
-		mvn clean install $doDockerBuild -e -X  2>&1 >> "$genLog"
+		echo "mvn clean install $doDockerBuild" 2>&1 | tee -a "$genLog"
+		mvn clean install $doDockerBuild  2>&1 >> "$genLog"
 		check_exit_status "$?"
 	fi
 }
@@ -625,11 +630,12 @@ function prepare_origin_project() {
 	# create the prep branch, put branch name in $prepBranch
 	git_create_prep_branch "originPrep-$artifactName"
 	# git current branch is now the prep branch
-	#	if [ "$components" == "" ]; then
+
 	if [ ${#components[@]} -eq 0 ]; then
 		echo "+>> No components selected, proceeding with baseline Origin project" 2>&1 | tee -a "$genLog"
 	else
-		for component in $components
+		echo "+>> Merging components \"${components[*]}\" into branch \"$prepBranch\"." 2>&1 | tee -a "$genLog"
+		for component in "${components[@]}"
 		do
 			git_merge_component_branch "$component"
 		done
@@ -801,8 +807,8 @@ function build_new_project() {
 	cd_to "$cwd/$artifactId"
 
 	echo "+>> Building the $artifactId project" 2>&1 | tee -a "$genLog"
-	echo "mvn clean package $doDockerBuild -e -X" 2>&1 | tee -a "$genLog"
-	mvn clean package $doDockerBuild -e -X  2>&1 >> "$genLog"
+	echo "mvn clean package $doDockerBuild" 2>&1 | tee -a "$genLog"
+	mvn clean package $doDockerBuild  2>&1 >> "$genLog"
 	check_exit_status "$?"
 }
 
