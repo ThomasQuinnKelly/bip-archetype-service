@@ -238,6 +238,8 @@ spring.sleuth.web.skipPattern: (/api/.*/webjars.*|/api/.*/v2/api-docs.*|/api/.*/
 # comma separated list of matchers
 spring.sleuth.rxjava.schedulers.ignoredthreads: HystixMetricPoller,^RxComputation.*$,^RxIoScheduler.*$
 
+## >>> must leave empty line for archetype merges <<<
+
 #########################################################################
 #########################################################################
 ####
@@ -495,5 +497,3 @@ spring.datasource:
 spring.liquibase:
   enabled: false
   test-rollback-on-update: true
-
-## >>> must leave empty line for archetype merges <<<
