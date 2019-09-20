@@ -26,10 +26,11 @@ import gov.va.bip.framework.messages.MessageSeverity;
 import gov.va.bip.framework.validation.Defense;
 import gov.va.bip.origin.OriginService;
 import gov.va.bip.origin.client.ws.PartnerHelper;
+import gov.va.bip.origin.data.SampleDataHelper;
+import gov.va.bip.origin.data.sampledatasource2.entities.SampleData2;
 import gov.va.bip.origin.messages.OriginMessageKeys;
 import gov.va.bip.origin.model.SampleDomainRequest;
 import gov.va.bip.origin.model.SampleDomainResponse;
-import gov.va.bip.origin.model.SampleInfoDomain;
 import gov.va.bip.origin.utils.CacheConstants;
 import gov.va.bip.origin.utils.HystrixCommandConstants;
 
@@ -57,6 +58,11 @@ public class OriginServiceImpl implements OriginService {
 	private PartnerHelper partnerHelper;
 
 	/** The cache manager (redis implementation) */
+	/** The origin web service database operations helper. */
+	@Autowired
+	private SampleDataHelper sampleDataHelper;
+
+	/** The cache manager */
 	@Autowired
 	private CacheManager cacheManager;
 
@@ -68,6 +74,8 @@ public class OriginServiceImpl implements OriginService {
 		// Check for WS Client reference. Note that cacheManager is allowed to be null.
 		Defense.notNull(partnerHelper,
 				"Unable to proceed with partner service request. The partnerHelper must not be null.");
+		// Check for WS Client ref. Note that cacheManager is allowed to be null.
+		Defense.notNull(sampleDataHelper, "Unable to proceed with database request. The sampleDataHelper must not be null.");
 	}
 
 	/**
@@ -82,8 +90,8 @@ public class OriginServiceImpl implements OriginService {
 	 */
 	@Override
 	@CachePut(value = CacheConstants.CACHENAME_ORIGIN_SERVICE,
-			key = "#root.methodName + T(gov.va.bip.framework.cache.BipCacheUtil).createKey(#sampleDomainRequest.participantID)",
-			unless = "T(gov.va.bip.framework.cache.BipCacheUtil).checkResultConditions(#result)")
+	key = "#root.methodName + T(gov.va.bip.framework.cache.BipCacheUtil).createKey(#sampleDomainRequest.participantID)",
+	unless = "T(gov.va.bip.framework.cache.BipCacheUtil).checkResultConditions(#result)")
 	/* If a fallback position is possible, add attribute to @HystrixCommand: fallback="fallbackMethodName" */
 	@HystrixCommand(commandKey = "SampleFindByParticipantIDCommand",
 			ignoreExceptions = { IllegalArgumentException.class, BipException.class, BipRuntimeException.class })
@@ -122,6 +130,18 @@ public class OriginServiceImpl implements OriginService {
 			return domainResponse;
 		}
 
+		// try from database helper
+		SampleData2 data = null;
+		data = sampleDataHelper.getSampleDataForPid(sampleDomainRequest.getParticipantID());
+		if (data == null) {
+			response.addMessage(MessageSeverity.INFO, HttpStatus.OK,
+					OriginMessageKeys.BIP_SAMPLE_SERVICE_DATABASE_CALL_RETURNED_NULL, "");
+		} else {
+			response.addMessage(MessageSeverity.INFO, HttpStatus.OK,
+					OriginMessageKeys.BIP_SAMPLE_SERVICE_DATABASE_CALL_PERFORMED, "");
+		}
+
+		// return results of database call
 		return response;
 	}
 
