@@ -621,8 +621,8 @@ function prepare_origin_project() {
 	# create the prep branch, put branch name in $prepBranch
 	git_create_prep_branch "originPrep-$artifactName"
 	# git current branch is now the prep branch
-#	if [ "$components" == "" ]; then
-	if [ ${#errors[@]} -eq 0 ]; then
+	#	if [ "$components" == "" ]; then
+	if [ ${#components[@]} -eq 0 ]; then
 		echo "+>> No components selected, proceeding with baseline Origin project" 2>&1 | tee -a "$genLog"
 	else
 		for component in $components
