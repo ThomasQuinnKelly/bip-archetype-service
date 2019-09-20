@@ -540,7 +540,7 @@ function git_merge_component_branch() {
 		if [ "$?" -eq "0" ]; then
 			echo "[OK]" 2>&1 | tee -a "$genLog"
 		else
-			echo "*** ERROR Merge from db branch not successful, contact framework team." 2>&1 | tee -a "$genLog"
+			echo "*** ERROR Merge from branch \"$tmpBranchName\" not successful, contact framework team." 2>&1 | tee -a "$genLog"
 			echo "+>> Resetting changes - checking out master and deleting $prepBranch" 2>&1 | tee -a "$genLog"
 
 			echo "git reset --hard" 2>&1 | tee -a "$genLog"
