@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
+<project
+	xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
 >
@@ -174,7 +175,7 @@
 			<plugin>
 				<!--
 					Meta-information about the web application.
-
+					
 					The templating maven plugin handles generating and copying files from
 					a source to a given output directory, while filtering them.
 					This plugin is useful to filter Java Source Code as there is a need
@@ -184,7 +185,7 @@
 					This mojo helps adding a filtered source folder in one go. This is
 					useful as we want to use properties coming from the POM inside
 					parts of our source code that requires real constants
-
+					
 					See ApplicationInfo.java in src/java-template directory
 				-->
 				<groupId>org.codehaus.mojo</groupId>
