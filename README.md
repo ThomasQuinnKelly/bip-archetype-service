@@ -1,3 +1,5 @@
+Note : Please read all the instructions for maintaining and updating this project outlined at the end of this document before making any changes to the project or any of its branches starting with 'master-'.  
+
 # BIP Service Archetype Project
 
 This project **_is not_** a "maven archetype" because the `archetype:create-from-project` and `archetype:generate` mojos were not built for the task undertaken here, and they introduce a great deal of unnecessary complexity with unresolvable circular processes.
@@ -120,3 +122,11 @@ Notes:
 # Getting Started With Your New Service Application
 
 The [reference application](https://github.ec.va.gov/EPMO/bip-reference-person) is a real functioning app  with concrete implementations of recommended code patterns. It provides examples for the fundamental capabilities that must exist in any BIP service application. Use this application as a guide for patterns and potential solutions.
+
+# Instructions for the maintaining and updating the project
+
+1. Branches starting with 'master-' should not be deleted.
+2. The branches starting with 'master-' represent a specific component or piece of the project that can be optionally added or omitted. For example, master-db is a branch that contains the necessary code and other file changes to carry out db operations.
+3. When any change is made to the master branch, the master branch needs to be merged with with all the branches starting with 'master-' and any resulting merge conflicts need to be resolved.  
+4. When a new capability in the form of a component is added to this project, a branch called master-<name-of-new-component> will be created from the master branch.Then the changes related to adding the capability supplied by that component are added in this branch, without removing or modifying any lines inherited from master.
+6. The new component name needs to be documented in the gen.properties file, before the 'components' property value, similar to how other components such as db and partner are documented.
