@@ -23,10 +23,9 @@ import gov.va.bip.framework.log.BipLogger;
 import gov.va.bip.framework.log.BipLoggerFactory;
 import gov.va.bip.framework.messages.MessageKeys;
 import gov.va.bip.framework.messages.MessageSeverity;
+import gov.va.bip.framework.validation.Defense;
 import gov.va.bip.origin.OriginService;
 import gov.va.bip.origin.client.ws.PartnerHelper;
-import gov.va.bip.origin.data.SampleDataHelper;
-import gov.va.bip.origin.data.sampledatasource2.entities.SampleData2;
 import gov.va.bip.origin.messages.OriginMessageKeys;
 import gov.va.bip.origin.model.SampleDomainRequest;
 import gov.va.bip.origin.model.SampleDomainResponse;
@@ -58,11 +57,6 @@ public class OriginServiceImpl implements OriginService {
 	private PartnerHelper partnerHelper;
 
 	/** The cache manager (redis implementation) */
-	/** The origin web service database operations helper. */
-	@Autowired
-	private SampleDataHelper sampleDataHelper;
-
-	/** The cache manager */
 	@Autowired
 	private CacheManager cacheManager;
 
@@ -74,8 +68,6 @@ public class OriginServiceImpl implements OriginService {
 		// Check for WS Client reference. Note that cacheManager is allowed to be null.
 		Defense.notNull(partnerHelper,
 				"Unable to proceed with partner service request. The partnerHelper must not be null.");
-		// Check for WS Client ref. Note that cacheManager is allowed to be null.
-		Defense.notNull(sampleDataHelper, "Unable to proceed with database request. The sampleDataHelper must not be null.");
 	}
 
 	/**
@@ -130,13 +122,6 @@ public class OriginServiceImpl implements OriginService {
 			return domainResponse;
 		}
 
-		// send hard coded data ... normally would get from db or partner
-		SampleInfoDomain sampleInfoDomain = new SampleInfoDomain();
-		sampleInfoDomain.setName("JANE DOE");
-		sampleInfoDomain.setParticipantId(sampleDomainRequest.getParticipantID());
-		response.setSampleInfo(sampleInfoDomain);
-		response.addMessage(MessageSeverity.INFO, HttpStatus.OK, OriginMessageKeys.BIP_SAMPLE_SERVICE_IMPL_RESPONDED_WITH_MOCK_DATA,
-				"");
 		return response;
 	}
 
