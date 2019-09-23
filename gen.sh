@@ -537,7 +537,7 @@ function git_merge_component_branch() {
 
 		# finally do the merge
 		echo "git merge $tmpBranchName" 2>&1 | tee -a "$genLog"
-		git merge $tmpBranchName --no-commit --no-ff 2>&1 >> "$genLog"
+		git merge $tmpBranchName 2>&1 >> "$genLog"
 		### ignore return code ... usually will have conflicts, which we will fix because we want ALL the code
 		# if [ "$?" -eq "0" ]; then
 		# 	echo "[OK]" 2>&1 | tee -a "$genLog"
