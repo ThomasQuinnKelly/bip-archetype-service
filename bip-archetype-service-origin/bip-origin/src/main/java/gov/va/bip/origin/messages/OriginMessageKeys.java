@@ -36,20 +36,20 @@ public enum OriginMessageKeys implements MessageKey {
 	/** Pid value could not be found; no args */
 	BIP_SAMPLE_DATA_REQUEST_PID_NOT_FOUND("bip.origin.pid.not.found",
 			"Pid value could not be found."),
-	BIP_SAMPLE_SERVICE_IMPL_RESPONDED_WITH_MOCK_DATA("bip.origin.sample.service.impl.responded.with.mock.data",
-			"Response sent from service impl with mock data."),
 	BIP_SAMPLE_SERVICE_DATABASE_CALL_PERFORMED("bip.origin.sample.service.impl.database.call.performed", "Call to database was made."),
 	BIP_SAMPLE_SERVICE_DATABASE_CALL_RETURNED_NULL("bip.origin.sample.service.impl.database.call.returned.null",
-			"Call to database returned null.");
+			"Call to database returned null."),
+	BIP_SAMPLE_SERVICE_IMPL_RESPONDED_WITH_MOCK_DATA("bip.origin.sample.service.impl.responded.with.mock.data",
+			"Response sent from service impl with mock data.");
 
 	/** The filename "name" part of the properties file to get from the classpath */
-	private static final String PROPERTIES_FILE = "messages";
+	private static final String propertiesFile = "messages";
 	/** The message source containing properties for this enum */
 	private static ReloadableResourceBundleMessageSource messageSource;
 	/* Populate the message source from the properties file */
 	static {
 		messageSource = new ReloadableResourceBundleMessageSource();
-		messageSource.setBasename("classpath:" + PROPERTIES_FILE);
+		messageSource.setBasename("classpath:" + propertiesFile);
 		messageSource.setDefaultEncoding("UTF-8");
 	}
 
