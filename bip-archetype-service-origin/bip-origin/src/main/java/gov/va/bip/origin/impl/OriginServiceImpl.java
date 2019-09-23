@@ -109,7 +109,7 @@ public class OriginServiceImpl implements OriginService {
 		// try from partner
 		try {
 			// for this sample code, partnerHelper returns hard coded data
-			response = partnerHelper.sampleFindByPid(sampleDomainRequest);
+			partnerHelper.sampleFindByPid(sampleDomainRequest);
 			response.addMessage(MessageSeverity.INFO, HttpStatus.OK, OriginMessageKeys.BIP_SAMPLE_SERVICE_IMPL_RESPONDED_WITH_PARTNER_MOCK_DATA,
 					"");
 		} catch (BipException | BipRuntimeException bipException) {
