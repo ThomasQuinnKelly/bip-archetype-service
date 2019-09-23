@@ -7,7 +7,9 @@ This project **_is_** an archetypal process from which an "origin" (or "source")
 This repository is comprised of:
 
 - An origin (or source) project from which new BIP Service projects can be created.
-- A script that can be used to create the new BIP Service project.
+- A script and properties that can be used to create the new BIP Service project. Optionally include configuration and skeleton code for
+ 	- relational databases, including preconfigured dtasources for multiple databases
+	- client calls to SOAP partner JARs
 
 The newly created artifact will contain a skeleton project with some rudimentary sample data objects demonstrating a simple use case.
 
@@ -51,9 +53,10 @@ For the most current version of BIP Framework configured in the project, reviewe
 > 1. Access to BIP Nexus Repository at the URL specified in [`bip-archetype-service-origin/pom.xml`](bip-archetype-service-origin/pom.xml)
 > 2. Local artifact in `~/.m2/repository` by cloning [`bip-framework`](https://github.ec.va.gov/EPMO/bip-framework), and building with `mvn clean install -U`
 
-The `gen.sh` script is central to generating a new project skeleton.
+The `gen.sh` script and `gen.properties` file are central to generating a new project skeleton. Review the comments in the `gen.properties` file for information about how the results of script execution can be altered, and how to add (or not) the optional components.
 
 Help for the script can be displayed by executing `./gen.sh -h`
+
 <details><summary>Script Help Output</summary>
 
 ```asciidoc
@@ -93,6 +96,7 @@ Notes:
        search: "+>> " (script); "sed: " (sed); "FAIL" (mvn & cmd)
 ------------------------------------------------------------------------
 ```
+
 </details>
 
 ### Steps to generate a new skeleton project
