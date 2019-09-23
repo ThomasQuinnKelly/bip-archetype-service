@@ -50,6 +50,7 @@ public class OriginServiceImpl implements OriginService {
 	/** Bean name constant */
 	public static final String BEAN_NAME = "originServiceImpl";
 
+	/** The cache manager (redis implementation) */
 	@Autowired
 	private CacheManager cacheManager;
 
