@@ -538,47 +538,19 @@ function git_merge_component_branch() {
 		# finally do the merge
 		echo "git merge $tmpBranchName" 2>&1 | tee -a "$genLog"
 		git merge $tmpBranchName 2>&1 >> "$genLog"
-		### ignore return code ... usually will have conflicts, which we will fix because we want ALL the code
-		# if [ "$?" -eq "0" ]; then
-		# 	echo "[OK]" 2>&1 | tee -a "$genLog"
-		# else
-		# 	echo "*** ERROR Merge from branch \"$tmpBranchName\" not successful, contact framework team." 2>&1 | tee -a "$genLog"
-		# 	echo "+>> Resetting changes - checking out master and deleting $prepBranch" 2>&1 | tee -a "$genLog"
-		#
-		# 	echo "git reset --hard" 2>&1 | tee -a "$genLog"
-		# 	git reset --hard 2>&1 >> "$genLog"
-		# 	check_exit_status "$?"
-		#
-		# 	git_checkout_branch $gitBranchBaseline
-		#
-		# 	exit_now 1
-		# fi
-
-		echo "git diff --name-only --diff-filter=U" 2>&1 | tee -a "$genLog"
-		conflictFiles=()
-		conflictFiles=$(git diff --name-only --diff-filter=U)
-		if [ ${#conflictFiles[@]} -eq 0 ]; then
+		if [ "$?" -eq "0" ]; then
 			echo "+>> No file conflicts found." 2>&1 | tee -a "$genLog"
 		else
-			echo "+>> Fixing merge conflicts in files: ${conflictFiles[*]}." 2>&1 | tee -a "$genLog"
-			for conflictFile in "${conflictFiles[@]}"
-			do
-				# merge marker for head
-				oldVal="<<<<<<< HEAD\n"
-				newVal=""
-				echo "LC_ALL=C sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' \"$conflictFile\"" 2>&1 | tee -a "$genLog"
-				LC_ALL=C sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' "$conflictFile" 2>&1 >> "$genLog"
-				# merge marker for merged branch
-				oldVal=">>>>>>> $tmpBranchName\n"
-				newVal=""
-				echo "LC_ALL=C sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' \"$conflictFile\"" 2>&1 | tee -a "$genLog"
-				LC_ALL=C sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' "$conflictFile" 2>&1 >> "$genLog"
-				# merge marker between diffs
-				oldVal="=======\n"
-				newVal=""
-				echo "LC_ALL=C sed -i \"\" -e 's/'\"$oldVal\"'/'\"$newVal\"'/g' \"$conflictFile\"" 2>&1 | tee -a "$genLog"
-				LC_ALL=C sed -i "" -e 's/'"$oldVal"'/'"$newVal"'/g' "$conflictFile" 2>&1 >> "$genLog"
-			done
+			echo "*** ERROR Merge from $tmpBranchName branch not successful, contact framework team." 2>&1 | tee -a "$genLog"
+			echo "+>> Resetting changes - checking out master and deleting $prepBranch" 2>&1 | tee -a "$genLog"
+			
+			echo "git reset --hard" 2>&1 | tee -a "$genLog"
+			git reset --hard 2>&1 >> "$genLog"
+			check_exit_status "$?"
+			
+			git_checkout_branch $gitBranchBaseline
+
+			exit_now 1
 		fi
 	fi
 }
