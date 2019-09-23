@@ -106,11 +106,11 @@ logging:
 #    org.apache.http: DEBUG
     org.apache.http.impl.client: WARN
 #    org.springframework: DEBUG
-    org.springframework.cache: WARN 
+    org.springframework.cache: WARN
     org.springframework.client.discovery: WARN
     org.springframework.cloud.consul: WARN
     org.springframework.cloud.openfeign: WARN
-    org.springframework.cloud.sleuth: WARN 
+    org.springframework.cloud.sleuth: WARN
     org.springframework.core.convert: WARN
     org.springframework.format: WARN
     org.springframework.retry: WARN
