@@ -58,6 +58,7 @@ public class OriginServiceImpl implements OriginService {
 	private SampleDataHelper sampleDataHelper;
 
 	/** The cache manager */
+	/** The cache manager (redis implementation) */
 	@Autowired
 	private CacheManager cacheManager;
 
