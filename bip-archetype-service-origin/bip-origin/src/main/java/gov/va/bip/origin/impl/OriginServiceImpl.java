@@ -30,6 +30,7 @@ import gov.va.bip.origin.data.sampledatasource2.entities.SampleData2;
 import gov.va.bip.origin.messages.OriginMessageKeys;
 import gov.va.bip.origin.model.SampleDomainRequest;
 import gov.va.bip.origin.model.SampleDomainResponse;
+import gov.va.bip.origin.model.SampleInfoDomain;
 import gov.va.bip.origin.utils.CacheConstants;
 import gov.va.bip.origin.utils.HystrixCommandConstants;
 
@@ -85,7 +86,7 @@ public class OriginServiceImpl implements OriginService {
 	unless = "T(gov.va.bip.framework.cache.BipCacheUtil).checkResultConditions(#result)")
 	/* If a fallback position is possible, add attribute to @HystrixCommand: fallback="fallbackMethodName" */
 	@HystrixCommand(commandKey = "SampleFindByParticipantIDCommand",
-			ignoreExceptions = { IllegalArgumentException.class, BipException.class, BipRuntimeException.class })
+	ignoreExceptions = { IllegalArgumentException.class, BipException.class, BipRuntimeException.class })
 	public SampleDomainResponse sampleFindByParticipantID(final SampleDomainRequest sampleDomainRequest) {
 
 		String cacheKey = "sampleFindByParticipantID" + BipCacheUtil.createKey(sampleDomainRequest.getParticipantID());
@@ -109,13 +110,24 @@ public class OriginServiceImpl implements OriginService {
 		// try from database helper
 		SampleData2 data = null;
 		data = sampleDataHelper.getSampleDataForPid(sampleDomainRequest.getParticipantID());
+		if (response == null) {
+			response = new SampleDomainResponse();
+		}
+
+		String name = "JANE DOE"; // default value if no data is present
 		if (data == null) {
 			response.addMessage(MessageSeverity.INFO, HttpStatus.OK,
 					OriginMessageKeys.BIP_SAMPLE_SERVICE_DATABASE_CALL_RETURNED_NULL, "");
 		} else {
+			name = data.getSampleDatafield();
 			response.addMessage(MessageSeverity.INFO, HttpStatus.OK,
 					OriginMessageKeys.BIP_SAMPLE_SERVICE_DATABASE_CALL_PERFORMED, "");
 		}
+
+		SampleInfoDomain sampleInfoDomain = new SampleInfoDomain();
+		sampleInfoDomain.setName(name);
+		sampleInfoDomain.setParticipantId(sampleDomainRequest.getParticipantID());
+		response.setSampleInfo(sampleInfoDomain);
 
 		// return results of database call
 		return response;
