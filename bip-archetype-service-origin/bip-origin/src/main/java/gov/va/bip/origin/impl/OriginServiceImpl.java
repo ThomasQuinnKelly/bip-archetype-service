@@ -92,7 +92,7 @@ public class OriginServiceImpl implements OriginService {
 		String cacheKey = "sampleFindByParticipantID" + BipCacheUtil.createKey(sampleDomainRequest.getParticipantID());
 
 		// try from cache
-		SampleDomainResponse response = null;
+		SampleDomainResponse response = new SampleDomainResponse();
 		try {
 			Cache cache = null;
 			if ((cacheManager != null) && ((cache = cacheManager.getCache(CacheConstants.CACHENAME_ORIGIN_SERVICE)) != null)
