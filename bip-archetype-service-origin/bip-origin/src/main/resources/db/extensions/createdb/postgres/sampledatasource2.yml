@@ -1,0 +1,10 @@
+## NOT CURRENTLY USED
+databaseChangeLog:
+  - changeset:
+      id: createdb-sampledata2-postgres
+      author: biporigin
+#      runOnChange: false
+      runInTransaction: false
+      changes:
+        - sql:
+            sql: SELECT 'CREATE SCHEMA sampledata2' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'sampledata2')\gexec

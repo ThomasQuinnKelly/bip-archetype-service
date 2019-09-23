@@ -20,6 +20,7 @@
 		<module>bip-origin</module>
 		<module>bip-origin-inttest</module>
 		<module>bip-origin-perftest</module>
+		<module>bip-origin-db</module>
 	</modules>
 
 	<repositories>
@@ -38,6 +39,44 @@
 		<fortify-merge-input-filepath>${project.basedir}/${project.artifactId}.fpr</fortify-merge-input-filepath>
 		<fortify-merge-output-filepath>${project.basedir}/${project.artifactId}.fpr</fortify-merge-output-filepath>
 	</properties>
+	
+	<dependencies>
+		<dependency>
+			<groupId>org.liquibase</groupId>
+			<artifactId>liquibase-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.liquibase.ext</groupId>
+			<artifactId>liquibase-hibernate5</artifactId>
+		</dependency>
+		<!-- postgresql: currently backward compatible to PostgreSQL 8.2 -->
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+		</dependency>
+ 		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+		</dependency>
+		<!-- TODO Oracle 11.1.x is on TRM Unapproved list -->
+		<!-- TODO Oracle 11.2.x is on TRM Divest schedule -->
+		<!--
+ 		<dependency>
+			<groupId>com.oracle</groupId>
+			<artifactId>ojdbc6</artifactId>
+		</dependency>
+		-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.liquibase</groupId>
+					<artifactId>liquibase-core</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+	</dependencies>
 	
 	<profiles>
 		<!--

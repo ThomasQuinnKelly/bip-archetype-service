@@ -1,0 +1,52 @@
+databaseChangeLog:
+- changeSet:
+    id: sampledata1-dbinit-create
+    author: biporigin
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              primaryKey: true
+              primaryKeyName: sampledata1_pkey
+            name: id
+            type: INTEGER
+        - column:
+            constraints:
+              nullable: false
+            name: pid
+            type: INTEGER
+        - column:
+            name: sample_data_field
+            type: VARCHAR(128)
+        tableName: sampledata1
+
+- changeSet:
+    id: sampledata1-dbinit-insert
+    author: biporigin
+    changes:
+    - insert:
+        columns:
+        - column:
+            name: id
+            value: 1
+        - column:
+            name: pid
+            value: 6666345
+        - column:
+            name: sample_data_field
+            value: test1
+        tableName: sampledata1
+    - insert:
+        columns:
+        - column:
+            name: id
+            value: 2
+        - column:
+            name: pid
+            value: 6666346
+        - column:
+            name: sample_data_field
+            value: test2
+        tableName: sampledata1
+        
