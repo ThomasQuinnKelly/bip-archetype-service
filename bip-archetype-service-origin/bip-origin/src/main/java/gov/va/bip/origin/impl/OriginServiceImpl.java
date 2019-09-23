@@ -110,9 +110,6 @@ public class OriginServiceImpl implements OriginService {
 		// try from database helper
 		SampleData2 data = null;
 		data = sampleDataHelper.getSampleDataForPid(sampleDomainRequest.getParticipantID());
-		if (response == null) {
-			response = new SampleDomainResponse();
-		}
 
 		String name = "JANE DOE"; // default value if no data is present
 		if (data == null) {
