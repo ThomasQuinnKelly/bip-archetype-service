@@ -24,9 +24,9 @@ genLog="$cwd/$thisFileName.log"
 # git variables
 cgb=$(git rev-parse --abbrev-ref HEAD)
 gitRemote=""
-gitBranchBaseline="master"
-gitBranchDb="master-db"
-bitBranchPartner="master-partner"
+gitBranchBaseline="testmaster"
+gitBranchDb="testmaster-db"
+bitBranchPartner="testmaster-partner"
 
 ###   properties   ###
 # required in properties file
@@ -508,7 +508,7 @@ function git_merge_component_branch() {
 	if [ "$1" == "" ]; then
 		echo "+>> No component, nothing to merge" 2>&1 | tee -a "$genLog"
 	else
-		tmpBranchName="master-$1"
+		tmpBranchName="testmaster-$1"
 
 		echo "+>> Attempting to check out component branch with \"$tmpBranchName\"" 2>&1 | tee -a "$genLog"
 
