@@ -12,7 +12,7 @@ import gov.va.bip.framework.messages.MessageKey;
  * @author aburkholder
  */
 public enum OriginMessageKeys implements MessageKey {
-
+	
 	/** Database related enums starts here */
 	BIP_SAMPLE_DATA_REQUEST_PID_MIN("Min.sampleDataRequest.participantID", "SampleDataRequest.participantID cannot be zero"),
 	BIP_SAMPLE_DATA_NOTNULL("NotNull.sampleData1", "SampleData1 Payload cannot be null"),
@@ -22,7 +22,7 @@ public enum OriginMessageKeys implements MessageKey {
 	BIP_SAMPLE_SERVICE_DATABASE_CALL_RETURNED_NULL("bip.origin.sample.service.impl.database.call.returned.null",
 			"Call to database returned null."),
 	/** Database related enums ends here */
-	
+
 	/** Minimum allowed value validation for PID; no args */
 	BIP_SAMPLE_REQUEST_PID_MIN("Min.sampleRequest.participantID",
 			"SampleRequest.participantID cannot be zero"),
