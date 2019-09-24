@@ -39,13 +39,13 @@ In general, the steps the script takes:
 
 ## When and how do I run the script?
 
-The script has been tested on macOS. For Windows users, please use [Git Bash](https://gitforwindows.org/) to execute the script. If you encounter any problems, please open a "SwA Script" issue on EPMO GitHub [bip-archetype-service](https://github.ec.va.gov/EPMO/bip-archetype-service) project.
+The script has been tested on macOS. For Windows users, please use [Git Bash](https://gitforwindows.org/) to execute the script. If you encounter any problems, please open a "SwA Script" issue on EPMO GitHub [bip-archetype-service](https://github.com/department-of-veterans-affairs/bip-archetype-service) project.
 
 #### Prerequisites
 
 SwA submissions are done only on release candidates. A release version will have a git TAG version that does not have "-SNAPSHOT" on the end of it.
 
-* The user workstation should be set up for BIP projects as documented in EPMO GitHub at the BIP [Quick Start Guide](https://github.ec.va.gov/EPMO/bip-reference-person/blob/master/docs/quick-start-guide.md). This includes:
+* The user workstation should be set up for BIP projects as documented in EPMO GitHub at the BIP [Quick Start Guide](https://github.com/department-of-veterans-affairs/bip-reference-person/blob/master/docs/quick-start-guide.md). This includes:
  	* Local installation of [Fortify apps and Fortify maven plugins](https://wiki.mobilehealth.va.gov/display/OISSWA/How+to+download+the+VA-Licensed+Fortify+software).
 	* The project must produce the `[project-name]-reactor.fpr` when built with the `-P fortify-sca` profile
 * Know the name of the release tag that is to be submitted. To see available tags, run `git pull` then `git tag` in the project directory.
