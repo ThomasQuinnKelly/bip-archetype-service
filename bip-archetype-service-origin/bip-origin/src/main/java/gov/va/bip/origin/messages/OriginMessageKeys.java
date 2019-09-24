@@ -38,8 +38,6 @@ public enum OriginMessageKeys implements MessageKey {
 	BIP_SAMPLE_SERVICE_DATABASE_CALL_PERFORMED("bip.origin.sample.service.impl.database.call.performed", "Call to database was made."),
 	BIP_SAMPLE_SERVICE_DATABASE_CALL_RETURNED_NULL("bip.origin.sample.service.impl.database.call.returned.null",
 			"Call to database returned null."),
-	BIP_SAMPLE_SERVICE_IMPL_RESPONDED_WITH_PARTNER_MOCK_DATA("bip.origin.sample.service.impl.responded.with.partner.mock.data",
-			"Response sent from service impl with partner mock data."),
 	BIP_SAMPLE_SERVICE_IMPL_RESPONDED_WITH_MOCK_DATA("bip.origin.sample.service.impl.responded.with.mock.data",
 			"Response sent from service impl with mock data.");
 
