@@ -18,6 +18,8 @@ public enum OriginMessageKeys implements MessageKey {
 			"Response sent from service impl with partner mock data."),
 	/** Partner related enums ends here */
 
+	
+	
 	/** Minimum allowed value validation for PID; no args */
 	BIP_SAMPLE_REQUEST_PID_MIN("Min.sampleRequest.participantID",
 			"SampleRequest.participantID cannot be zero"),
