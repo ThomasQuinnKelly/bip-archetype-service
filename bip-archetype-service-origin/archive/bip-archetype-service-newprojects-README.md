@@ -14,24 +14,24 @@ BIP Framework has been updated to use the OpenAPI v3 "design first" approach to 
 	- a local-dev folder with docker images to run in the spring "local-int" (docker) mode, and with tools to simplify SwA code review submissions.
 	- a `template.yaml` file which is the Openshift deployment template used during the CI/CD pipeline for deployment.
 	- a `testing.yaml` file which is used to configure the Helm Chart used by the CI/CD pipeline for the Kubernetes deployments.
-	- a `Jenkinsfile` file which configures the CI/CD pipeline for the project. For more information on the CI/CD pipeline see the [Java Gitflow Pipeline](https://github.ec.va.gov/EPMO/bip-jenkins-lib/tree/master/docs/spring-boot-pipelines) and [Pipeline Configuration](https://github.ec.va.gov/EPMO/bip-jenkins-lib/blob/master/docs/spring-boot-pipelines/pipeline-config.md) documents.
+	- a `Jenkinsfile` file which configures the CI/CD pipeline for the project. For more information on the CI/CD pipeline see the [Java Gitflow Pipeline](https://github.com/department-of-veterans-affairs/bip-jenkins-lib/tree/master/docs/spring-boot-pipelines) and [Pipeline Configuration](https://github.com/department-of-veterans-affairs/bip-jenkins-lib/blob/master/docs/spring-boot-pipelines/pipeline-config.md) documents.
 
 2. :exclamation:add github URLs to any partner projects, and brief description here:exclamation:
 
-3. [bip-origin](https://github.ec.va.gov/EPMO/__artifactId__/tree/master/__artifactId__): Service implementation project. This project :exclamation:description of project function:exclamation:. The design consists of three layers:
+3. [bip-origin](https://github.com/department-of-veterans-affairs/__artifactId__/tree/master/__artifactId__): Service implementation project. This project :exclamation:description of project function:exclamation:. The design consists of three layers:
 
 	- The Provider (or "web") layer contains the REST end-points and model, JSR 303 annotations in the resource class and the model, and the use of an adapter class to transform models and call the service interface. The end-points demonstrate use cases such that fetching some data based on a request, submitting data, file uploads and downloads.
 	- The Domain (or "service") layer contains examples of business validation, business logic,  to call Partner services and process the returned data, and exception handling.
 	- The Partner (or "client") layer shows how to perform model transformation, how to call a partner client interface, and how to handle responses (or exceptions thrown) from the partner client.
 
-4. [bip-origin-inttest](https://github.ec.va.gov/EPMO/__artifactId__/tree/master/__artifactId__-inttest): Contains the integration tests using the framework Test Library Spring Rest Template, Cucumber libraries, and other capabilities). It includes functioning test cases that run against the service end-points.
+4. [bip-origin-inttest](https://github.com/department-of-veterans-affairs/__artifactId__/tree/master/__artifactId__-inttest): Contains the integration tests using the framework Test Library Spring Rest Template, Cucumber libraries, and other capabilities). It includes functioning test cases that run against the service end-points.
 
-5. [bip-origin-perftest](https://github.ec.va.gov/EPMO/__artifactId__/tree/master/__artifactId__-perftest): Contains performance JMX test scripts for Apache JMeter that run against the service endpoints.
+5. [bip-origin-perftest](https://github.com/department-of-veterans-affairs/__artifactId__/tree/master/__artifactId__-perftest): Contains performance JMX test scripts for Apache JMeter that run against the service endpoints.
 
 For examples and documentation about how projects are structured, configured, and developed on the BIP Platform:
 
-- [BIP Framework](https://github.ec.va.gov/EPMO/bip-framework)
-- [BIP Reference - Person service](https://github.ec.va.gov/EPMO/bip-reference-person)
+- [BIP Framework](https://github.com/department-of-veterans-affairs/bip-framework)
+- [BIP Reference - Person service](https://github.com/department-of-veterans-affairs/bip-reference-person)
 
 # Framework libraries in this project
 
@@ -47,7 +47,7 @@ To make these libraries available for compilation, read [this section](#how-to-m
 
 # How to build and test?
 
-The fastest way to get set up is to visit the [Quick Start Guide](https://github.ec.va.gov/EPMO/bip-reference-person/blob/master/docs/quick-start-guide.md).
+The fastest way to get set up is to visit the [Quick Start Guide](https://github.com/department-of-veterans-affairs/bip-reference-person/blob/master/docs/quick-start-guide.md).
 
 
 # Local Development
