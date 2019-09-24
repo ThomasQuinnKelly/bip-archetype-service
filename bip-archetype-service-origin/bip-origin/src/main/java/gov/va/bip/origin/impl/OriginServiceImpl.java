@@ -51,7 +51,7 @@ public class OriginServiceImpl implements OriginService {
 
 	/** Bean name constant */
 	public static final String BEAN_NAME = "originServiceImpl";
-
+	
 	/** The web service client helper. */
 	@Autowired
 	private PartnerHelper partnerHelper;
@@ -106,7 +106,26 @@ public class OriginServiceImpl implements OriginService {
 		}
 
 		LOGGER.debug("sampleFindByParticipantID no cached data found");
+		
 		// try from partner
+		callPartner(sampleDomainRequest, response);
+
+		// send hard coded data ... normally would get from db or partner
+		SampleInfoDomain sampleInfoDomain = new SampleInfoDomain();
+		sampleInfoDomain.setName("JANE DOE");
+		sampleInfoDomain.setParticipantId(sampleDomainRequest.getParticipantID());
+		response.setSampleInfo(sampleInfoDomain);
+		response.addMessage(MessageSeverity.INFO, HttpStatus.OK, OriginMessageKeys.BIP_SAMPLE_SERVICE_IMPL_RESPONDED_WITH_MOCK_DATA,
+				"");
+		return response;
+	}
+
+	/**
+	 * @param sampleDomainRequest
+	 * @param response
+	 * @throws gov.va.bip.origin.client.ws.BipException
+	 */
+	private void callPartner(final SampleDomainRequest sampleDomainRequest, SampleDomainResponse response) {
 		try {
 			// for this sample code, partnerHelper returns hard coded data
 			partnerHelper.sampleFindByPid(sampleDomainRequest);
@@ -114,15 +133,10 @@ public class OriginServiceImpl implements OriginService {
 					"");
 		} catch (BipException | BipRuntimeException bipException) {
 			// check exception..create domain model response
-			SampleDomainResponse domainResponse = new SampleDomainResponse();
-			// check exception..create domain model response
-			domainResponse.addMessage(bipException.getExceptionData().getSeverity(), bipException.getExceptionData().getStatus(),
+			response.addMessage(bipException.getExceptionData().getSeverity(), bipException.getExceptionData().getStatus(),
 					bipException.getExceptionData().getMessageKey(),
 					bipException.getExceptionData().getParams());
-			return domainResponse;
 		}
-
-		return response;
 	}
 
 	/**
