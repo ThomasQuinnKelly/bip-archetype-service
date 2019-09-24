@@ -28,6 +28,8 @@ public enum OriginMessageKeys implements MessageKey {
 	/** Response has different PID than the logged in user; no args */
 	BIP_SAMPLE_REQUEST_PID_INVALID("bip.origin.sample.request.pid.invalid",
 			"Response has different PID than the logged in user."),
+	BIP_SAMPLE_SERVICE_IMPL_RESPONDED_WITH_PARTNER_MOCK_DATA("bip.origin.sample.service.impl.responded.with.partner.mock.data",
+			"Response sent from service impl with partner mock data."),
 	BIP_SAMPLE_SERVICE_IMPL_RESPONDED_WITH_MOCK_DATA("bip.origin.sample.service.impl.responded.with.mock.data",
 			"Response sent from service impl with mock data.");
 
