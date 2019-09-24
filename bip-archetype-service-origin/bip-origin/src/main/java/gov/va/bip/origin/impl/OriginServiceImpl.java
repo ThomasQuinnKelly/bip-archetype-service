@@ -52,7 +52,7 @@ public class OriginServiceImpl implements OriginService {
 
 	/** Bean name constant */
 	public static final String BEAN_NAME = "originServiceImpl";
-
+	
 	/** The origin web service database operations helper. */
 	@Autowired
 	private SampleDataHelper sampleDataHelper;
@@ -82,11 +82,11 @@ public class OriginServiceImpl implements OriginService {
 	 */
 	@Override
 	@CachePut(value = CacheConstants.CACHENAME_ORIGIN_SERVICE,
-	key = "#root.methodName + T(gov.va.bip.framework.cache.BipCacheUtil).createKey(#sampleDomainRequest.participantID)",
-	unless = "T(gov.va.bip.framework.cache.BipCacheUtil).checkResultConditions(#result)")
+			key = "#root.methodName + T(gov.va.bip.framework.cache.BipCacheUtil).createKey(#sampleDomainRequest.participantID)",
+			unless = "T(gov.va.bip.framework.cache.BipCacheUtil).checkResultConditions(#result)")
 	/* If a fallback position is possible, add attribute to @HystrixCommand: fallback="fallbackMethodName" */
 	@HystrixCommand(commandKey = "SampleFindByParticipantIDCommand",
-	ignoreExceptions = { IllegalArgumentException.class, BipException.class, BipRuntimeException.class })
+			ignoreExceptions = { IllegalArgumentException.class, BipException.class, BipRuntimeException.class })
 	public SampleDomainResponse sampleFindByParticipantID(final SampleDomainRequest sampleDomainRequest) {
 
 		String cacheKey = "sampleFindByParticipantID" + BipCacheUtil.createKey(sampleDomainRequest.getParticipantID());
@@ -106,27 +106,17 @@ public class OriginServiceImpl implements OriginService {
 		}
 
 		LOGGER.debug("sampleFindByParticipantID no cached data found");
-
+		
 		// try from database helper
-		SampleData2 data = null;
-		data = sampleDataHelper.getSampleDataForPid(sampleDomainRequest.getParticipantID());
+		callDatabase(sampleDomainRequest, response);
 
-		String name = "JANE DOE"; // default value if no data is present
-		if (data == null) {
-			response.addMessage(MessageSeverity.INFO, HttpStatus.OK,
-					OriginMessageKeys.BIP_SAMPLE_SERVICE_DATABASE_CALL_RETURNED_NULL, "");
-		} else {
-			name = data.getSampleDatafield();
-			response.addMessage(MessageSeverity.INFO, HttpStatus.OK,
-					OriginMessageKeys.BIP_SAMPLE_SERVICE_DATABASE_CALL_PERFORMED, "");
-		}
-
+		// send hard coded data ... normally would get from db or partner
 		SampleInfoDomain sampleInfoDomain = new SampleInfoDomain();
-		sampleInfoDomain.setName(name);
+		sampleInfoDomain.setName("JANE DOE");
 		sampleInfoDomain.setParticipantId(sampleDomainRequest.getParticipantID());
 		response.setSampleInfo(sampleInfoDomain);
-
-		// return results of database call
+		response.addMessage(MessageSeverity.INFO, HttpStatus.OK, OriginMessageKeys.BIP_SAMPLE_SERVICE_IMPL_RESPONDED_WITH_MOCK_DATA,
+				"");
 		return response;
 	}
 
@@ -184,4 +174,27 @@ public class OriginServiceImpl implements OriginService {
 		}
 		return response;
 	}
+	
+	/**
+	 * @param sampleDomainRequest
+	 * @param response
+	 */
+	private void callDatabase(final SampleDomainRequest sampleDomainRequest, SampleDomainResponse response) {
+		try {
+			SampleData2 data = sampleDataHelper.getSampleDataForPid(sampleDomainRequest.getParticipantID());
+
+			if (data == null) {
+				response.addMessage(MessageSeverity.INFO, HttpStatus.OK,
+						OriginMessageKeys.BIP_SAMPLE_SERVICE_DATABASE_CALL_RETURNED_NULL, "");
+			} else {
+				response.addMessage(MessageSeverity.INFO, HttpStatus.OK,
+						OriginMessageKeys.BIP_SAMPLE_SERVICE_DATABASE_CALL_PERFORMED, "");
+			}
+		} catch (BipRuntimeException bipDbException) {
+			// check exception..create domain model response
+			response.addMessage(bipDbException.getExceptionData().getSeverity(), bipDbException.getExceptionData().getStatus(),
+					bipDbException.getExceptionData().getMessageKey(),
+					bipDbException.getExceptionData().getParams());
+		} // catch block ended for bipDbException
+	} // end of callDatabase
 }
