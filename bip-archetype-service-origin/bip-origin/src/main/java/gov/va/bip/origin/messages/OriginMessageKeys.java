@@ -32,10 +32,6 @@ public enum OriginMessageKeys implements MessageKey {
 	/** Response has different PID than the logged in user; no args */
 	BIP_SAMPLE_REQUEST_PID_INVALID("bip.origin.sample.request.pid.invalid",
 			"Response has different PID than the logged in user."),
-	/** Minimum allowed value validation for PID; no args */
-	BIP_SAMPLE_DATA_REQUEST_PID_MIN("Min.sampleDataRequest.participantID", "SampleDataRequest.participantID cannot be zero"),
-	/** Payload cannot be null validation; no args */
-	BIP_SAMPLE_DATA_NOTNULL("NotNull.sampleData1", "SampleData1 Payload cannot be null"),
 	/** Pid value could not be found; no args */
 	BIP_SAMPLE_DATA_REQUEST_PID_NOT_FOUND("bip.origin.pid.not.found",
 			"Pid value could not be found."),
