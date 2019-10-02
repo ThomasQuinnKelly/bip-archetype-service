@@ -38,12 +38,12 @@ Various packages and their corresponding log levels are specified here. By Defau
 
 ## Execution
 
-To execute the functional test in local bip-origin service needs to be up and running.
+To execute the functional tests in local bip-origin the service needs to be up and running.
 
 # How to Build and Test origin service
 [Quick Start Guide](/docs/quick-start-guide.md)
 
-**Command Line:** Execute the origin service functional test using the environment specific command below. 
+**Command Line:** Execute the origin service functional tests using the environment specific command below. 
 ```bash
 Default Local: mvn verify -Pinttest -Dcucumber.options="--tags @DEV" 
 ```
