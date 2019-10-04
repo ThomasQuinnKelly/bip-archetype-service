@@ -43,7 +43,7 @@ To execute the functional tests in local bip-origin the service needs to be up a
 # How to Build and Test origin service
 [Quick Start Guide](/docs/quick-start-guide.md)
 
-**Command Line:** Execute the origin service functional tests using the environment specific command below. 
+**Command Line:** Execute the Origin service functional tests using the environment specific command below. 
 ```bash
 Default Local: mvn verify -Pinttest -Dcucumber.options="--tags @DEV" 
 ```
