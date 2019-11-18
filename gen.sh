@@ -131,7 +131,7 @@ function exit_now() {
 		elif [ "$exit_code" -eq "24" ]; then
 			# One or more properties not set correctly
 			echo "ERROR: \"$propertiesFile\" has bad values for the following properties:" 2>&1 | tee -a "$genLog"
-			echo "artifactName shuld start with a letter and be alphanumeric." 2>&1 | tee -a "$genLog"
+			echo "artifactName should start with a letter and be alphanumeric." 2>&1 | tee -a "$genLog"
 			echo "artifactNameLowerCase should all be lower case." 2>&1 | tee -a "$genLog"
 			echo "artifactNameUpperCase should all be upper case." 2>&1 | tee -a "$genLog"
 			echo "        $invalidArtifactName" 2>&1 | tee -a "$genLog"
