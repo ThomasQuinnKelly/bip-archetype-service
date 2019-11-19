@@ -14,8 +14,9 @@
     enabled: false
     consulBackendEnabled: false
   consul:
-      config:
-        enabled: false
-      discovery:
-        enabled: false
-        register: false
+    enabled: false
+    config:
+      enabled: false
+    discovery:
+      enabled: false
+      register: false
