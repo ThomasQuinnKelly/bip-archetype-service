@@ -10,8 +10,8 @@ This repository is comprised of:
 
 - An origin (or source) project from which new BIP Service projects can be created.
 - A script and properties that can be used to create the new BIP Service project. Optionally include configuration and skeleton code for
- 	- relational databases, including preconfigured datasources for multiple databases
-	- client calls to SOAP partner JARs
+    - relational databases, including preconfigured datasources for multiple databases
+    - client calls to SOAP partner JARs
 
 The newly created artifact will contain a skeleton project with some rudimentary sample data objects demonstrating a simple use case.
 
@@ -23,18 +23,18 @@ The root project directory hosts the `bip-archetype-service-origin` project. Thi
 
 1. Clone the project:
 
-  - `$ cd ~/git`
-  - `$ git clone https://github.com/department-of-veterans-affairs/bip-archetype-service`
+    - `$ cd ~/git`
+    - `$ git clone https://github.com/department-of-veterans-affairs/bip-archetype-service`
 
 2. Import into an appropriate IDE workspace.
 
-  - It is not necessary to add the root directory (where the `gen.sh` script is) to your IDE. If you wish to do so, you will likely require a separate workspace just for that project.
+    - It is not necessary to add the root directory (where the `gen.sh` script is) to your IDE. If you wish to do so, you will likely require a separate workspace just for that project.
 
-  - To add the `bip-archetype-service-origin` project, import it to your IDE workspace as you would any other existing maven project.
+    - To add the `bip-archetype-service-origin` project, import it to your IDE workspace as you would any other existing maven project.
 
 ## About The Origin Project
 
-The `bip-archetype-service-origin` project contains the origin (or "source") project from which the new project can be created. This project is based on the [bip-reference -person](https://github.com/department-of-veterans-affairs/bip-reference-person) project, with some sample features removed, and necessary naming genericized.
+The `bip-archetype-service-origin` project contains the origin (or "source") project from which the new project can be created. This project is based on the [bip-reference-person](https://github.com/department-of-veterans-affairs/bip-reference-person) project, with some sample features removed, and necessary naming genericized.
 
 This project need only be modified when there are new features or capabilities to be included in a new generation of BIP Service projects.
 
@@ -51,11 +51,19 @@ For the most current version of BIP Framework configured in the project, reviewe
 
 ## Generating a New Project
 
-> To generate a new project, your local environment must have access to `bip-framework`. Provide one of:
-> 1. Access to BIP Nexus Repository at the URL specified in [`bip-archetype-service-origin/pom.xml`](bip-archetype-service-origin/pom.xml)
-> 2. Local artifact in `~/.m2/repository` by cloning [`bip-framework`](https://github.com/department-of-veterans-affairs/bip-framework), and building with `mvn clean install -U`
+To generate a new project, your local environment must have access to `bip-framework`. Provide one of:
+1. Access to BIP Nexus Repository at the URL specified in [`bip-archetype-service-origin/pom.xml`](bip-archetype-service-origin/pom.xml)
+2. Local artifact in `~/.m2/repository` by cloning [`bip-framework`](https://github.com/department-of-veterans-affairs/bip-framework), and building with `mvn clean install -U`
 
-The `gen.sh` script and `gen.properties` file are central to generating a new project skeleton. Review the comments in the `gen.properties` file for information about how the results of script execution can be altered, and how to add (or not) the optional components.
+    The archetype uses code from multiple branches in this repo that are merged together, based on the components you have selected in `gen.properties`. If you are building this archetype based on a local copy of the framework and do not have access to the Nexus repository, it is best to build the local `bip-framework` with a version number that aligns with the checked-in `<bip-framework.version>` values in the archetype `pom.xml`s -- e.g. the value stored in `bip-archetype-service/bip-archetype-service-origin/pom.xml`. In order to effect this, you will need to change the framework version in at least these poms before building the framework:
+    `bip-framework/bip-framework-autoconfigure/pom.xml`
+    `bip-framework/bip-framework-libraries/pom.xml`
+    `bip-framework/bip-framework-parentpom/pom.xml`
+    `bip-framework/bip-framework-shared/pom.xml`
+    `bip-framework/bip-framework-test-lib/pom.xml`
+    `bip-framework/pom.xml`
+
+The `gen.sh` script and `gen.properties.template` file are central to generating a new project skeleton. Review the comments in the `gen.properties.template` file for information about how the results of script execution can be altered, and how to add (or not) the optional components.
 
 Help for the script can be displayed by executing `./gen.sh -h`
 
@@ -103,21 +111,27 @@ Notes:
 
 ### Steps to generate a new skeleton project
 
-1. Update `gen.properties`. Read the comments in the properties file for each property. Existing property values provide examples of how they should appear.
+1. Create and update `gen.properties`. Read the comments in the properties file for each property. Existing property values provide examples of how they should appear.
+
+    ```bash
+    $ cp gen.properties.template gen.properties
+    $ open gen.properties
+    ```
+
 2. Generate the new project and read at least the last few lines of the script output. Example from the command line:
 
-  ```bash
-  $ cd ~/git/bip-archetype-service
-  $ chmod +x gen.sh # optional if the script is not yet executable
-  $ ./gen.sh
-  ```
+    ```bash
+    $ cd ~/git/bip-archetype-service
+    $ chmod +x gen.sh # optional if the script is not yet executable
+    $ ./gen.sh
+    ```
 
 3. Move the project to the desired local git directory. For example:
 
-  ```bash
-  $ cd ~/git/bip-archetype-service
-  $ mv [new-project-dir] ~/git/[new-project-dir]
-  ```
+    ```bash
+    $ cd ~/git/bip-archetype-service
+    $ mv [new-project-dir] ~/git/[new-project-dir]
+    ```
 
 4. Make any desired changes, for example remove the sample objects, add real data objects, add skeleton API, add skeleton service methods/classes, etc.
 
@@ -131,6 +145,6 @@ The [reference application](https://github.com/department-of-veterans-affairs/bi
 
 1. Branches starting with `master-` MUST NOT be deleted.
 2. The branches starting with 'master-' represent a specific component or piece of the project that can be optionally added or omitted. For example, `master-db` is a branch that contains the necessary code and other file changes to carry out database operations.
-3. When any change is made to the master branch, the master branch needs to be merged with with all the branches starting with `master-` and any resulting merge conflicts needs to be resolved.  
+3. When any change is made to the master branch, the master branch needs to be merged with with all the branches starting with `master-` and any resulting merge conflicts needs to be resolved.
 4. When a new capability in the form of a component is added to this project, a branch called `master-<name-of-new-component>` will be created from the master branch.Then the changes related to adding the capability supplied by that component are added in this branch, without removing or modifying any lines inherited from master.
-6. The new component name needs to be documented in the `gen.properties` file, before the `components` property value, similar to how other components such as `db` and `partner` are documented.
+6. The new component name needs to be documented in the `gen.properties.template` file, before the `components` property value, similar to how other components such as `db` and `partner` are documented.
