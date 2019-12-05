@@ -123,7 +123,7 @@ Notes:
 
 5. Make an initial commit to publish to a GitHub branch. For an example of how to do this, see [git_newrepo](https://gist.github.com/c0ldlimit/4089101) - the only difference is that you may want to commit into some branch other than _master_.
 
-6. Repeat steps 1-5 using the gen.properties and gen.sh files in the [bip-archetype-config](https://github.com/department-of-veterans-affairs/bip-archetype-config) repo to generate the config for the new project.
+6. Clone the [bip-archetype-config](https://github.com/department-of-veterans-affairs/bip-archetype-config) and follow the [Generating a Configuration Repository](https://github.com/department-of-veterans-affairs/bip-archetype-config#generating-a-configuration-repository) guide.
 
 # Getting Started With Your New Service Application
 
