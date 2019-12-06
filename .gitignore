@@ -1,6 +1,9 @@
 ### Archetype build artifacts ###
 gen*.log
 
+# Properties set up by the user
+gen.properties
+
 ### Maven ###
 **/target/
 
