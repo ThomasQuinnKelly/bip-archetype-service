@@ -10,8 +10,8 @@ groupId=gov.va.bip.vetservices.mytest
 artifactId=bip-vetservices-mytest
 # required: the new projects POM <version>
 version=0.0.1-SNAPSHOT
-# required: the camel-case name of the new project - NO SPACES OR SPECIAL CHARACTERS ALLOWED!
-# (must begin with a letter)
+# required: the upper camel-case/Pascal Case name of the new project - NO SPACES OR SPECIAL CHARACTERS ALLOWED!
+# (must begin with a capital letter)
 artifactName=MyTest
 # required: the lower-case artifactName
 artifactNameLowerCase=mytest

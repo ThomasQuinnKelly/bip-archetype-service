@@ -131,7 +131,7 @@ function exit_now() {
 		elif [ "$exit_code" -eq "24" ]; then
 			# One or more properties not set correctly
 			echo "ERROR: \"$propertiesFile\" has bad values for the following properties:" 2>&1 | tee -a "$genLog"
-			echo "artifactName should start with a letter and be alphanumeric." 2>&1 | tee -a "$genLog"
+			echo "artifactName should start with a capital letter and be alphanumeric." 2>&1 | tee -a "$genLog"
 			echo "artifactNameLowerCase should all be lower case." 2>&1 | tee -a "$genLog"
 			echo "artifactNameUpperCase should all be upper case." 2>&1 | tee -a "$genLog"
 			echo "        $invalidArtifactName" 2>&1 | tee -a "$genLog"
@@ -333,9 +333,9 @@ function validate_properties() {
 	fi
 
 	invalidArtifactName=""
-	if [[ !("$artifactName" =~ ^[a-zA-Z_$]{1}[a-zA-Z0-9_$]+$) ]]; then invalidArtifactName+="artifactName "; fi
-	if [[ !("$artifactNameLowerCase" =~ ^[a-z_$]{1}[a-z0-9_$]+$) ]]; then invalidArtifactName+="artifactNameLowerCase "; fi
-	if [[ !("$artifactNameUpperCase" =~ ^[A-Z_$]{1}[A-Z0-9_$]+$) ]]; then invalidArtifactName+="artifactNameUpperCase "; fi
+	if [[ !("$artifactName" =~ ^[A-Z]{1}[a-zA-Z0-9_$]+$) ]]; then invalidArtifactName+="artifactName "; fi
+	if [[ !("$artifactNameLowerCase" =~ ^[a-z]{1}[a-z0-9_$]+$) ]]; then invalidArtifactName+="artifactNameLowerCase "; fi
+	if [[ !("$artifactNameUpperCase" =~ ^[A-Z]{1}[A-Z0-9_$]+$) ]]; then invalidArtifactName+="artifactNameUpperCase "; fi
 
 	if [[ $invalidArtifactName != "" ]]; then
 		exit_now 24
@@ -559,11 +559,11 @@ function git_merge_component_branch() {
 		else
 			echo "*** ERROR Merge from $tmpBranchName branch not successful, contact framework team." 2>&1 | tee -a "$genLog"
 			echo "+>> Resetting changes - checking out master and deleting $prepBranch" 2>&1 | tee -a "$genLog"
-			
+
 			echo "git reset --hard" 2>&1 | tee -a "$genLog"
 			git reset --hard 2>&1 >> "$genLog"
 			check_exit_status "$?"
-			
+
 			git_checkout_branch $gitBranchBaseline
 
 			exit_now 1
