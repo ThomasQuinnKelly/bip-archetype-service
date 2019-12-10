@@ -5,7 +5,7 @@
 
   imagePullSecret: regcred
   image:
-    repository: container-registry.dev8.bip.va.gov/bip-origin
+    repository: container-registry.dev8.bip.va.gov/bip-project-namespace-prefix/bip-origin
     tag: latest
     pullPolicy: Always
   ingress:
