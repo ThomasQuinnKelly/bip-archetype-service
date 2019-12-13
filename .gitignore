@@ -43,3 +43,11 @@ nbdist/
 
 ### Ignore int test log file ###
 **/rest*.log
+
+### bin ###
+/bin/
+
+### .log ###
+/.log
+
+/bin
